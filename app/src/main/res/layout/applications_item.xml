@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+   <androidx.cardview.widget.CardView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       app:cardUseCompatPadding="true"
+       app:contentPadding="@dimen/_10sdp"
+       >
+       <androidx.constraintlayout.widget.ConstraintLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           >
+           <TextView
+               android:id="@+id/app_name_title"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Application Name : "
+               android:textStyle="bold|italic"
+               android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+               app:layout_constraintTop_toTopOf="parent"
+               app:layout_constraintStart_toStartOf="parent"
+               />
+           <TextView
+               android:id="@+id/app_name"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Name"
+               app:layout_constraintTop_toTopOf="parent"
+               android:textStyle="bold|italic"
+               android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+               app:layout_constraintStart_toEndOf="@+id/app_name_title"
+
+               />
+           <TextView
+               android:id="@+id/document_title"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Document : "
+               android:layout_marginTop="5dp"
+               app:layout_constraintStart_toStartOf="parent"
+               android:textStyle="bold|italic"
+               android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+               app:layout_constraintTop_toBottomOf="@id/app_name_title"
+               />
+           <TextView
+               android:id="@+id/download"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               app:layout_constraintTop_toBottomOf="@+id/app_name"
+               android:layout_marginTop="5dp"
+               android:text="Download"
+               android:textStyle="bold"
+               android:textColor="@color/colorBlue"
+               app:layout_constraintStart_toEndOf="@+id/document_title"
+               android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+               />
+
+           <TextView
+               android:id="@+id/status_title"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Status : "
+               android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+               android:textStyle="bold|italic"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintBottom_toTopOf="@id/status"
+               app:layout_constraintTop_toBottomOf="@+id/status" />
+
+           <TextView
+               android:id="@+id/status"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Active"
+               android:background="@drawable/status_bg"
+               android:padding="5dp"
+               android:layout_marginTop="5dp"
+               android:textStyle="bold"
+               android:textColor="@color/green"
+               android:layout_marginStart="10dp"
+               app:layout_constraintStart_toEndOf="@id/status_title"
+               app:layout_constraintTop_toBottomOf="@id/document_title"
+               />
+
+           <TextView
+               android:id="@+id/detail_title"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Details : "
+               android:textStyle="bold|italic"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toBottomOf="@id/status_title"
+               android:layout_marginTop="5dp"
+               android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+               />
+            <TextView
+                android:id="@+id/detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="detail text here"
+                android:layout_marginTop="5dp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintStart_toEndOf="@id/detail_title"
+                app:layout_constraintTop_toBottomOf="@id/status_title"
+                />
+
+       </androidx.constraintlayout.widget.ConstraintLayout>
+
+   </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_dashboard"
+        android:title="@string/dashboard"
+        />
+
+    <item
+        android:id="@+id/nav_categories"
+        android:title="@string/categories"
+        >
+        <menu>
+            <item android:id="@+id/nav_viewCategories"
+                android:title="@string/categories"
+                />
+            <item android:id="@+id/list_of_student"
+                android:title="@string/add_new_category"
+                />
+        </menu>
+    </item>
+
+    <item android:id="@+id/nav_courses"
+        android:title="@string/courses"
+        >
+        <menu>
+            <item android:id="@+id/nav_viewCourses"
+                android:title="@string/courses"
+                />
+            <item android:id="@+id/nav_addCourses"
+                android:title="@string/add_new_course"
+                />
+        </menu>
+    </item>
+    <item android:id="@+id/nav_instructors"
+        android:title="@string/instructors"
+        >
+        <menu>
+            <item
+                android:id="@+id/nav_instructorList"
+                android:title="@string/instructor_list"
+                />
+            <item
+                android:id="@+id/nav_instructorPayout"
+                android:title="@string/instructor_payout"
+                />
+            <item
+                android:id="@+id/nav_instructorSettings"
+                android:title="@string/instructor_setting"
+                />
+            <item
+                android:id="@+id/nav_InstructorApplication"
+                android:title="@string/instructor_application"
+                />
+        </menu>
+    </item>
+
+    <item android:id="@+id/student"
+        android:title="@string/student"
+        >
+        <menu>
+            <item android:id="@+id/nav_student"
+                android:title="@string/student"
+                />
+        </menu>
+    </item>
+
+    <item android:id="@+id/Enrolment"
+        android:title="@string/enrolment">
+        <menu>
+            <item android:id="@+id/nav_enrolHistory"
+                android:title="@string/enroll_history"/>
+            <item android:id="@+id/nav_enrolStudent"
+                android:title="@string/enrol_a_student"
+                />
+        </menu>
+
+    </item>
+
+    <item android:id="@+id/Report"
+        android:title="@string/reprot"
+        >
+        <menu>
+            <item android:id="@+id/nav_adminRevenue"
+                android:title="@string/admin_revenue"/>
+            <item android:id="@+id/nav_instructorRevenue"
+                android:title="@string/instructor_revenue"
+                />
+        </menu>
+    </item>
+
+
+    <item android:id="@+id/message"
+        android:title="@string/message"
+        >
+        <menu>
+            <item android:id="@+id/nav_message"
+                android:title="@string/message"
+                />
+
+        </menu>
+    </item>
+
+    <item android:id="@+id/addons"
+        android:title="@string/addons"
+        >
+        <menu>
+            <item android:id="@+id/nav_addonManager"
+                android:title="@string/addon_manager"
+                />
+            <item android:id="@+id/nav_availableAddons"
+                android:title="@string/available_addons"/>
+        </menu>
+    </item>
+
+    <item android:id="@+id/settings"
+        android:title="@string/settings"
+        >
+        <menu>
+            <item android:id="@+id/nav_systemSetting"
+                android:title="@string/system_setting"
+                />
+            <item android:id="@+id/nav_websiteSettings"
+                android:title="@string/website_settings"
+                />
+            <item android:id="@+id/nav_paymentSettings"
+                android:title="@string/payment_settings"
+                />
+            <item android:id="@+id/nav_languageSettings"
+                android:title="@string/language_settings"
+                />
+            <item android:id="@+id/nav_smtpSettings"
+                android:title="@string/smtp_settings"/>
+            <item android:id="@+id/nav_themeSettings"
+                android:title="@string/theme_settings"
+                />
+            <item android:id="@+id/nav_about"
+                android:title="@string/about"/>
+        </menu>
+    </item>
+
+</menu>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#68019C</color>
+    <color name="colorPrimaryDark">#68019C</color>
+    <color name="colorAccent">#D8721B65</color>
+    <color name="white">#ffffff</color>
+    <color name="colorRed">#fa5c7c</color>
+    <color name="colorBlue">#39afd1</color>
+    <color name="green">#18D0C3</color>
+    <color name="gray">#ECE8E8</color>
+    <color name="black">#000000</color>
+    <color name="btnbg_inst_setting">#727cf5</color>
+
+</resources>

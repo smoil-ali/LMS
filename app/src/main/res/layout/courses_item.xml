@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/course_bg"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="$60"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/course_enrol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Enrolment : "
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toStartOf="@id/course_sectins"
+                app:layout_constraintTop_toBottomOf="@id/course_sectins"
+                />
+
+            <TextView
+                android:id="@+id/total_enrol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toEndOf="@id/course_enrol"
+                app:layout_constraintTop_toBottomOf="@+id/course_sectins" />
+
+
+            <TextView
+                android:id="@+id/total_lesson"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toEndOf="@+id/course_lesson"
+                app:layout_constraintTop_toBottomOf="@id/course_category"
+                />
+
+            <TextView
+                android:id="@+id/course_lesson"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Lesson : "
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toEndOf="@id/total_section"
+                app:layout_constraintTop_toBottomOf="@id/course_category"
+                android:layout_marginStart="20dp"
+                />
+
+            <TextView
+                android:id="@+id/total_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                app:layout_constraintStart_toEndOf="@+id/course_sectins"
+                app:layout_constraintTop_toTopOf="@+id/course_sectins" />
+
+            <TextView
+                android:id="@+id/course_sectins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Section : "
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toStartOf="@+id/course_category"
+                app:layout_constraintTop_toBottomOf="@+id/course_category" />
+
+            <TextView
+                android:id="@+id/course_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Graphics"
+                android:background="@drawable/category_bg"
+                android:padding="5dp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toStartOf="@+id/course_instructor"
+                app:layout_constraintTop_toBottomOf="@+id/course_instructor" />
+
+            <TextView
+                android:id="@+id/course_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Active"
+                android:background="@drawable/status_bg"
+                android:padding="5dp"
+                android:layout_marginTop="5dp"
+                android:textStyle="bold"
+                android:textColor="@color/green"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toEndOf="@id/course_category"
+                app:layout_constraintTop_toBottomOf="@id/course_instructor"
+                />
+
+            <TextView
+                android:id="@+id/course_instructor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Instructor: Shoaib Akmal"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                app:layout_constraintStart_toStartOf="@+id/course_title"
+                app:layout_constraintTop_toBottomOf="@+id/course_title" />
+
+            <ImageView
+                android:id="@+id/course_thumbnail"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/download"
+                android:scaleType="fitXY"
+                />
+
+            <TextView
+                android:id="@+id/course_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Graphics Designing"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.093"
+                app:layout_constraintStart_toEndOf="@+id/course_thumbnail"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

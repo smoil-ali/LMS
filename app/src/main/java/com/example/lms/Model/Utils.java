@@ -3,10 +3,27 @@ package com.example.lms.Model;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class Utils {
+
+    public static void openDialog(FragmentManager manager, DialogFragment fragment){
+        FragmentTransaction ft = manager.beginTransaction();
+        Fragment prev = manager.findFragmentByTag("dialog");
+        if(prev != null)
+        {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        fragment.show(ft, "dialog");
+    }
+
 
     public static void setSharedPref(Context context, SharedPref pref){
         SharedPreferences preferences = context.getSharedPreferences("loginStatus",0);

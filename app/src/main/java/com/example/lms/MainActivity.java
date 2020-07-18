@@ -1,5 +1,6 @@
 package com.example.lms;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -11,8 +12,11 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
+import com.example.lms.Listener.ResetListener;
+import com.example.lms.Model.Utils;
 import com.example.lms.databinding.ActivityMainBinding;
 import com.example.lms.databinding.AppBarBinding;
+import com.example.lms.dialogs.ResetDialog;
 import com.example.lms.ui.addons.AddonManagerFragment;
 import com.example.lms.ui.addons.AvailableAddonsFragment;
 import com.example.lms.ui.categories.CategoriesFragment;
@@ -37,11 +41,12 @@ import com.example.lms.ui.students.StudentFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ResetListener {
 
     private ActivityMainBinding binding;
     private AppBarBinding appBarBinding;
     Toolbar toolbar;
+    ResetDialog resetDialog = new ResetDialog();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         appBarBinding=AppBarBinding.inflate(getLayoutInflater());
         View view=binding.getRoot();
         setContentView(view);
+        resetDialog.setResetListener(this);
         setBottomNavigation();
         sideNavigation();
 
@@ -81,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
                         fragment=new CoursesFragment();
                         break;
                     case R.id.nav_addCourses:
-
                         break;
                     case R.id.nav_instructorList:
                         fragment=new InstructorListFragment();
@@ -138,7 +143,8 @@ public class MainActivity extends AppCompatActivity {
                         fragment=new ThemeSettingsFragment();
                         break;
                     case R.id.nav_about:
-                        fragment=new AboutFragment();
+                        Utils.openDialog(getSupportFragmentManager(),resetDialog);
+                        //fragment=new AboutFragment();
                         break;
                 }
                 getSupportFragmentManager().beginTransaction()
@@ -195,5 +201,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onReset(String msg, String msg2) {
+        resetDialog.dismiss();
+        new AlertDialog.Builder(this)
+                .setTitle(msg2)
+                .setMessage(msg)
+                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
     }
 }

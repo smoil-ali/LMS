@@ -44,7 +44,7 @@ import com.example.lms.ui.students.StudentFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ResetListener {
 
     private ActivityMainBinding binding;
     private AppBarBinding appBarBinding;
@@ -184,23 +184,23 @@ public class MainActivity extends AppCompatActivity {
     private void setBottomNavigation(){
 
         binding.bottomNavigation.show(2,true);
-        binding.bottomNavigation.add(new MeowBottomNavigation.Model(1,R.drawable.home));
+        binding.bottomNavigation.add(new MeowBottomNavigation.Model(1,R.drawable.profile_vector));
         binding.bottomNavigation.add(new MeowBottomNavigation.Model(2,R.drawable.home));
-        binding.bottomNavigation.add(new MeowBottomNavigation.Model(3,R.drawable.home));
+        binding.bottomNavigation.add(new MeowBottomNavigation.Model(3,R.drawable.setting_vector));
 
         binding.bottomNavigation.setOnClickMenuListener(new MeowBottomNavigation.ClickListener() {
             @Override
             public void onClickItem(MeowBottomNavigation.Model item) {
                 switch (item.getId()){
                     case 1:
-                        Toast.makeText(MainActivity.this, "home", Toast.LENGTH_SHORT).show();
+
                         break;
                     case 2:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.hostFragment,new HomeFragment()).commit();
                         break;
                     case 3:
-                        Toast.makeText(MainActivity.this, "home", Toast.LENGTH_SHORT).show();
+
                         break;
                 }
 

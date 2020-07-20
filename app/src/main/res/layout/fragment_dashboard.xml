@@ -49,13 +49,14 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_close_vector"
                     />
+
                 <TextView
+                    android:id="@+id/totalCourses"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2"
-                    android:textStyle="bold"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    />
+                    android:textStyle="bold" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -88,9 +89,9 @@
                     android:src="@drawable/ic_close_vector"
                     />
                 <TextView
+                    android:id="@+id/totalLesson"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2"
                     android:textStyle="bold"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     />
@@ -126,9 +127,9 @@
                     android:src="@drawable/ic_close_vector"
                     />
                 <TextView
+                    android:id="@+id/totalEnrol"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2"
                     android:textStyle="bold"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     />
@@ -162,19 +163,33 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_close_vector"
                     />
-                <TextView
+
+
+                <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2"
-                    android:textStyle="bold"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    />
+                    >
+                    <TextView
+                        android:id="@+id/totalStudent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textStyle="bold" />
+                    <ProgressBar
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:id="@+id/dashboardProgressBar"
+                        />
+                </RelativeLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Number of Students"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     />
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>

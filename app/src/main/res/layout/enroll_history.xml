@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/student_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:contentPadding="10dp"
+        app:cardUseCompatPadding="true"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/student_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/student_image"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                app:civ_border_overlay="true"
+                app:civ_border_width="2dp"
+                android:src="@drawable/images"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/student_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Usama Sarfraz"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.045"
+                app:layout_constraintStart_toEndOf="@+id/student_image"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/student_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="usamasarfraz777@gmail.com"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                app:layout_constraintStart_toStartOf="@+id/student_name"
+                app:layout_constraintTop_toBottomOf="@+id/student_name"
+                />
+            <TextView
+                android:id="@+id/enrol_course"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:textColor="@color/green"
+                android:background="@drawable/status_bg"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toStartOf="@id/student_email"
+                app:layout_constraintTop_toBottomOf="@id/student_email"
+                />
+            <TextView
+                android:id="@+id/enrol_date_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enrol date : "
+                app:layout_constraintTop_toBottomOf="@id/enrol_course"
+                app:layout_constraintStart_toStartOf="@+id/enrol_course"
+                />
+            <TextView
+                android:id="@+id/set_enroll_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="20 july"
+                app:layout_constraintStart_toEndOf="@+id/enrol_date_title"
+                app:layout_constraintTop_toBottomOf="@id/enrol_course"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

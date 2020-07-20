@@ -2,11 +2,11 @@ package com.example.lms.Model;
 
 import java.util.List;
 
-public class EnrollmentHistoryResponse {
-    String message;
+public class CategoryResponse {
+    String message ;
     String code;
     String status;
-    List<EnrollHistoryUserData> data;
+    List<CategoryData> data;
 
     public String getMessage() {
         return message;
@@ -32,11 +32,11 @@ public class EnrollmentHistoryResponse {
         this.status = status;
     }
 
-    public List<EnrollHistoryUserData> getData() {
+    public List<CategoryData> getData() {
         return data;
     }
 
-    public void setData(List<EnrollHistoryUserData> data) {
+    public void setData(List<CategoryData> data) {
         this.data = data;
     }
 }

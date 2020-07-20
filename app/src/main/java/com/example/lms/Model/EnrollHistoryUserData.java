@@ -8,6 +8,24 @@ public class EnrollHistoryUserData {
     String course_id;
     String date_added;
     String last_modified;
+    String userName;
+    String courseName;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
 
     public String getId() {
         return id;

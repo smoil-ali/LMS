@@ -1,5 +1,6 @@
 package com.example.lms.Retorfit;
 
+import com.example.lms.Model.CategoryResponse;
 import com.example.lms.Model.CourseCount;
 import com.example.lms.Model.CourseCountResponse;
 import com.example.lms.Model.CourseResponse;
@@ -31,6 +32,12 @@ public interface AcademyApis {
     //http://developers.cgitsoft.com/lms/index.php?action=enrolhistory
     @GET("?action=enrolhistory")
     Call<EnrollmentHistoryResponse> getEnrollmentHistory();
+
+    //Category List
+    //http://developers.cgitsoft.com/lms/index.php?action=category
+    @GET("?action=category")
+    Call<CategoryResponse> getCategories();
+
 
     //Fetch User Data base on ID and email
 

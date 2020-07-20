@@ -1,23 +1,15 @@
 package com.example.lms.Model;
 
-public class Category {
-    private String id;
-
-    private String code;
-
-    private String name;
-
-    private String parent;
-
-    private String slug;
-
-    private String date_added;
-
-    private String last_modified;
-
-    private String font_awesome_class;
-
-    private String thumbnail;
+public class CategoryData {
+    String id;
+    String code;
+    String name;
+    String parent;
+    String slug;
+    String date_added;
+    String last_modified;
+    String font_awesome_class;
+    String thumbnail;
 
     public String getId() {
         return id;

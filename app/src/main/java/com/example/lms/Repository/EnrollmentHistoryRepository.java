@@ -38,12 +38,14 @@ public class EnrollmentHistoryRepository {
                         enrollListener.errorListener(enrollmentHistoryResponse.getMessage());
                     }
                 }else {
+                    Log.i(TAG,"in response unSuccessful");
                     enrollListener.errorListener(response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<EnrollmentHistoryResponse> call, Throwable t) {
+                Log.i(TAG,"in response failed");
                 enrollListener.errorListener(t.getMessage());
             }
         });

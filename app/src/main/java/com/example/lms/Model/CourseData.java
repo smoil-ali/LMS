@@ -57,7 +57,7 @@ public class CourseData {
 
     private String is_free_course;
 
-    private Category category;
+    private CategoryData category;
 
     private Sub_category sub_category;
 
@@ -283,11 +283,11 @@ public class CourseData {
         this.is_free_course = is_free_course;
     }
 
-    public Category getCategory() {
+    public CategoryData getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(CategoryData category) {
         this.category = category;
     }
 

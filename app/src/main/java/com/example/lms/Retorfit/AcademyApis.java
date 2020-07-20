@@ -1,10 +1,13 @@
 package com.example.lms.Retorfit;
 
+import com.example.lms.Model.CategoryResponse;
 import com.example.lms.Model.CourseCount;
 import com.example.lms.Model.CourseCountResponse;
 import com.example.lms.Model.CourseResponse;
+import com.example.lms.Model.EnrollmentHistoryResponse;
 import com.example.lms.Model.DashboardResponse;
 import com.example.lms.Model.LoginResponse;
+import com.example.lms.Model.ResetPassword;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -20,6 +23,22 @@ public interface AcademyApis {
     //http://developers.cgitsoft.com/lms/index.php?action=course_count
     @GET("?action=course_count")
     Call<CourseCountResponse> getCourseCount();
+
+    //Reset Password
+    //http://developers.cgitsoft.com/lms/index.php?action=resetpassword&id=1&password=12345
+    @GET("?action=resetpassword")
+    Call<ResetPassword> resetPassword(@Query("id") String id,@Query("password") String password);
+
+    //Enrollment History
+    //http://developers.cgitsoft.com/lms/index.php?action=enrolhistory
+    @GET("?action=enrolhistory")
+    Call<EnrollmentHistoryResponse> getEnrollmentHistory();
+
+    //Category List
+    //http://developers.cgitsoft.com/lms/index.php?action=category
+    @GET("?action=category")
+    Call<CategoryResponse> getCategories();
+
 
     //Fetch User Data base on ID and email
 

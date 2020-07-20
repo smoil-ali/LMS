@@ -1,5 +1,6 @@
 package com.example.lms;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -12,9 +13,12 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
+import com.example.lms.Listener.ResetListener;
+import com.example.lms.Model.Utils;
 import com.example.lms.activity.AddCategory;
 import com.example.lms.databinding.ActivityMainBinding;
 import com.example.lms.databinding.AppBarBinding;
+import com.example.lms.dialogs.ResetDialog;
 import com.example.lms.ui.HomeFragment;
 import com.example.lms.ui.addons.AddonManagerFragment;
 import com.example.lms.ui.addons.AvailableAddonsFragment;
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarBinding appBarBinding;
     int flag =0;
     Toolbar toolbar;
+    ResetDialog resetDialog = new ResetDialog();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("LMS");
         View view=binding.getRoot();
         setContentView(view);
+        resetDialog.setResetListener(this);
         setBottomNavigation();
         sideNavigation();
 
@@ -85,9 +91,8 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_viewCategories:
                         fragment=new CategoriesFragment();
                         break;
-                    case R.id.nav_addCategory:
-                        startActivity(new Intent(MainActivity.this, AddCategory.class));
-                        flag=1;
+                    case R.id.add:
+
                         break;
                     case R.id.nav_viewCourses:
                         fragment=new CoursesFragment();
@@ -150,7 +155,8 @@ public class MainActivity extends AppCompatActivity {
                         fragment=new ThemeSettingsFragment();
                         break;
                     case R.id.nav_about:
-                        fragment=new AboutFragment();
+                        Utils.openDialog(getSupportFragmentManager(),resetDialog);
+                        //fragment=new AboutFragment();
                         break;
                 }
                 if (flag==0){
@@ -178,23 +184,23 @@ public class MainActivity extends AppCompatActivity {
     private void setBottomNavigation(){
 
         binding.bottomNavigation.show(2,true);
-        binding.bottomNavigation.add(new MeowBottomNavigation.Model(1,R.drawable.profile_vector));
+        binding.bottomNavigation.add(new MeowBottomNavigation.Model(1,R.drawable.home));
         binding.bottomNavigation.add(new MeowBottomNavigation.Model(2,R.drawable.home));
-        binding.bottomNavigation.add(new MeowBottomNavigation.Model(3,R.drawable.setting_vector));
+        binding.bottomNavigation.add(new MeowBottomNavigation.Model(3,R.drawable.home));
 
         binding.bottomNavigation.setOnClickMenuListener(new MeowBottomNavigation.ClickListener() {
             @Override
             public void onClickItem(MeowBottomNavigation.Model item) {
                 switch (item.getId()){
                     case 1:
-
+                        Toast.makeText(MainActivity.this, "home", Toast.LENGTH_SHORT).show();
                         break;
                     case 2:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.hostFragment,new HomeFragment()).commit();
                         break;
                     case 3:
-
+                        Toast.makeText(MainActivity.this, "home", Toast.LENGTH_SHORT).show();
                         break;
                 }
 
@@ -215,7 +221,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
 
-
+    @Override
+    public void onReset(String msg, String msg2) {
+        resetDialog.dismiss();
+        new AlertDialog.Builder(this)
+                .setTitle(msg2)
+                .setMessage(msg)
+                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
     }
 }

@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">LMS</string>
-    <string name="home">Home</string>
     <string name="dashboard">Dashboard</string>
     <string name="categories">Categories</string>
     <string name="add_new_category">Add new category</string>
@@ -12,7 +11,7 @@
     <string name="instructor_setting">Instructor setting</string>
     <string name="instructor_application">Instructor application</string>
     <string name="student">Student</string>
-    <string name="enroll_history">Enroll history</string>
+    <string name="enroll_history">Enrol history</string>
     <string name="enrolment">Enrolment</string>
     <string name="enrol_a_student">Enrol a student</string>
     <string name="reprot">Reprot</string>
@@ -41,4 +40,6 @@
     <string name="instructor_revenue_percentage">Instructor revenue percentage</string>
     <string name="admin_revenue_percentage">Admin revenue percentage</string>
     <string name="enter_number">Enter Number</string>
+    <string name="home">Home</string>
+    <string name="instructor">Instructor</string>
 </resources>

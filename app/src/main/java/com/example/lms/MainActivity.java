@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,8 +12,10 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
+import com.example.lms.activity.AddCategory;
 import com.example.lms.databinding.ActivityMainBinding;
 import com.example.lms.databinding.AppBarBinding;
+import com.example.lms.ui.HomeFragment;
 import com.example.lms.ui.addons.AddonManagerFragment;
 import com.example.lms.ui.addons.AvailableAddonsFragment;
 import com.example.lms.ui.categories.CategoriesFragment;
@@ -41,12 +44,15 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private AppBarBinding appBarBinding;
+    int flag =0;
     Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding=ActivityMainBinding.inflate(getLayoutInflater());
         appBarBinding=AppBarBinding.inflate(getLayoutInflater());
+        setSupportActionBar(appBarBinding.toolbar);
+        getSupportActionBar().setTitle("LMS");
         View view=binding.getRoot();
         setContentView(view);
         setBottomNavigation();
@@ -56,7 +62,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sideNavigation(){
-
+        binding.floatingNavigationView.setCheckedItem(R.id.nav_home);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.hostFragment,new HomeFragment()).commit();
         binding.floatingNavigationView.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,14 +76,18 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem item) {
                 Fragment fragment=new Fragment();
                 switch (item.getItemId()){
+                    case R.id.nav_home:
+                        fragment=new HomeFragment();
+                        break;
                     case R.id.nav_dashboard:
                         fragment=new DashboardFragment();
                         break;
                     case R.id.nav_viewCategories:
                         fragment=new CategoriesFragment();
                         break;
-                    case R.id.add:
-
+                    case R.id.nav_addCategory:
+                        startActivity(new Intent(MainActivity.this, AddCategory.class));
+                        flag=1;
                         break;
                     case R.id.nav_viewCourses:
                         fragment=new CoursesFragment();
@@ -141,8 +153,11 @@ public class MainActivity extends AppCompatActivity {
                         fragment=new AboutFragment();
                         break;
                 }
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.hostFragment,fragment).commit();
+                if (flag==0){
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.hostFragment,fragment).commit();
+                }
+
                 binding.floatingNavigationView.close();
                 return true;
             }
@@ -150,31 +165,36 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.hostFragment);
         if (binding.floatingNavigationView.isOpened()) {
             binding.floatingNavigationView.close();
-        } else {
-            super.onBackPressed();
+        }else if (currentFragment instanceof HomeFragment){
+           super.onBackPressed();
+        }else {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.hostFragment,new HomeFragment()).commit();
         }
     }
     private void setBottomNavigation(){
 
         binding.bottomNavigation.show(2,true);
-        binding.bottomNavigation.add(new MeowBottomNavigation.Model(1,R.drawable.home));
+        binding.bottomNavigation.add(new MeowBottomNavigation.Model(1,R.drawable.profile_vector));
         binding.bottomNavigation.add(new MeowBottomNavigation.Model(2,R.drawable.home));
-        binding.bottomNavigation.add(new MeowBottomNavigation.Model(3,R.drawable.home));
+        binding.bottomNavigation.add(new MeowBottomNavigation.Model(3,R.drawable.setting_vector));
 
         binding.bottomNavigation.setOnClickMenuListener(new MeowBottomNavigation.ClickListener() {
             @Override
             public void onClickItem(MeowBottomNavigation.Model item) {
                 switch (item.getId()){
                     case 1:
-                        Toast.makeText(MainActivity.this, "home", Toast.LENGTH_SHORT).show();
+
                         break;
                     case 2:
-                        Toast.makeText(MainActivity.this, "home", Toast.LENGTH_SHORT).show();
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.hostFragment,new HomeFragment()).commit();
                         break;
                     case 3:
-                        Toast.makeText(MainActivity.this, "home", Toast.LENGTH_SHORT).show();
+
                         break;
                 }
 
@@ -195,5 +215,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 }

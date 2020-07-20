@@ -3,6 +3,7 @@ package com.example.lms.Retorfit;
 import com.example.lms.Model.CourseCount;
 import com.example.lms.Model.CourseCountResponse;
 import com.example.lms.Model.CourseResponse;
+import com.example.lms.Model.DashboardResponse;
 import com.example.lms.Model.LoginResponse;
 
 import retrofit2.Call;
@@ -29,6 +30,15 @@ public interface AcademyApis {
     @GET("?action=courseList")
     Call<CourseResponse> getCourseResponse();
 
+
     //By Course ID
     //http://developers.cgitsoft.com/lms/index.php?action=courseList&id=123
+
+
+    //Count All Api for dashboard
+    //http://developers.cgitsoft.com/lms/index.php?action=studentList
+
+    @GET("?action=count_all")
+    Call<DashboardResponse> getDashBoardResponse();
+
 }

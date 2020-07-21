@@ -84,7 +84,7 @@ public class Login extends AppCompatActivity {
                 if (loginResponse.getCode().equals("200")){
                     Log.i(TAG,loginResponse.getData().getUser().getId()+"");
                     Utils.setProfileData(loginResponse.getData(),Login.this);
-                    Utils.setSharedPref(Login.this,new SharedPref(loginResponse.getData().getUser().getId(),false));
+                    Utils.setSharedPref(Login.this,new SharedPref(loginResponse.getData().getUser().getId(),true));
                     startActivity(new Intent(Login.this, MainActivity.class));
                 }else {
                     new AlertDialog.Builder(Login.this)

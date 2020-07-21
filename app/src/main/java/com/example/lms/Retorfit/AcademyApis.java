@@ -9,6 +9,7 @@ import com.example.lms.Model.DashboardResponse;
 import com.example.lms.Model.LoginResponse;
 import com.example.lms.Model.ResetPassword;
 
+import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -39,6 +40,11 @@ public interface AcademyApis {
     @GET("?action=category")
     Call<CategoryResponse> getCategories();
 
+
+    //Category List using RxJava
+    //http://developers.cgitsoft.com/lms/index.php?action=category
+    @GET("?action=category")
+    Observable<CategoryResponse> getCategoriesUsingRxJava();
 
     //Fetch User Data base on ID and email
 

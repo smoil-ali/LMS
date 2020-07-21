@@ -36,7 +36,6 @@ public class Utils {
         SharedPreferences preferences = context.getSharedPreferences("loginStatus",0);
         boolean a = preferences.getBoolean("status",false);
         String id = preferences.getString("id",null);
-
         return new SharedPref(id,a);
     }
 

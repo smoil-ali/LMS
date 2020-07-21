@@ -12,16 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.AddCategory"></activity>
-        <activity android:name=".activity.Test"></activity>
-        <activity android:name=".activity.Login" android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".activity.AddCourse"></activity>
+        <activity android:name=".activity.AddCategory" />
+        <activity android:name=".activity.Test" />
+        <activity
+            android:name=".activity.Login"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

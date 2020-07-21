@@ -94,8 +94,8 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     case R.id.nav_viewCategories:
                         fragment=new CategoriesFragment();
                         break;
-                    case R.id.add:
-
+                    case R.id.nav_addCategory:
+                        startActivity(new Intent(MainActivity.this,AddCategory.class));
                         break;
                     case R.id.nav_viewCourses:
                         fragment=new CoursesFragment();

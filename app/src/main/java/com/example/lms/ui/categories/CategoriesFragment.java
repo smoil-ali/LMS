@@ -70,7 +70,7 @@ public class CategoriesFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.rvCategories.getContext(),
                 DividerItemDecoration.HORIZONTAL);
         binding.rvCategories.addItemDecoration(dividerItemDecoration);
-        binding.rvCategories.setNestedScrollingEnabled(false);
+        //binding.rvCategories.setNestedScrollingEnabled(false);
         adapter=new CategoryAdapter(getContext(),dataList);
         binding.rvCategories.setAdapter(adapter);
     }

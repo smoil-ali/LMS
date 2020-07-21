@@ -6,8 +6,10 @@ import com.example.lms.Model.CourseCountResponse;
 import com.example.lms.Model.CourseResponse;
 import com.example.lms.Model.EnrollmentHistoryResponse;
 import com.example.lms.Model.DashboardResponse;
+import com.example.lms.Model.InstructorResponse;
 import com.example.lms.Model.LoginResponse;
 import com.example.lms.Model.ResetPassword;
+import com.example.lms.Model.StudentResponse;
 
 import io.reactivex.Observable;
 import retrofit2.Call;
@@ -40,11 +42,33 @@ public interface AcademyApis {
     @GET("?action=category")
     Call<CategoryResponse> getCategories();
 
+    //Add Parent Category
+    //http://developers.cgitsoft.com/lms/index.php?action=addCategory&name=Webdesign&slug=webdevolpment&code=w2oii292&date_added=21341412
+    @GET("?action=addCategory")
+    Call<CategoryResponse> addParentCategory(@Query("name") String name,
+                                             @Query("slug") String slug,
+                                             @Query("code") String code,
+                                             @Query("date_added") String date_added);
+
+    // Add sub Category
+    //http://developers.cgitsoft.com/lms/index.php?action=addCategory&name=Webdesign&slug=webdevolpment&code=w2oii292&date_added=21341412&parentid=
+    @GET("?action=addCategory")
+    Call<CategoryResponse> addSubCategory(@Query("name") String name,
+                                             @Query("slug") String slug,
+                                             @Query("code") String code,
+                                             @Query("date_added") String date_added,
+                                                @Query("parentid")String parentid);
+
 
     //Category List using RxJava
     //http://developers.cgitsoft.com/lms/index.php?action=category
     @GET("?action=category")
     Observable<CategoryResponse> getCategoriesUsingRxJava();
+
+    //SubCategory list by id
+    //http://developers.cgitsoft.com/lms/index.php?action=categorybyid&id=3
+    @GET("?action=categorybyid")
+    Call<CategoryResponse> getSubCategories(@Query("id") String id);
 
     //Fetch User Data base on ID and email
 
@@ -54,6 +78,18 @@ public interface AcademyApis {
     //http://developers.cgitsoft.com/lms/index.php?action=courseList
     @GET("?action=courseList")
     Call<CourseResponse> getCourseResponse();
+
+    //Student List
+    //http://developers.cgitsoft.com/lms/index.php?action=allUser&role=student
+    @GET("?action=allUser")
+    Call<StudentResponse> getStudentList(@Query("role") String role);
+
+
+
+    //Instructor List
+    //http://developers.cgitsoft.com/lms/index.php?action=allUser&role=instructor
+    @GET("?action=allUser")
+    Call<InstructorResponse> getInstructorList(@Query("role") String role);
 
 
     //By Course ID

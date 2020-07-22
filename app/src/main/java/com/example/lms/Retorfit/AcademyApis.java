@@ -33,13 +33,19 @@ public interface AcademyApis {
     Call<ResetPassword> resetPassword(@Query("id") String id,@Query("password") String password);
 
     //Enrollment History
-    //http://developers.cgitsoft.com/lms/index.php?action=enrolhistory
-    @GET("?action=enrolhistory")
+    //http://developers.cgitsoft.com/lms/index.php?action=stdEnrolHistoryById
+    @GET("?action=stdEnrolHistoryById")
     Call<EnrollmentHistoryResponse> getEnrollmentHistory();
 
+
+    //Enroll history By id
+    //http://developers.cgitsoft.com/lms/index.php?action=stdEnrolHistoryById&id=2
+    @GET("?action=stdEnrolHistoryById")
+    Call<EnrollmentHistoryResponse> getEnrollmentHistoryById(@Query("id")String id);
+
     //Category List
-    //http://developers.cgitsoft.com/lms/index.php?action=category
-    @GET("?action=category")
+    //http://developers.cgitsoft.com/lms/index.php/?action=categoryParent
+    @GET("?action=categoryParent")
     Call<CategoryResponse> getCategories();
 
     //Add Parent Category
@@ -61,14 +67,20 @@ public interface AcademyApis {
 
 
     //Category List using RxJava
-    //http://developers.cgitsoft.com/lms/index.php?action=category
-    @GET("?action=category")
+    //http://developers.cgitsoft.com/lms/index.php/?action=categoryParent
+    @GET("?action=categoryParent")
     Observable<CategoryResponse> getCategoriesUsingRxJava();
 
+
     //SubCategory list by id
-    //http://developers.cgitsoft.com/lms/index.php?action=categorybyid&id=3
-    @GET("?action=categorybyid")
+    //http://developers.cgitsoft.com/lms/index.php?action=subCategoryByParentId&id=1
+    @GET("?action=subCategoryByParentId")
     Call<CategoryResponse> getSubCategories(@Query("id") String id);
+
+    //Delete By ID or Code
+    //http://developers.cgitsoft.com/lms/index.php?action=deleteCategory&id=3
+    @GET("?action=deleteCategory")
+    Call<CategoryResponse> deleteCategory(@Query("id")String id);
 
     //Fetch User Data base on ID and email
 

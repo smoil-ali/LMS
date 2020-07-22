@@ -34,7 +34,8 @@ import retrofit2.Response;
 public class AddCategory extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     ActivityAddCategoryBinding binding;
-    List<CategoryData> dataList = new ArrayList<>();
+    List<List<CategoryData>> MainList = new ArrayList<>();
+    List<CategoryData> dataList;
     List<String> categoryList = new ArrayList<>();
     final String TAG = AddCategory.class.getSimpleName();
     AcademyApis academyApis;
@@ -42,6 +43,7 @@ public class AddCategory extends AppCompatActivity implements AdapterView.OnItem
     public String code;
     public String Parent;
     int index;
+    int pageCount = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,18 +62,29 @@ public class AddCategory extends AppCompatActivity implements AdapterView.OnItem
             SimpleDateFormat sdf1 = new SimpleDateFormat("yyMMddHHmm");
             String date = sdf1.format(new Date());
             Log.i(TAG,date);
-            if (Parent.equals("None")){
+            if (Parent.equals("None") && index<0){
                 academyApis = RetrofitService.createService(AcademyApis.class);
                 Call<CategoryResponse> categoryResponseCall = academyApis.addParentCategory(binding.categoryTitleText1.getText().toString(),
                         binding.categoryTitleText1.getText().toString().toLowerCase()
                         ,code,date);
                 setCategory(categoryResponseCall);
             }else {
-                academyApis = RetrofitService.createService(AcademyApis.class);
-                Call<CategoryResponse> categoryResponseCall = academyApis.addSubCategory(binding.categoryTitleText1.getText().toString(),
-                        binding.categoryTitleText1.getText().toString().toLowerCase()
-                        ,code,date,dataList.get(index).getId());
-                setCategory(categoryResponseCall);
+                if (Parent.equals("None")){
+                    academyApis = RetrofitService.createService(AcademyApis.class);
+                    Log.i(TAG,index+" "+MainList.get(1).size());
+                    Call<CategoryResponse> categoryResponseCall = academyApis.addSubCategory(binding.categoryTitleText1.getText().toString(),
+                            binding.categoryTitleText1.getText().toString().toLowerCase()
+                            ,code,date,MainList.get(pageCount-1).get(index).getId());
+
+                    setCategory(categoryResponseCall);
+                }else {
+                    academyApis = RetrofitService.createService(AcademyApis.class);
+                    Call<CategoryResponse> categoryResponseCall = academyApis.addSubCategory(binding.categoryTitleText1.getText().toString(),
+                            binding.categoryTitleText1.getText().toString().toLowerCase()
+                            ,code,date,MainList.get(pageCount).get(index).getId());
+                    setCategory(categoryResponseCall);
+                }
+
             }
 
         }else {
@@ -151,8 +164,11 @@ public class AddCategory extends AppCompatActivity implements AdapterView.OnItem
                 if (response.isSuccessful()){
                     CategoryResponse categoryResponse = response.body();
                     if (categoryResponse.getCode().equals("200")){
+                        dataList=new ArrayList<>();
                         dataList.addAll(categoryResponse.getData());
+                        Log.i(TAG,dataList.size()+" data list size");
                         categoryList.add("None");
+                        MainList.add(dataList);
                         for (CategoryData categoryData:dataList){
                             categoryList.add(categoryData.getName());
                         }
@@ -184,10 +200,59 @@ public class AddCategory extends AppCompatActivity implements AdapterView.OnItem
         binding.categorySpinner.setAdapter(dataAdapter);
     }
 
+    public void getCategoryListById(String id){
+        binding.addCategoryProgressBar.setVisibility(View.VISIBLE);
+        AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
+        Call<CategoryResponse> categoryResponseCall = academyApis.getSubCategories(id);
+        Log.i(TAG,categoryResponseCall.request().url()+"");
+        categoryResponseCall.enqueue(new Callback<CategoryResponse>() {
+            @Override
+            public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
+                if (response.isSuccessful()){
+                    CategoryResponse categoryResponse = response.body();
+                    if (categoryResponse.getCode().equals("200")){
+                        categoryList.clear();
+                        dataList=new ArrayList<>();
+                        dataList.addAll(categoryResponse.getData());
+                        categoryList.add("None");
+                        MainList.add(dataList);
+                        for (CategoryData categoryData:dataList){
+                            categoryList.add(categoryData.getName());
+                        }
+                        pageCount++;
+                        setupSpinner();
+                    }else {
+                        binding.addCategoryProgressBar.setVisibility(View.GONE);
+                        Log.i(TAG,categoryResponse.getMessage());
+                    }
+                }else {
+                    binding.addCategoryProgressBar.setVisibility(View.GONE);
+                    Log.i(TAG,"in response unSuccessful");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CategoryResponse> call, Throwable t) {
+                binding.addCategoryProgressBar.setVisibility(View.GONE);
+                Log.i(TAG,"in response failed");
+            }
+
+        });
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         Parent = categoryList.get(i);
-        index = i-1;
+        if (!Parent.equals("None")){
+            index = i-1;
+            getCategoryListById(dataList.get(index).getId());
+        }else {
+            if (pageCount == 0){
+                index =-1;
+            }
+        }
+
+
     }
 
     @Override

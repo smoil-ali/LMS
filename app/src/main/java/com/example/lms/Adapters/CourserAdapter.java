@@ -55,14 +55,14 @@ public class CourserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         public void bindView(CourseData courseData){
-            binding.courseCategory.setText(courseData.getCategory().getName());
-            binding.totalSection.setText(String.valueOf(courseData.getSection().getCount()));
+            binding.courseCategory.setText((courseData.getCategory() != null)?courseData.getCategory().getName():"Null");
+            binding.totalSection.setText(String.valueOf((courseData.getSection() != null)?courseData.getSection().getCount():"Null"));
             binding.courseStatus.setText(courseData.getStatus());
             binding.courseTitle.setText(courseData.getTitle());
-            binding.totalEnrol.setText(String.valueOf(courseData.getEnrollment().getCount()));
+            binding.totalEnrol.setText(String.valueOf((courseData.getEnrollment() != null)?courseData.getEnrollment().getCount():"Null"));
             binding.price.setText("$"+courseData.getPrice());
-            binding.courseInstructor.setText("Instructor : "+courseData.getInstructor().getFirst_name());
-            binding.totalLesson.setText(String.valueOf(courseData.getLesson().getCount()));
+            binding.courseInstructor.setText("Instructor : "+((courseData.getInstructor() != null)?courseData.getInstructor().getFirst_name():"Null"));
+            binding.totalLesson.setText(String.valueOf((courseData.getLesson() != null)?courseData.getLesson().getCount():"Null"));
 
         }
     }

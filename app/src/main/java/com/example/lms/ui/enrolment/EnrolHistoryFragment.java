@@ -78,7 +78,7 @@ public class EnrolHistoryFragment extends Fragment {
                 DividerItemDecoration.HORIZONTAL);
         binding.enrollHistoryRecyclerview.addItemDecoration(dividerItemDecoration);
         binding.enrollHistoryRecyclerview.setNestedScrollingEnabled(false);
-        adapter=new EnrollHistoryAdapter(getContext(),dataList);
+        adapter=new EnrollHistoryAdapter(getContext(),dataList,1);
         binding.enrollHistoryRecyclerview.setAdapter(adapter);
     }
 }

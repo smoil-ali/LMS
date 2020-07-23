@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -14,8 +15,11 @@ import android.widget.Toolbar;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import com.example.lms.Listener.ResetListener;
+import com.example.lms.Model.SharedPref;
 import com.example.lms.Model.Utils;
 import com.example.lms.activity.AddCategory;
+import com.example.lms.activity.AddCourse;
+import com.example.lms.activity.Login;
 import com.example.lms.databinding.ActivityMainBinding;
 import com.example.lms.databinding.AppBarBinding;
 import com.example.lms.dialogs.ResetDialog;
@@ -91,14 +95,16 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     case R.id.nav_viewCategories:
                         fragment=new CategoriesFragment();
                         break;
-                    case R.id.add:
-
+                    case R.id.nav_addCategory:
+                        Intent intent = new Intent(MainActivity.this,AddCategory.class);
+                        intent.putExtra("tag","Add");
+                        startActivity(intent);
                         break;
                     case R.id.nav_viewCourses:
                         fragment=new CoursesFragment();
                         break;
                     case R.id.nav_addCourses:
-
+                            startActivity(new Intent(MainActivity.this, AddCourse.class));
                         break;
                     case R.id.nav_instructorList:
                         fragment=new InstructorListFragment();
@@ -157,6 +163,13 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     case R.id.nav_about:
                         Utils.openDialog(getSupportFragmentManager(),resetDialog);
                         //fragment=new AboutFragment();
+                        break;
+                    case R.id.nav_logout:
+                        String id = Utils.getSharedPref(MainActivity.this).getId();
+                        SharedPref pref = new SharedPref(id,false);
+                        Utils.setSharedPref(MainActivity.this,pref);
+                        startActivity(new Intent(MainActivity.this, Login.class));
+                        finish();
                         break;
                 }
                 if (flag==0){

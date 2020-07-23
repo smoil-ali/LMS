@@ -1,7 +1,10 @@
 package com.example.lms.Model;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -24,6 +27,15 @@ public class Utils {
         fragment.show(ft, "dialog");
     }
 
+    public static void HideKeyBoard(Context context){
+        View view = ((Activity)context).getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+
 
     public static void setSharedPref(Context context, SharedPref pref){
         SharedPreferences preferences = context.getSharedPreferences("loginStatus",0);
@@ -36,7 +48,6 @@ public class Utils {
         SharedPreferences preferences = context.getSharedPreferences("loginStatus",0);
         boolean a = preferences.getBoolean("status",false);
         String id = preferences.getString("id",null);
-
         return new SharedPref(id,a);
     }
 

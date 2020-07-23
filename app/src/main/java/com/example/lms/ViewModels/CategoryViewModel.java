@@ -12,6 +12,7 @@ import com.example.lms.Model.CategoryData;
 import com.example.lms.Model.EnrollmentHistoryData;
 import com.example.lms.Repository.CategoryRepository;
 import com.example.lms.Repository.EnrollmentHistoryRepository;
+import com.example.lms.Repository.RxjavaReposit;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class CategoryViewModel extends ViewModel implements CategoryListener {
     public MutableLiveData<List<CategoryData>> categoryLiveData;
     public MutableLiveData<String> errorMessage ;
     CategoryRepository categoryRepository;
+    RxjavaReposit rxjavaReposit;
     String TAG = CategoryViewModel.class.getSimpleName();
 
     public CategoryViewModel(Context context,ProgressBar progressBar) {

@@ -1,6 +1,12 @@
 package com.example.lms.Model;
 
-public class CategoryData {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+public class CategoryData implements Serializable {
     String id;
     String code;
     String name;
@@ -82,4 +88,5 @@ public class CategoryData {
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
     }
+
 }

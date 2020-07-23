@@ -64,7 +64,10 @@ public class AddCourse extends AppCompatActivity {
                         fragment=new BasicFragment();
                         break;
                     case 1:
+                        Bundle data = new Bundle();
+                        data.putString("key","hello");
                         fragment=new RequirementsFragment();
+                        fragment.setArguments(data);
                         break;
                     case 2:
                         fragment=new OutcomesFragment();

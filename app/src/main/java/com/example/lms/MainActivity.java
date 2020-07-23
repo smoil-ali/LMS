@@ -18,6 +18,7 @@ import com.example.lms.Listener.ResetListener;
 import com.example.lms.Model.SharedPref;
 import com.example.lms.Model.Utils;
 import com.example.lms.activity.AddCategory;
+import com.example.lms.activity.AddCourse;
 import com.example.lms.activity.Login;
 import com.example.lms.databinding.ActivityMainBinding;
 import com.example.lms.databinding.AppBarBinding;
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                         fragment=new CoursesFragment();
                         break;
                     case R.id.nav_addCourses:
-
+                            startActivity(new Intent(MainActivity.this, AddCourse.class));
                         break;
                     case R.id.nav_instructorList:
                         fragment=new InstructorListFragment();

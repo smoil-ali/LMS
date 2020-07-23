@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chip android:id="@+id/drawableChip"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="your tag"
+    style="@style/Widget.MaterialComponents.Chip.Entry"
+    app:closeIcon="@drawable/clear"
+    app:chipBackgroundColor="@color/colorRed"
+    app:closeIconTint="@color/white"
+    android:textColor="@color/white"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />

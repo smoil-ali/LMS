@@ -47,4 +47,16 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="reset">Reset</string>
     <string name="instructor">Instructor</string>
+    <string name="basic">Basic</string>
+    <string name="requirements">Requirements</string>
+    <string name="course_title">Course Title</string>
+    <string name="short_description">Short Description</string>
+    <string name="description">Description</string>
+    <string name="level">Level</string>
+    <string name="language">Language</string>
+    <string name="check_if_this_course_is_top_course">Check if this course is top course</string>
+    <string name="outcomes">Outcomes</string>
+    <string name="check_if_this_is_a_free_course">Check if this is a free course</string>
+    <string name="course_price">Course Price</string>
+    <string name="dicount_price">Dicount Price</string>
 </resources>

@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitService {
     private static OkHttpClient okHttpClient = UnsafeOkHttpClient.getUnsafeOkHttpClient();
-    private final static String BaseURL ="http://developers.cgitsoft.com/lms/index.php/";
+    private final static String BaseURL ="http://lms.amnaikhlaq.com/api/index.php/";
     private static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BaseURL)
             .client(okHttpClient)

@@ -41,8 +41,8 @@ public class AddCategory extends AppCompatActivity implements AdapterView.OnItem
     AcademyApis academyApis;
     final int n =20;
     public String code;
-    public String Parent;
-    int index;
+    public String Parent="None";
+    int index=-1;
     int pageCount = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

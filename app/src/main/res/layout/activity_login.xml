@@ -101,6 +101,18 @@
         app:layout_constraintStart_toEndOf="@+id/loginCard"
         app:layout_constraintTop_toBottomOf="@+id/loginCard" />
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/loginProgressBar"
+        app:layout_constraintTop_toTopOf="@id/loginCard"
+        app:layout_constraintBottom_toBottomOf="@id/loginCard"
+        app:layout_constraintLeft_toLeftOf="@id/loginCard"
+        app:layout_constraintRight_toRightOf="@id/loginCard"
+        android:visibility="gone"
+        android:elevation="@dimen/_10sdp"
+        />
+
 
     <TextView
         android:id="@+id/textView"

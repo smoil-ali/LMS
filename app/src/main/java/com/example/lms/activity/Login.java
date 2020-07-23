@@ -39,7 +39,10 @@ public class Login extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setStatusBarGradiant(this);
         setContentView(binding.getRoot());
-        binding.loginButton.setOnClickListener(view -> validate());
+        binding.loginButton.setOnClickListener(view -> {
+            Utils.HideKeyBoard(Login.this);
+            validate();
+        });
 
     }
 
@@ -55,6 +58,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void LoginUser(String email,String password){
+        binding.loginProgressBar.setVisibility(View.VISIBLE);
         AcademyApis apis = RetrofitService.createService(AcademyApis.class);
         Call<LoginResponse> loginResponseCall = apis.getLoginResponse(email,password);
         Log.i(TAG,loginResponseCall.request().url()+"");
@@ -79,21 +83,33 @@ public class Login extends AppCompatActivity {
 
         @Override
         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+
             if (response.isSuccessful()){
                 LoginResponse loginResponse = response.body();
                 if (loginResponse.getCode().equals("200")){
-                    Log.i(TAG,loginResponse.getData().getUser().getId()+"");
-                    Utils.setProfileData(loginResponse.getData(),Login.this);
-                    Utils.setSharedPref(Login.this,new SharedPref(loginResponse.getData().getUser().getId(),true));
-                    startActivity(new Intent(Login.this, MainActivity.class));
-                    finish();
+                    if(!loginResponse.getStatus().equals("fail")){
+                        binding.loginProgressBar.setVisibility(View.GONE);
+                        Log.i(TAG,loginResponse.getData().getUser().getId()+"");
+                        Utils.setProfileData(loginResponse.getData(),Login.this);
+                        Utils.setSharedPref(Login.this,new SharedPref(loginResponse.getData().getUser().getId(),true));
+                        startActivity(new Intent(Login.this, MainActivity.class));
+                        finish();
+                    }else {
+                        binding.loginProgressBar.setVisibility(View.GONE);
+                        new AlertDialog.Builder(Login.this)
+                                .setTitle(loginResponse.getStatus())
+                                .setMessage(loginResponse.getMessage())
+                                .setPositiveButton("ok", (dialogInterface, i) -> dialogInterface.dismiss()).show();
+                    }
                 }else {
+                    binding.loginProgressBar.setVisibility(View.GONE);
                     new AlertDialog.Builder(Login.this)
                             .setTitle(loginResponse.getStatus())
                             .setMessage(loginResponse.getMessage())
                             .setPositiveButton("ok", (dialogInterface, i) -> dialogInterface.dismiss()).show();
                 }
             }else {
+                binding.loginProgressBar.setVisibility(View.GONE);
                 new AlertDialog.Builder(Login.this)
                         .setTitle(response.message())
                         .setMessage(response.body().toString())
@@ -103,6 +119,7 @@ public class Login extends AppCompatActivity {
 
         @Override
         public void onFailure(Call<LoginResponse> call, Throwable t) {
+            binding.loginProgressBar.setVisibility(View.GONE);
             new AlertDialog.Builder(Login.this)
                     .setTitle("Failed")
                     .setMessage(t.getMessage())

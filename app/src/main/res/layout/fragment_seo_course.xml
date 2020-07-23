@@ -46,10 +46,12 @@
         app:layout_constraintTop_toBottomOf="@+id/chipgroup"
         app:layout_constraintStart_toStartOf="parent"
         android:paddingStart="5dp"
+        android:layout_marginTop="10dp"
         android:text="Meta Desription"
         />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/des_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -57,11 +59,11 @@
         app:layout_constraintTop_toBottomOf="@+id/metaDescription">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/seo_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
             android:hint="Write Description" />
     </com.google.android.material.textfield.TextInputLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

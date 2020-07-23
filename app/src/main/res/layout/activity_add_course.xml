@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.AddCourse">
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabAddCourses"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tabMode="scrollable"
-        android:contentDescription="Tabs"
+        >
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabAddCourses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tabMode="scrollable"
+            android:contentDescription="Tabs"
         >
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -49,18 +53,17 @@
             android:text="Finish"
             />
     </com.google.android.material.tabs.TabLayout>
-
-    <FrameLayout
-        android:id="@+id/hostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tabAddCourses" />
-    <LinearLayout
-        android:id="@+id/frw_bck_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        style="@style/add_course_nxt_back_btn_container"
-        app:layout_constraintTop_toBottomOf="@+id/hostFragment"
+        <FrameLayout
+            android:id="@+id/hostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tabAddCourses" />
+        <LinearLayout
+            android:id="@+id/frw_bck_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/add_course_nxt_back_btn_container"
+            app:layout_constraintTop_toBottomOf="@+id/hostFragment"
         >
 
         <ImageButton
@@ -73,4 +76,5 @@
             style="@style/add_course_nxt_back_btn"
             android:src="@drawable/arrow_right" />
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

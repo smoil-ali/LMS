@@ -59,4 +59,6 @@
     <string name="check_if_this_is_a_free_course">Check if this is a free course</string>
     <string name="course_price">Course Price</string>
     <string name="dicount_price">Dicount Price</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

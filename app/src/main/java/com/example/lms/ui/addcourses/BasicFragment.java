@@ -9,17 +9,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.lms.R;
+import com.example.lms.activity.AddCourse;
+import com.example.lms.databinding.ActivityAddCourseBinding;
 import com.example.lms.databinding.FragmentBasicBinding;
+import com.google.android.material.tabs.TabLayout;
 
 public class BasicFragment extends Fragment {
 
-    FragmentBasicBinding fragmentBasicBinding;
+    FragmentBasicBinding binding;
+    ActivityAddCourseBinding addbinding;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        fragmentBasicBinding=FragmentBasicBinding.inflate(inflater,container,false);
+        binding=FragmentBasicBinding.inflate(inflater,container,false);
 
-        return fragmentBasicBinding.getRoot();
+        return binding.getRoot();
     }
 }

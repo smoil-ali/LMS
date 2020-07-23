@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +33,8 @@ public class RequirementsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding=FragmentRequirementsCourseBinding.inflate(inflater,container,false);
+        Bundle data =getArguments();
+        Toast.makeText(getContext(), ""+data.getString("key"), Toast.LENGTH_SHORT).show();
 
         binding.addbtn.setOnClickListener(new View.OnClickListener() {
             @Override

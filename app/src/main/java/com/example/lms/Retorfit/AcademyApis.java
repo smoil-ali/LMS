@@ -82,6 +82,14 @@ public interface AcademyApis {
     @GET("?action=deleteCategory")
     Call<CategoryResponse> deleteCategory(@Query("id")String id);
 
+    //Category Update By ID only
+    //http://lms.amnaikhlaq.com/api/index.php?action=updateCategory&name=moiz&parent=0&slug=moixx&id=1
+    @GET("?action=updateCategory")
+    Call<CategoryResponse> updateCategory(@Query("name")String name,
+                                          @Query("parent")String parent,
+                                          @Query("slug")String slug,
+                                          @Query("id")String id);
+
     //Fetch User Data base on ID and email
 
     //http://lms.amnaikhlaq.com/api/index.php?action=fetchUser&id=atamuhiuldin@gmail.com

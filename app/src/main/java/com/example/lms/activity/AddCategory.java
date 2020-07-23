@@ -27,12 +27,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AddCategory extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    public final String EDIT = "Edit";
+    public final String ADD = "Add";
     ActivityAddCategoryBinding binding;
     List<List<CategoryData>> MainList = new ArrayList<>();
     List<CategoryData> dataList;
@@ -44,17 +53,67 @@ public class AddCategory extends AppCompatActivity implements AdapterView.OnItem
     public String Parent="None";
     int index=-1;
     int pageCount = 0;
+    Bundle bundle;
+    int count =0 ;
+    boolean dispose = false;
+    CategoryData categoryData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAddCategoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        setupSpinner();
+        bundle=getIntent().getExtras();
+        Log.i(TAG,categoryData+"");
         binding.categorySpinner.setOnItemSelectedListener(this);
-        getCategoryList();
-        binding.category.setEnabled(false);
-        binding.category.setText(RequiredString(n));
-        binding.submit.setOnClickListener(view -> validate());
+        if (bundle.getString("tag").equals(EDIT)){
+            categoryData = (CategoryData) bundle.getSerializable("Data");
+            binding.category.setEnabled(false);
+            binding.category.setText(categoryData.getCode());
+            binding.categoryTitleText1.setText(categoryData.getName());
+            getCategoryList();
+            binding.submit.setOnClickListener(view -> GoUpdate());
+        }else {
+            getCategoryList();
+            binding.category.setEnabled(false);
+            binding.category.setText(RequiredString(n));
+            binding.submit.setOnClickListener(view -> validate());
+        }
+    }
+
+    public void GoUpdate(){
+        if (!binding.categoryTitleText1.getText().toString().trim().matches("")){
+            if (Parent.equals("None") && index<0){
+                Log.i(TAG,MainList.get(pageCount).get(index).getId()+" parent id");
+                academyApis = RetrofitService.createService(AcademyApis.class);
+                Call<CategoryResponse> categoryResponseCall = academyApis.updateCategory(binding.categoryTitleText1.getText().toString(),
+                        categoryData.getParent(),binding.categoryTitleText1.getText().toString().toLowerCase()
+                        ,categoryData.getId());
+                updateCategory(categoryResponseCall);
+            }else {
+                if (Parent.equals("None")){
+                    academyApis = RetrofitService.createService(AcademyApis.class);
+                    Log.i(TAG,index+" "+MainList.get(1).size());
+                    Call<CategoryResponse> categoryResponseCall = academyApis.updateCategory(binding.categoryTitleText1.getText().toString()
+                            ,(MainList.get(pageCount-1).get(index).getId().equals(categoryData.getId()))?"0":MainList.get(pageCount-1).get(index).getId(),
+                            binding.categoryTitleText1.getText().toString().toLowerCase(),
+                            categoryData.getId());
+                    updateCategory(categoryResponseCall);
+                }else {
+                    academyApis = RetrofitService.createService(AcademyApis.class);
+                    Call<CategoryResponse> categoryResponseCall = academyApis.updateCategory(binding.categoryTitleText1.getText().toString()
+                            ,(MainList.get(pageCount).get(index).getId().equals(categoryData.getId()))?"0":MainList.get(pageCount).get(index).getId(),
+                            binding.categoryTitleText1.getText().toString().toLowerCase(),
+                            categoryData.getId());
+                    updateCategory(categoryResponseCall);
+                }
+
+            }
+
+
+
+        }else {
+            binding.categoryTitleText1.setError("Empty Fields!!!");
+        }
     }
 
     public void validate(){
@@ -88,8 +147,53 @@ public class AddCategory extends AppCompatActivity implements AdapterView.OnItem
             }
 
         }else {
-            Toast.makeText(this, "Empty Fields!!!", Toast.LENGTH_SHORT).show();
+            binding.categoryTitleText1.setError("Empty Field!!!");
         }
+    }
+
+    public void updateCategory(Call<CategoryResponse>  categoryResponseCall){
+        binding.addCategoryProgressBar.setVisibility(View.VISIBLE);
+        Log.i(TAG,categoryResponseCall.request().url()+"");
+        categoryResponseCall.enqueue(new Callback<CategoryResponse>() {
+            @Override
+            public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
+                if (response.isSuccessful()){
+                    CategoryResponse categoryResponse = response.body();
+                    if (categoryResponse.getCode().equals("200")){
+                        binding.addCategoryProgressBar.setVisibility(View.GONE);
+                        binding.categoryTitleText1.setText("");
+                        binding.category.setText(RequiredString(n));
+                        new AlertDialog.Builder(AddCategory.this)
+                                .setTitle(categoryResponse.getStatus())
+                                .setMessage(categoryResponse.getMessage())
+                                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                    }else {
+                        binding.addCategoryProgressBar.setVisibility(View.GONE);
+                        Log.i(TAG,categoryResponse.getStatus());
+                        new AlertDialog.Builder(AddCategory.this)
+                                .setTitle(categoryResponse.getStatus())
+                                .setMessage(categoryResponse.getMessage())
+                                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                    }
+                }else {
+                    binding.addCategoryProgressBar.setVisibility(View.GONE);
+                    new AlertDialog.Builder(AddCategory.this)
+                            .setTitle(response.code())
+                            .setMessage(response.message())
+                            .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CategoryResponse> call, Throwable t) {
+                binding.addCategoryProgressBar.setVisibility(View.GONE);
+                Log.i(TAG,t.getMessage());
+                new AlertDialog.Builder(AddCategory.this)
+                        .setTitle("Failed")
+                        .setMessage(t.getMessage())
+                        .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+            }
+        });
     }
 
     public void setCategory(Call<CategoryResponse>  categoryResponseCall){
@@ -101,7 +205,6 @@ public class AddCategory extends AppCompatActivity implements AdapterView.OnItem
                 if (response.isSuccessful()){
                     CategoryResponse categoryResponse = response.body();
                     if (categoryResponse.getCode().equals("200")){
-                        Toast.makeText(AddCategory.this, ""+categoryResponse.getStatus(), Toast.LENGTH_SHORT).show();
                         binding.addCategoryProgressBar.setVisibility(View.GONE);
                         binding.categoryTitleText1.setText("");
                         binding.category.setText(RequiredString(n));
@@ -198,6 +301,46 @@ public class AddCategory extends AppCompatActivity implements AdapterView.OnItem
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,categoryList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.categorySpinner.setAdapter(dataAdapter);
+        if (categoryData != null){
+            if (categoryData.getParent().equals("0")){
+                binding.categorySpinner.setSelection(0,true);
+            }else {
+                Observable<CategoryData> observable = Observable.fromIterable(dataList);
+                observable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<CategoryData>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                Log.i(TAG,"subscribed");
+                                if (dispose){
+                                    d.dispose();
+                                }
+                            }
+
+                            @Override
+                            public void onNext(CategoryData categoryData1) {
+                                if (categoryData.getParent().equals(categoryData1.getId())){
+                                    binding.categorySpinner.setSelection(count+1);
+                                    index = count;
+                                    pageCount = 1;
+                                    dispose = true;
+                                }
+                                count++;
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                Log.i(TAG,"complete");
+                            }
+                        });
+            }
+
+        }
     }
 
     public void getCategoryListById(String id){

@@ -17,6 +17,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/categoriesProgressBar"
+            android:visibility="gone"
+            />
+
         <TextView
             android:id="@+id/subcategory"
             android:layout_width="wrap_content"

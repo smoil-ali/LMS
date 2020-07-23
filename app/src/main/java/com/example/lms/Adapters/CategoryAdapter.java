@@ -1,7 +1,10 @@
 package com.example.lms.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +27,7 @@ import com.example.lms.activity.AddCategory;
 import com.example.lms.databinding.CategoriesItemBinding;
 import com.example.lms.databinding.EnrollHistoryBinding;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +85,17 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     .setMessage("Are You Sure?")
                     .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
                     .setPositiveButton("OK", (dialogInterface, i) -> DeleteCategory(categoryData.getId(),Position)).show());
+
+            binding.editBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context,AddCategory.class);
+                    intent.putExtra("Data", (Serializable) categoryData);
+                    intent.putExtra("tag","Edit");
+                    context.startActivity(intent);
+                    ((Activity)context).finish();
+                }
+            });
         }
 
         private void setUpRecyclerView(){

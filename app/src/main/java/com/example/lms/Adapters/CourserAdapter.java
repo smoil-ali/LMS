@@ -60,6 +60,7 @@ public class CourserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             binding.courseStatus.setText(courseData.getStatus());
             binding.courseTitle.setText(courseData.getTitle());
             binding.totalEnrol.setText(String.valueOf((courseData.getEnrollment() != null)?courseData.getEnrollment().getCount():"Null"));
+            Log.i(TAG,courseData.getPrice());
             binding.price.setText("$"+courseData.getPrice());
             binding.courseInstructor.setText("Instructor : "+((courseData.getInstructor() != null)?courseData.getInstructor().getFirst_name():"Null"));
             binding.totalLesson.setText(String.valueOf((courseData.getLesson() != null)?courseData.getLesson().getCount():"Null"));

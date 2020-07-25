@@ -35,6 +35,7 @@ public class CourseViewModel extends ViewModel implements CourseListener {
 
     @Override
     public void courseListener(List<CourseData> courseData, String msg) {
+        Log.i(TAG, String.valueOf(courseData.size()));
         arrayListMutableLiveData.setValue(courseData);
     }
 

@@ -40,7 +40,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:gravity="end">
-
                 <ImageButton
                     android:id="@+id/addbtn"
                     android:layout_width="60dp"
@@ -48,7 +47,6 @@
                     android:backgroundTint="@color/green"
                     android:elevation="5dp"
                     android:src="@drawable/addicon"
-
                     />
             </LinearLayout>
 

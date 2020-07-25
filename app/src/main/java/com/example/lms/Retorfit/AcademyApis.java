@@ -1,15 +1,20 @@
 package com.example.lms.Retorfit;
 
+import android.util.Log;
+
 import com.example.lms.Model.CategoryResponse;
 import com.example.lms.Model.CourseCount;
 import com.example.lms.Model.CourseCountResponse;
 import com.example.lms.Model.CourseResponse;
+import com.example.lms.Model.CourseUpdateResponse;
 import com.example.lms.Model.EnrollmentHistoryResponse;
 import com.example.lms.Model.DashboardResponse;
 import com.example.lms.Model.InstructorResponse;
 import com.example.lms.Model.LoginResponse;
 import com.example.lms.Model.ResetPassword;
 import com.example.lms.Model.StudentResponse;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.Call;
@@ -66,6 +71,28 @@ public interface AcademyApis {
                                                 @Query("parentid")String parentid);
 
 
+
+    //Add Course
+    //http://lms.amnaikhlaq.com/api/index.php?action=addCourse%20&title=%22course%20xxx%22%20&short_description=%22it%20is%20f**king%20awesome%22%20&description=%22faklsjdfklasdklf%22%20&outcomes%20(list)=%22list%22%20&language=%22english%22%20&level=%22xxx%22%20&is_top_course=%22true%22%20&category_id=%221%22%20&requirements%20(list)=%22list,list2%22%20&is_free_course=%22true%22%20&discount_flag=%22true%22%20&price=%22200%22%20&discount_price=%2210%%22%20&course_overview_provider=%22sklfasjf%22%20&video_url=%22sdjfklasjdf%22%20&meta_keywords%20(list)=%22lsit%20,lisjt,lis%22%20&meta_description=%22jflkasjkfjas%22
+    @GET("?action=addCourse")
+    Call<CourseUpdateResponse>  addCourse(@Query("title")String title,
+                                          @Query("short_description")String short_description,
+                                          @Query("description")String description,
+                                          @Query("outcomes")List<String> outcomes,
+                                          @Query("language")String language,
+                                          @Query("level")String level,
+                                          @Query("is_top_course")String is_top_course,
+                                          @Query("category_id")String category_id,
+                                          @Query("requirements")List<String> requirements,
+                                          @Query("is_free_course")String is_free_course,
+                                          @Query("discount_flag")String discount_flag,
+                                          @Query("price")String price,
+                                          @Query("discounted_price")String discounted_price,
+                                          @Query("course_overview_provider")String course_overview_provider,
+                                          @Query("video_url")String video_url,
+                                          @Query("meta_keywords")List<String> meta_keywords,
+                                          @Query("meta_description")String meta_description);
+
     //Category List using RxJava
     //http://lms.amnaikhlaq.com/api/index.php/?action=categoryParent
     @GET("?action=categoryParent")
@@ -88,6 +115,19 @@ public interface AcademyApis {
     Call<CategoryResponse> updateCategory(@Query("name")String name,
                                           @Query("parent")String parent,
                                           @Query("slug")String slug,
+                                          @Query("id")String id);
+
+
+    //User Profile Update
+    //http://lms.amnaikhlaq.com/api/index.php?action=updateProfile&first_name=Shoaib&last_name=Akmal&email=amnaikhlaq1@gmail.com&facebook=facebook.com&twitter=twitter.com&title=Mr&biography=this%20is%20bio&id=1
+    @GET("?action=updateProfile")
+    Call<LoginResponse> updateUserProfile(@Query("first_name")String first_name,
+                                          @Query("last_name")String last_name,
+                                          @Query("email")String email,
+                                          @Query("facebook")String facebook,
+                                          @Query("twitter")String twitter,
+                                          @Query("title")String title,
+                                          @Query("biography")String biography,
                                           @Query("id")String id);
 
     //Fetch User Data base on ID and email

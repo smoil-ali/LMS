@@ -66,7 +66,7 @@ public class CoursesFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.rvCourses.getContext(),
                 DividerItemDecoration.HORIZONTAL);
         binding.rvCourses.addItemDecoration(dividerItemDecoration);
-        binding.rvCourses.setNestedScrollingEnabled(false);
+     //   binding.rvCourses.setNestedScrollingEnabled(false);
         courserAdapter=new CourserAdapter(getContext(),courseDataArrayList);
         binding.rvCourses.setAdapter(courserAdapter);
     }

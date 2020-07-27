@@ -41,17 +41,17 @@ public class CourseRepository {
                     if (courseResponse.getCode().equals("200")){
                         courseListener.courseListener(courseResponse.getData(),courseResponse.getMessage());
                     }else {
-                        courseListener.errorListener(courseResponse.getMessage());
+                        courseListener.errorListener(courseResponse.getMessage() +" "+courseResponse.getMessage());
                     }
                 }else {
-                    courseListener.errorListener(response.message());
+                    courseListener.errorListener("UnSuccessful response "+response.message());
                 }
 
             }
 
             @Override
             public void onFailure(Call<CourseResponse> call, Throwable t) {
-                courseListener.errorListener(t.getMessage());
+                courseListener.errorListener(t.getMessage()+" Failure");
             }
         });
         // Finish Getting Courses List///

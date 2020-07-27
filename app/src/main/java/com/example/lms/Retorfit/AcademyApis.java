@@ -122,4 +122,12 @@ public interface AcademyApis {
     @GET("?action=count_all")
     Call<DashboardResponse> getDashBoardResponse();
 
+    //Delete course by id
+    //http://lms.amnaikhlaq.com/api/index.php?action=deleteCourse&id=3
+
+    @GET("?action=deleteCourse")
+    Call<CourseResponse> deleteCourse(@Query("id") String id);
+
+
+
 }

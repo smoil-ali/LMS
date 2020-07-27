@@ -3,14 +3,11 @@ package com.example.lms;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
@@ -35,9 +32,9 @@ import com.example.lms.ui.instructors.InstructorListFragment;
 import com.example.lms.ui.instructors.InstructorPayoutFragment;
 import com.example.lms.ui.instructors.InstructorSettingsFragment;
 import com.example.lms.ui.message.MessageFragment;
+import com.example.lms.ui.profile.ManageProfileFragment;
 import com.example.lms.ui.report.AdminRevenueFragment;
 import com.example.lms.ui.report.InstructorRevenueFragment;
-import com.example.lms.ui.settings.AboutFragment;
 import com.example.lms.ui.settings.LanguageSettingsFragment;
 import com.example.lms.ui.settings.PaymentSettingsFragment;
 import com.example.lms.ui.settings.SmtpSettingsFragment;
@@ -46,7 +43,6 @@ import com.example.lms.ui.settings.ThemeSettingsFragment;
 import com.example.lms.ui.settings.WebsiteSettingFragment;
 import com.example.lms.ui.students.StudentFragment;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity implements ResetListener {
 
@@ -54,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
     private AppBarBinding appBarBinding;
     int flag =0;
     Toolbar toolbar;
+    Fragment fragment;
     ResetDialog resetDialog = new ResetDialog();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
         getSupportActionBar().setTitle("LMS");
         View view=binding.getRoot();
         setContentView(view);
+        fragment=new Fragment();
         resetDialog.setResetListener(this);
         setBottomNavigation();
         sideNavigation();
@@ -84,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
         binding.floatingNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                Fragment fragment=new Fragment();
+
                 switch (item.getItemId()){
                     case R.id.nav_home:
                         fragment=new HomeFragment();
@@ -206,18 +204,20 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
             public void onClickItem(MeowBottomNavigation.Model item) {
                 switch (item.getId()){
                     case 1:
-
+                            fragment=new ManageProfileFragment();
                         break;
                     case 2:
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.hostFragment,new HomeFragment()).commit();
+                            fragment=new HomeFragment();
                         break;
                     case 3:
 
                         break;
                 }
-
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.hostFragment,fragment).commit();
             }
+
+
 
         });
 

@@ -190,5 +190,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
         }
+
+
     }
 }

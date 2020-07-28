@@ -26,11 +26,11 @@
                 android:text="Shoaib Akmal"
                 android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                app:layout_constraintStart_toEndOf="@+id/course_thumbnail"
+                app:layout_constraintStart_toEndOf="@+id/payout_thumbnail"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/course_thumbnail"
+                android:id="@+id/payout_thumbnail"
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_50sdp"
                 app:layout_constraintStart_toStartOf="parent"

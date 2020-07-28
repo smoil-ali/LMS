@@ -101,14 +101,14 @@ public interface AcademyApis {
 
     //Student List
     //http://lms.amnaikhlaq.com/api/index.php?action=allUser&role=student
-    @GET("?action=allUser")
+    @GET("?action=userList")
     Call<StudentResponse> getStudentList(@Query("role") String role);
 
 
 
     //Instructor List
     //http://lms.amnaikhlaq.com/api/index.php?action=allUser&role=instructor
-    @GET("?action=allUser")
+    @GET("?action=userList")
     Call<InstructorResponse> getInstructorList(@Query("role") String role);
 
 
@@ -128,6 +128,9 @@ public interface AcademyApis {
     @GET("?action=deleteCourse")
     Call<CourseResponse> deleteCourse(@Query("id") String id);
 
+    //http://lms.amnaikhlaq.com/api/index.php?action=delete&id=5
 
+    @GET("?action=delete")
+    Call<InstructorResponse> deleteInstructor(@Query("id") String id);
 
 }

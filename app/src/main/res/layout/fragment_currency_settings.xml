@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:id="@+id/currencyTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="40dp"
+        android:text="Currency Settings"
+        />
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/currencySettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/currencyTitle"
+        android:layout_marginTop="20dp"
+        />
+    <TextView
+        android:id="@+id/positionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/currencySettings"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="40dp"
+        android:text="Currency Position"
+        />
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/currencyPositionSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/positionTitle"
+        android:layout_marginTop="20dp"
+        />
+    <Button
+        android:id="@+id/update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update System Currency"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/currencyPositionSettings"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

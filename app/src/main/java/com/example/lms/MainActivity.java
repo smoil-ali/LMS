@@ -170,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                         finish();
                         break;
                 }
+
                 if (flag==0){
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.hostFragment,fragment).commit();
@@ -195,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
     private void setBottomNavigation(){
 
         binding.bottomNavigation.show(2,true);
+
         binding.bottomNavigation.add(new MeowBottomNavigation.Model(1,R.drawable.profile_vector));
         binding.bottomNavigation.add(new MeowBottomNavigation.Model(2,R.drawable.home));
         binding.bottomNavigation.add(new MeowBottomNavigation.Model(3,R.drawable.setting_vector));
@@ -231,7 +233,19 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
         binding.bottomNavigation.setOnReselectListener(new MeowBottomNavigation.ReselectListener() {
             @Override
             public void onReselectItem(MeowBottomNavigation.Model item) {
+                switch (item.getId()){
+                    case 1:
+                        fragment=new ManageProfileFragment();
+                        break;
+                    case 2:
+                        fragment=new HomeFragment();
+                        break;
+                    case 3:
 
+                        break;
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.hostFragment,fragment).commit();
             }
         });
     }

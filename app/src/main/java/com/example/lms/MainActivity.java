@@ -59,11 +59,16 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
         appBarBinding=AppBarBinding.inflate(getLayoutInflater());
         setSupportActionBar(appBarBinding.toolbar);
         getSupportActionBar().setTitle("LMS");
+
         View view=binding.getRoot();
         setContentView(view);
         fragment=new Fragment();
         resetDialog.setResetListener(this);
         setBottomNavigation();
+        if (savedInstanceState==null){
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.hostFragment,new HomeFragment()).commit();
+        }
         sideNavigation();
 
 
@@ -71,8 +76,8 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
 
     private void sideNavigation(){
         binding.floatingNavigationView.setCheckedItem(R.id.nav_home);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.hostFragment,new HomeFragment()).commit();
+
+
         binding.floatingNavigationView.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -195,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
     }
     private void setBottomNavigation(){
 
-        binding.bottomNavigation.show(2,true);
+       /* binding.bottomNavigation.show(2,true);*/
 
         binding.bottomNavigation.add(new MeowBottomNavigation.Model(1,R.drawable.profile_vector));
         binding.bottomNavigation.add(new MeowBottomNavigation.Model(2,R.drawable.home));

@@ -9,7 +9,9 @@ import com.example.lms.Model.DashboardResponse;
 import com.example.lms.Model.InstructorResponse;
 import com.example.lms.Model.LoginResponse;
 import com.example.lms.Model.ResetPassword;
+import com.example.lms.Model.SettingsResponse;
 import com.example.lms.Model.StudentResponse;
+import com.example.lms.Model.WebsiteResponse;
 
 import io.reactivex.Observable;
 import retrofit2.Call;
@@ -117,7 +119,7 @@ public interface AcademyApis {
 
 
     //Count All Api for dashboard
-    //http://lms.amnaikhlaq.com/api/index.php?action=studentList
+    //http://lms.amnaikhlaq.com/api/index.php?action=count_all
 
     @GET("?action=count_all")
     Call<DashboardResponse> getDashBoardResponse();
@@ -132,5 +134,31 @@ public interface AcademyApis {
 
     @GET("?action=delete")
     Call<InstructorResponse> deleteInstructor(@Query("id") String id);
+
+
+    //update system settings
+    //http://lms.amnaikhlaq.com/api/index.php?action=settings&type=update&key=system_email&value=email.com
+
+    @GET("?action=settings&type=update")
+    Call<SettingsResponse> updateSettings(@Query("key") String key,
+                                          @Query("value") String value);
+
+    //website settings
+    //http://lms.amnaikhlaq.com/api/index.php?action=websettings&type=update&key=banner_title&value=banner
+
+    @GET("?action=websettings&type=update")
+    Call<SettingsResponse> updateWebSettings(@Query("key") String key,
+                                          @Query("value") String value);
+
+    //window settings fetach
+    //http://lms.amnaikhlaq.com/api/index.php?action=websettings&type=fetch
+
+    @GET("?action=websettings&type=fetch")
+    Call<WebsiteResponse> getWebsiteData();
+
+    //Fetch settings data
+    //http://lms.amnaikhlaq.com/api/index.php?action=settings&type=fetch
+    @GET("?action=settings&type=fetch")
+    Call<SettingsResponse> getSettingsData();
 
 }

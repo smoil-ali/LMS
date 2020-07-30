@@ -61,4 +61,29 @@
     <string name="dicount_price">Dicount Price</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+
+    <!--student email verification spinner items-->
+    <string-array name="email_verification">
+        <item>Disable</item>
+        <item>Enable</item>
+    </string-array>
+
+    <!--system settings languages-->
+    <string-array name="language">
+        <item>English</item>
+        <item>Urdu</item>
+        <item>Bengali</item>
+    </string-array>
+
+    <!--currency setting spinner items-->
+    <string-array name="currency_position">
+        <item>Left</item>
+        <item>Right</item>
+        <item>Left with space</item>
+        <item>Right with space</item>
+    </string-array>
+
+
+
+
 </resources>

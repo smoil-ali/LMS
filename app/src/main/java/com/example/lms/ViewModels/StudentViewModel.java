@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.lms.Listener.StudentListener;
 import com.example.lms.Model.EnrollHistoryUserData;
 import com.example.lms.Model.StudentData;
+import com.example.lms.Repository.CategoryRepository;
 import com.example.lms.Repository.EnrollmentHistoryRepository;
 import com.example.lms.Repository.StudentRepository;
 
@@ -26,6 +27,11 @@ public class StudentViewModel extends ViewModel implements StudentListener {
     public StudentViewModel(Context context, ProgressBar progressBar) {
         MutableLiveData = new MutableLiveData<>();
         errorMessage = new MutableLiveData<>();
+        studentRepository = new StudentRepository(context,progressBar);
+        studentRepository.setStudentListener(this);
+    }
+
+    public void update(Context context,ProgressBar progressBar){
         studentRepository = new StudentRepository(context,progressBar);
         studentRepository.setStudentListener(this);
     }

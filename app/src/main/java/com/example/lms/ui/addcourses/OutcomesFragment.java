@@ -1,10 +1,12 @@
 package com.example.lms.ui.addcourses;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
@@ -13,14 +15,20 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.lms.Model.Container;
 import com.example.lms.R;
 import com.example.lms.databinding.FragmentOutcomesCourseBinding;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OutcomesFragment extends Fragment {
 
+    private static final String TAG = OutcomesFragment.class.getSimpleName();
     FragmentOutcomesCourseBinding binding;
+    private List<String> listOfOutcomes = new ArrayList<>();
 
     @Nullable
     @Override
@@ -80,7 +88,31 @@ public class OutcomesFragment extends Fragment {
         linearLayout.addView(linearLayout1);
 
         binding.container.addView(linearLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getAllChildElements(binding.container);
+    }
 
+    public final void getAllChildElements(ViewGroup layoutCont) {
+        if (layoutCont == null) return;
+        final int mCount = layoutCont.getChildCount();
+        for (int i = 0; i < mCount; i++) {
+            Log.i(TAG,i+" loop val");
+            final ViewGroup mChild = (ViewGroup) layoutCont.getChildAt(i);
+            final TextInputLayout textInputLayout= (TextInputLayout) mChild.getChildAt(0);
+            final EditText editText=textInputLayout.getEditText();
+            if (editText instanceof EditText) {
+                Log.i(TAG,editText.getText().toString()+" val");
+                if (!editText.getText().toString().trim().matches("")){
+                    listOfOutcomes.add(editText.getText().toString());
+                }
+
+            }
+        }
+        Container.setListOfOutcomes(listOfOutcomes);
+        Container.setListOfOutcomes(listOfOutcomes);
     }
 }

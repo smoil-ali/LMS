@@ -3,8 +3,10 @@ package com.example.lms.Model;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -12,6 +14,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 
 public class Utils {
@@ -58,11 +63,20 @@ public class Utils {
         return new Gson().fromJson(profileObj, new TypeToken<data>(){}.getType());
     }
 
-    public static void setProfileData(data userDetail,Context context){
+    public static void setProfileData(data userDetail,Context context,boolean check){
+        if (check){
+            String json = userDetail.getUser().getSocial_links();
+            SocialLinks model = new Gson().fromJson(json,SocialLinks.class);
+            userDetail.getUser().setFacebook(model.getFacebook());
+            userDetail.getUser().setTwitter(model.getTwitter());
+            userDetail.getUser().setLinkedin(model.getLinkedin());
+        }
         SharedPreferences preferences = context.getSharedPreferences("AdminData",0);
         String profileObj = new Gson().toJson(userDetail);
+        Log.i("'json",profileObj);
         SharedPreferences.Editor editor  = preferences.edit();
         editor.putString("AdminProfile",profileObj);
         editor.apply();
     }
+
 }

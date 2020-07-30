@@ -1,23 +1,20 @@
 package com.example.lms.Adapters;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.Instructor;
 import com.example.lms.Model.InstructorData;
-import com.example.lms.Model.InstructorResponse;
 import com.example.lms.Model.StudentData;
-import com.example.lms.R;
+import com.example.lms.Model.StudentResponse;
 import com.example.lms.Retorfit.AcademyApis;
 import com.example.lms.Retorfit.RetrofitService;
 import com.example.lms.databinding.InstructorItemBinding;
@@ -33,10 +30,15 @@ public class InstructorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     Context context;
     List<InstructorData> dataList;
     final String TAG = InstructorAdapter.class.getSimpleName();
+    deleteListener deleteListener;
 
     public InstructorAdapter(Context context, List<InstructorData> dataList) {
         this.context = context;
         this.dataList = dataList;
+    }
+
+    public void setDeleteListener(deleteListener deleteListener) {
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
@@ -50,7 +52,7 @@ public class InstructorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Log.i(TAG,dataList.size()+"");
-        ((InstructorViewHolder)holder).bindView(dataList.get(position),position);
+        ((InstructorViewHolder)holder).bindView(dataList.get(position));
     }
 
     @Override
@@ -64,81 +66,62 @@ public class InstructorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             super(binding.getRoot());
             this.binding = binding;
         }
+        
 
-        public void bindView(InstructorData instructorData,int position){
+        public void bindView(InstructorData instructorData){
             binding.studentName.setText(instructorData.getFirst_name());
             binding.instEmail.setText(instructorData.getEmail());
             binding.instActiveCourses.setText(instructorData.getStatus());
-
-            binding.actionMenu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PopupMenu popupMenu=new PopupMenu(context,binding.actionMenu);
-
-                    popupMenu.getMenuInflater().inflate(R.menu.popup_menu,popupMenu.getMenu());
-
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            if (item.getItemId()==R.id.delete)
-                                new AlertDialog.Builder(context)
-                                        .setTitle("Alert!!!")
-                                        .setMessage("Are you sure?")
-                                        .setNegativeButton("NO",(dialogInterface,i)->dialogInterface.dismiss())
-                                        .setPositiveButton("OK",(dialogInterface,i)->deleteInstructor(instructorData.getId(),position)).show();
-                            return true;
-                        }
-                    });
-                    popupMenu.show();
-
-
-
-                }
-            });
+            binding.studentCard.setOnClickListener(view -> new AlertDialog.Builder(context)
+                    .setTitle("Alert!!!")
+                    .setMessage("You want to delete?")
+                    .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+                    .setPositiveButton("OK", (dialogInterface, i) -> DeleteInstructor(instructorData.getId())).show());
         }
 
-        private void deleteInstructor(String id,int position){
-
-            AcademyApis academyApis= RetrofitService.createService(AcademyApis.class);
-            Call<InstructorResponse> instructorResponseCall=academyApis.deleteInstructor(id);
-
-            instructorResponseCall.enqueue(new Callback<InstructorResponse>() {
+        private void DeleteInstructor(String id){
+            binding.instructorProgressbar.setVisibility(View.VISIBLE);
+            AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
+            Call<StudentResponse> StudentResponseCall = academyApis.deleteStudent(id);
+            Log.i(TAG,StudentResponseCall.request().url()+"");
+            StudentResponseCall.enqueue(new Callback<StudentResponse>() {
                 @Override
-                public void onResponse(Call<InstructorResponse> call, Response<InstructorResponse> response) {
+                public void onResponse(Call<StudentResponse> call, Response<StudentResponse> response) {
                     if (response.isSuccessful()){
-                        InstructorResponse instructorResponse=response.body();
-                        if (instructorResponse.getCode().equals("200")){
-
-                            new AlertDialog.Builder(context)
-                                    .setTitle(instructorResponse.getStatus())
-                                    .setMessage(instructorResponse.getMessage())
-                                    .setPositiveButton("OK",(((dialog, which) -> dialog.dismiss()))).show();
-                            dataList.remove(position);
-                            notifyItemChanged(position);
+                        StudentResponse StudentResponse = response.body();
+                        if (StudentResponse.getCode().equals("200") && !StudentResponse.getStatus().equals("FAILED")){
+                            binding.instructorProgressbar.setVisibility(View.GONE);
+                            deleteListener.OnDelete(StudentResponse.getStatus(),StudentResponse.getMessage());
                         }else {
+                            binding.instructorProgressbar.setVisibility(View.GONE);
                             new AlertDialog.Builder(context)
-                                    .setTitle(instructorResponse.getStatus())
-                                    .setMessage(instructorResponse.getMessage())
-                                    .setPositiveButton("OK",(((dialog, which) -> dialog.dismiss()))).show();
+                                    .setTitle(StudentResponse.getStatus())
+                                    .setMessage(StudentResponse.getMessage())
+                                    .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                            Log.i(TAG,StudentResponse.getStatus()+" delete");
                         }
                     }else {
+                        binding.instructorProgressbar.setVisibility(View.GONE);
                         new AlertDialog.Builder(context)
                                 .setTitle("Failed")
                                 .setMessage(response.message())
-                                .setPositiveButton("OK",(((dialog, which) -> dialog.dismiss()))).show();
+                                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                        Log.i(TAG,response.message()+" delete");
                     }
                 }
 
                 @Override
-                public void onFailure(Call<InstructorResponse> call, Throwable t) {
+                public void onFailure(Call<StudentResponse> call, Throwable t) {
+                    binding.instructorProgressbar.setVisibility(View.GONE);
                     new AlertDialog.Builder(context)
                             .setTitle("Failed")
                             .setMessage(t.getMessage())
-                            .setPositiveButton("OK",(((dialog, which) -> dialog.dismiss()))).show();
+                            .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                    Log.i(TAG,t.getMessage()+" delete");
                 }
             });
-
         }
-    }
-}
 
+    }
+
+}

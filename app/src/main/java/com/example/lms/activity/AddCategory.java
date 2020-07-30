@@ -83,7 +83,6 @@ public class AddCategory extends AppCompatActivity implements AdapterView.OnItem
     public void GoUpdate(){
         if (!binding.categoryTitleText1.getText().toString().trim().matches("")){
             if (Parent.equals("None") && index<0){
-                Log.i(TAG,MainList.get(pageCount).get(index).getId()+" parent id");
                 academyApis = RetrofitService.createService(AcademyApis.class);
                 Call<CategoryResponse> categoryResponseCall = academyApis.updateCategory(binding.categoryTitleText1.getText().toString(),
                         categoryData.getParent(),binding.categoryTitleText1.getText().toString().toLowerCase()
@@ -94,14 +93,14 @@ public class AddCategory extends AppCompatActivity implements AdapterView.OnItem
                     academyApis = RetrofitService.createService(AcademyApis.class);
                     Log.i(TAG,index+" "+MainList.get(1).size());
                     Call<CategoryResponse> categoryResponseCall = academyApis.updateCategory(binding.categoryTitleText1.getText().toString()
-                            ,(MainList.get(pageCount-1).get(index).getId().equals(categoryData.getId()))?"0":MainList.get(pageCount-1).get(index).getId(),
+                            ,IsEqual(MainList.get(pageCount-1).get(index).getId(),categoryData.getId()),
                             binding.categoryTitleText1.getText().toString().toLowerCase(),
                             categoryData.getId());
                     updateCategory(categoryResponseCall);
                 }else {
                     academyApis = RetrofitService.createService(AcademyApis.class);
                     Call<CategoryResponse> categoryResponseCall = academyApis.updateCategory(binding.categoryTitleText1.getText().toString()
-                            ,(MainList.get(pageCount).get(index).getId().equals(categoryData.getId()))?"0":MainList.get(pageCount).get(index).getId(),
+                            ,IsEqual(MainList.get(pageCount).get(index).getId(),categoryData.getId()),
                             binding.categoryTitleText1.getText().toString().toLowerCase(),
                             categoryData.getId());
                     updateCategory(categoryResponseCall);
@@ -116,8 +115,15 @@ public class AddCategory extends AppCompatActivity implements AdapterView.OnItem
         }
     }
 
+    public String IsEqual(String parentId,String Id){
+        if (!parentId.equals(Id)){
+            return parentId;
+        }
+        return "0";
+    }
+
     public void validate(){
-        if (!binding.category.getText().toString().trim().matches("") || !binding.categoryTitleText1.getText().toString().trim().matches("")){
+        if (!binding.category.getText().toString().trim().matches("") && !binding.categoryTitleText1.getText().toString().trim().matches("")){
             SimpleDateFormat sdf1 = new SimpleDateFormat("yyMMddHHmm");
             String date = sdf1.format(new Date());
             Log.i(TAG,date);
@@ -301,46 +307,6 @@ public class AddCategory extends AppCompatActivity implements AdapterView.OnItem
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,categoryList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.categorySpinner.setAdapter(dataAdapter);
-        if (categoryData != null){
-            if (categoryData.getParent().equals("0")){
-                binding.categorySpinner.setSelection(0,true);
-            }else {
-                Observable<CategoryData> observable = Observable.fromIterable(dataList);
-                observable.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<CategoryData>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-                                Log.i(TAG,"subscribed");
-                                if (dispose){
-                                    d.dispose();
-                                }
-                            }
-
-                            @Override
-                            public void onNext(CategoryData categoryData1) {
-                                if (categoryData.getParent().equals(categoryData1.getId())){
-                                    binding.categorySpinner.setSelection(count+1);
-                                    index = count;
-                                    pageCount = 1;
-                                    dispose = true;
-                                }
-                                count++;
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                Log.i(TAG,"complete");
-                            }
-                        });
-            }
-
-        }
     }
 
     public void getCategoryListById(String id){

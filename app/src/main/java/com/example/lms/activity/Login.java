@@ -107,7 +107,8 @@ public class Login extends AppCompatActivity {
                     if(!loginResponse.getStatus().equals("fail")){
                         binding.loginProgressBar.setVisibility(View.GONE);
                         Log.i(TAG,loginResponse.getData().getUser().getId()+"");
-                        Utils.setProfileData(loginResponse.getData(),Login.this);
+
+                        Utils.setProfileData(loginResponse.getData(),Login.this,true);
                         Utils.setSharedPref(Login.this,new SharedPref(loginResponse.getData().getUser().getId(),true));
                         startActivity(new Intent(Login.this, MainActivity.class));
                         finish();

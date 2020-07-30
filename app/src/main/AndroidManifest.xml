@@ -12,7 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.AddCourse" />
+        <activity android:name=".activity.AddStudent"></activity>
+        <activity android:name=".activity.AddCourse"
+            android:screenOrientation="portrait"
+            />
         <activity android:name=".activity.AddCategory" />
         <activity android:name=".activity.Test" />
         <activity

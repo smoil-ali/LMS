@@ -1,5 +1,6 @@
 package com.example.lms.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -23,70 +24,76 @@ import com.google.android.material.tabs.TabLayout;
 public class AddCourse extends AppCompatActivity {
     ActivityAddCourseBinding binding;
     Fragment fragment;
-
+    int position = 0 ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding=ActivityAddCourseBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position=binding.tabAddCourses.getSelectedTabPosition();
-                Log.i("position",String.valueOf(position));
-                binding.tabAddCourses.getTabAt(++position).select();
-            }
+        if (savedInstanceState == null){
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.hostFragment,new BasicFragment()).commit();
+        }else {
+            position = savedInstanceState.getInt("pos");
+            binding.tabAddCourses.getTabAt(position).select();
+        }
+        binding.nextBtn.setOnClickListener(v -> {
+            int position=binding.tabAddCourses.getSelectedTabPosition();
+            Log.i("position",String.valueOf(position));
+            binding.tabAddCourses.getTabAt(++position).select();
         });
-        binding.backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position=binding.tabAddCourses.getSelectedTabPosition();
-                Log.i("position",String.valueOf(position));
-                binding.tabAddCourses.getTabAt(--position).select();
-            }
+        binding.backBtn.setOnClickListener(v -> {
+            int position=binding.tabAddCourses.getSelectedTabPosition();
+            Log.i("position",String.valueOf(position));
+            binding.tabAddCourses.getTabAt(--position).select();
         });
-        //tabLayout=findViewById(R.id.tabAddCourses);
+
         setTabLayout();
     }
 
 
 
     private void setTabLayout() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.hostFragment,new BasicFragment()).commit();
+
 
         binding.tabAddCourses.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (binding.tabAddCourses.getSelectedTabPosition()){
                     case 0:
+                        position = 0;
                         fragment=new BasicFragment();
                         break;
                     case 1:
+                        position = 1;
                         Bundle data = new Bundle();
                         data.putString("key","hello");
                         fragment=new RequirementsFragment();
                         fragment.setArguments(data);
                         break;
                     case 2:
+                        position = 2;
                         fragment=new OutcomesFragment();
                         break;
                     case 3:
+                        position = 3;
                         fragment=new PricingFragment();
                         break;
                     case 4:
+                        position = 4;
                         fragment=new MediaFragment();
                         break;
                     case 5:
+                        position = 5;
                         fragment=new SeoFragment();
                         break;
                     case 6:
+                        position = 6;
                         binding.frwBckContainer.setVisibility(View.GONE);
                         fragment=new FinishFragment();
                         break;
                 }
-                Log.i("run hora","hora");
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.hostFragment,fragment).commit();
             }
@@ -101,5 +108,11 @@ public class AddCourse extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("pos",position);
     }
 }

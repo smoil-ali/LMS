@@ -1,9 +1,12 @@
 package com.example.lms.Retorfit;
 
+import android.util.Log;
+
 import com.example.lms.Model.CategoryResponse;
 import com.example.lms.Model.CourseCount;
 import com.example.lms.Model.CourseCountResponse;
 import com.example.lms.Model.CourseResponse;
+import com.example.lms.Model.CourseUpdateResponse;
 import com.example.lms.Model.EnrollmentHistoryResponse;
 import com.example.lms.Model.DashboardResponse;
 import com.example.lms.Model.InstructorResponse;
@@ -12,6 +15,8 @@ import com.example.lms.Model.ResetPassword;
 import com.example.lms.Model.SettingsResponse;
 import com.example.lms.Model.StudentResponse;
 import com.example.lms.Model.WebsiteResponse;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.Call;
@@ -68,6 +73,28 @@ public interface AcademyApis {
                                                 @Query("parentid")String parentid);
 
 
+
+    //Add Course
+    //http://lms.amnaikhlaq.com/api/index.php?action=addCourse%20&title=%22course%20xxx%22%20&short_description=%22it%20is%20f**king%20awesome%22%20&description=%22faklsjdfklasdklf%22%20&outcomes%20(list)=%22list%22%20&language=%22english%22%20&level=%22xxx%22%20&is_top_course=%22true%22%20&category_id=%221%22%20&requirements%20(list)=%22list,list2%22%20&is_free_course=%22true%22%20&discount_flag=%22true%22%20&price=%22200%22%20&discount_price=%2210%%22%20&course_overview_provider=%22sklfasjf%22%20&video_url=%22sdjfklasjdf%22%20&meta_keywords%20(list)=%22lsit%20,lisjt,lis%22%20&meta_description=%22jflkasjkfjas%22
+    @GET("?action=addCourse")
+    Call<CourseUpdateResponse>  addCourse(@Query("title")String title,
+                                          @Query("short_description")String short_description,
+                                          @Query("description")String description,
+                                          @Query("outcomes")List<String> outcomes,
+                                          @Query("language")String language,
+                                          @Query("level")String level,
+                                          @Query("is_top_course")String is_top_course,
+                                          @Query("category_id")String category_id,
+                                          @Query("requirements")List<String> requirements,
+                                          @Query("is_free_course")String is_free_course,
+                                          @Query("discount_flag")String discount_flag,
+                                          @Query("price")String price,
+                                          @Query("discounted_price")String discounted_price,
+                                          @Query("course_overview_provider")String course_overview_provider,
+                                          @Query("video_url")String video_url,
+                                          @Query("meta_keywords")List<String> meta_keywords,
+                                          @Query("meta_description")String meta_description);
+
     //Category List using RxJava
     //http://lms.amnaikhlaq.com/api/index.php/?action=categoryParent
     @GET("?action=categoryParent")
@@ -92,6 +119,19 @@ public interface AcademyApis {
                                           @Query("slug")String slug,
                                           @Query("id")String id);
 
+
+    //User Profile Update
+    //http://lms.amnaikhlaq.com/api/index.php?action=updateProfile&first_name=Shoaib&last_name=Akmal&email=amnaikhlaq1@gmail.com&facebook=facebook.com&twitter=twitter.com&title=Mr&biography=this%20is%20bio&id=1
+    @GET("?action=updateProfile")
+    Call<LoginResponse> updateUserProfile(@Query("first_name")String first_name,
+                                          @Query("last_name")String last_name,
+                                          @Query("email")String email,
+                                          @Query("facebook")String facebook,
+                                          @Query("twitter")String twitter,
+                                          @Query("title")String title,
+                                          @Query("biography")String biography,
+                                          @Query("id")String id);
+
     //Fetch User Data base on ID and email
 
     //http://lms.amnaikhlaq.com/api/index.php?action=fetchUser&id=atamuhiuldin@gmail.com
@@ -103,14 +143,14 @@ public interface AcademyApis {
 
     //Student List
     //http://lms.amnaikhlaq.com/api/index.php?action=allUser&role=student
-    @GET("?action=userList")
+    @GET("?action=allUser")
     Call<StudentResponse> getStudentList(@Query("role") String role);
 
 
 
     //Instructor List
     //http://lms.amnaikhlaq.com/api/index.php?action=allUser&role=instructor
-    @GET("?action=userList")
+    @GET("?action=allUser")
     Call<InstructorResponse> getInstructorList(@Query("role") String role);
 
 
@@ -119,7 +159,7 @@ public interface AcademyApis {
 
 
     //Count All Api for dashboard
-    //http://lms.amnaikhlaq.com/api/index.php?action=count_all
+    //http://lms.amnaikhlaq.com/api/index.php?action=studentList
 
     @GET("?action=count_all")
     Call<DashboardResponse> getDashBoardResponse();
@@ -129,6 +169,67 @@ public interface AcademyApis {
 
     @GET("?action=deleteCourse")
     Call<CourseResponse> deleteCourse(@Query("id") String id);
+
+    //Update Profile
+    //http://lms.amnaikhlaq.com/api/index.php?action=updateProfile&first_name=Shoaib&last_name=Akmal&email=amnaikhlaq1@gmail.com&facebook=facebook.com&twitter=twitter.com&title=Mr&linkedin=link&biography=this%20is%20bio&id=1
+    @GET("?action=updateProfile")
+    Observable<LoginResponse> updateProfile(@Query("first_name")String first_name,
+                                       @Query("last_name")String last_name,
+                                       @Query("email")String email,
+                                       @Query("facebook")String facebook,
+                                       @Query("twitter")String twitter,
+                                       @Query("title")String title,
+                                       @Query("linkedin")String linkedin,
+                                       @Query("biography")String biography,
+                                       @Query("id")String id);
+    //DELETE USER
+    //http://lms.amnaikhlaq.com/api/index.php?action=delete&id=5
+    @GET("?action=delete")
+    Call<StudentResponse> deleteStudent(@Query("id")String id);
+
+
+    //ADD STUDENT
+    //Stripe_keys : public_key and secret key
+    //Paypal keys proclient_id and prosecret_key
+
+    //http://lms.amnaikhlaq.com/api/index.php?action=addUser&type=student&first_name=waleed&last_name=usama&biography=vavasvasav&email=emai&password=12314&proclient_id=13123&prosecret_key=121312&secret_key=121231221&public_key=213213&date_added=1596100613&title=Mr&facebook=sadasd&twitter=twitter&linkedin=sadasd
+    @GET("?action=addUser")
+    Observable<StudentResponse> AddUser(@Query("type")String type,
+                                           @Query("first_name")String first_name,
+                                           @Query("last_name")String last_name,
+                                           @Query("biography")String biography,
+                                           @Query("email")String email,
+                                           @Query("password")String password,
+                                           @Query("proclient_id")String proclient_id,
+                                           @Query("prosecret_key")String prosecret_key,
+                                           @Query("secret_key")String secret_key,
+                                           @Query("public_key")String public_key,
+                                           @Query("date_added")String date_added,
+                                           @Query("title")String title,
+                                           @Query("facebook")String facebook,
+                                           @Query("twitter")String twitter,
+                                           @Query("linkedin")String linkedin);
+
+
+
+
+    //http://lms.amnaikhlaq.com/api/index.php?action=addUser&type=student&first_name=waleed&last_name=usama&biography=vavasvasav&email=emai&password=12314&proclient_id=13123&prosecret_key=121312&secret_key=121231221&public_key=213213&date_added=1596100613&title=Mr&facebook=sadasd&twitter=twitter&linkedin=sadasd
+    @GET("?action=addUser")
+    Call<StudentResponse> callUser(@Query("type")String type,
+                                        @Query("first_name")String first_name,
+                                        @Query("last_name")String last_name,
+                                        @Query("biography")String biography,
+                                        @Query("email")String email,
+                                        @Query("password")String password,
+                                        @Query("proclient_id")String proclient_id,
+                                        @Query("prosecret_key")String prosecret_key,
+                                        @Query("secret_key")String secret_key,
+                                        @Query("public_key")String public_key,
+                                        @Query("date_added")String date_added,
+                                        @Query("title")String title,
+                                        @Query("facebook")String facebook,
+                                        @Query("twitter")String twitter,
+                                        @Query("linkedin")String linkedin);
 
     //http://lms.amnaikhlaq.com/api/index.php?action=delete&id=5
 

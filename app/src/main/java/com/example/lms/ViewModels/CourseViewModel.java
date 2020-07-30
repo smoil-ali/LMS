@@ -18,12 +18,14 @@ import java.util.List;
 public class CourseViewModel extends ViewModel implements CourseListener {
     public MutableLiveData<List<CourseData>> arrayListMutableLiveData;
     public MutableLiveData<CourseCount> courseCountMutableLiveData;
+    public MutableLiveData<String> errorMessage ;
     CourseRepository courseRepository;
     String TAG = CourseViewModel.class.getSimpleName();
 
     public CourseViewModel(Context context, ProgressBar progressBar) {
         arrayListMutableLiveData = new MutableLiveData<>();
         courseCountMutableLiveData = new MutableLiveData<>();
+        errorMessage =  new MutableLiveData<>();
         courseRepository = new CourseRepository(context,progressBar);
         courseRepository.getCountCourse();
         courseRepository.setCourseListener(this);
@@ -35,12 +37,14 @@ public class CourseViewModel extends ViewModel implements CourseListener {
 
     @Override
     public void courseListener(List<CourseData> courseData, String msg) {
+        Log.i(TAG, String.valueOf(courseData.size()));
         arrayListMutableLiveData.setValue(courseData);
     }
 
     @Override
     public void errorListener(String error) {
         Log.i(TAG,error);
+        errorMessage.setValue(error);
     }
 
     @Override

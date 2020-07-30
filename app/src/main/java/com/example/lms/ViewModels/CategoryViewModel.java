@@ -17,8 +17,8 @@ import com.example.lms.Repository.RxjavaReposit;
 import java.util.List;
 
 public class CategoryViewModel extends ViewModel implements CategoryListener {
-    public MutableLiveData<List<CategoryData>> categoryLiveData;
-    public MutableLiveData<String> errorMessage ;
+    MutableLiveData<List<CategoryData>> categoryLiveData;
+    MutableLiveData<String> errorMessage ;
     CategoryRepository categoryRepository;
     RxjavaReposit rxjavaReposit;
     String TAG = CategoryViewModel.class.getSimpleName();
@@ -26,6 +26,11 @@ public class CategoryViewModel extends ViewModel implements CategoryListener {
     public CategoryViewModel(Context context,ProgressBar progressBar) {
         categoryLiveData = new MutableLiveData<>();
         errorMessage = new MutableLiveData<>();
+        categoryRepository = new CategoryRepository(context,progressBar);
+        categoryRepository.setCategoryListener(this);
+    }
+
+    public void update(Context context,ProgressBar progressBar){
         categoryRepository = new CategoryRepository(context,progressBar);
         categoryRepository.setCategoryListener(this);
     }

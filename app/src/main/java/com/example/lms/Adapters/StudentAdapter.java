@@ -7,15 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.CategoryData;
+import com.example.lms.Model.StudentResponse;
 import com.example.lms.Model.EnrollmentHistoryResponse;
 import com.example.lms.Model.EnrollHistoryUserData;
 import com.example.lms.Model.EnrollmentHistoryResponse;
 import com.example.lms.Model.StudentData;
+import com.example.lms.Model.StudentResponse;
 import com.example.lms.Retorfit.AcademyApis;
 import com.example.lms.Retorfit.RetrofitService;
 import com.example.lms.databinding.StudentItemBinding;
@@ -34,10 +38,15 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     List<EnrollHistoryUserData> enrollHistoryUserDataList=new ArrayList<>();
     EnrollHistoryAdapter adapter;
     final String TAG = StudentAdapter.class.getSimpleName();
+    deleteListener deleteListener;
 
     public StudentAdapter(Context context, List<StudentData> dataList) {
         this.context = context;
         this.dataList = dataList;
+    }
+
+    public void setDeleteListener(deleteListener deleteListener){
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
@@ -51,7 +60,7 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Log.i(TAG,dataList.size()+"");
-        ((StudentViewHolder)holder).bindView(dataList.get(position));
+        ((StudentViewHolder)holder).bindView(dataList.get(position),position);
     }
 
     @Override
@@ -66,10 +75,15 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             this.binding = binding;
         }
 
-        public void bindView(StudentData studentData){
+        public void bindView(StudentData studentData,int pos){
             binding.studentName.setText(studentData.getFirst_name());
             binding.studentEmail.setText(studentData.getEmail());
             binding.studentStatus.setText(studentData.getStatus());
+            binding.studentCard.setOnClickListener(view -> new AlertDialog.Builder(context)
+                    .setTitle("Alert!!!")
+                    .setMessage("You want to delete?")
+                    .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+                    .setPositiveButton("OK", (dialogInterface, i) -> DeleteStudent(studentData.getId())).show());
             getEnrollHistoryById(studentData.getId());
         }
 
@@ -116,6 +130,49 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             });
 
+        }
+
+        private void DeleteStudent(String id){
+            binding.studentItemProgressbar.setVisibility(View.VISIBLE);
+            AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
+            Call<StudentResponse> StudentResponseCall = academyApis.deleteStudent(id);
+            Log.i(TAG,StudentResponseCall.request().url()+"");
+            StudentResponseCall.enqueue(new Callback<StudentResponse>() {
+                @Override
+                public void onResponse(Call<StudentResponse> call, Response<StudentResponse> response) {
+                    if (response.isSuccessful()){
+                        StudentResponse StudentResponse = response.body();
+                        if (StudentResponse.getCode().equals("200") && !StudentResponse.getStatus().equals("FAILED")){
+                            binding.studentItemProgressbar.setVisibility(View.GONE);
+                            deleteListener.OnDelete(StudentResponse.getStatus(),StudentResponse.getMessage());
+                        }else {
+                            binding.studentItemProgressbar.setVisibility(View.GONE);
+                            new AlertDialog.Builder(context)
+                                    .setTitle(StudentResponse.getStatus())
+                                    .setMessage(StudentResponse.getMessage())
+                                    .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                            Log.i(TAG,StudentResponse.getStatus()+" delete");
+                        }
+                    }else {
+                        binding.studentItemProgressbar.setVisibility(View.GONE);
+                        new AlertDialog.Builder(context)
+                                .setTitle("Failed")
+                                .setMessage(response.message())
+                                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                        Log.i(TAG,response.message()+" delete");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<StudentResponse> call, Throwable t) {
+                    binding.studentItemProgressbar.setVisibility(View.GONE);
+                    new AlertDialog.Builder(context)
+                            .setTitle("Failed")
+                            .setMessage(t.getMessage())
+                            .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                    Log.i(TAG,t.getMessage()+" delete");
+                }
+            });
         }
 
     }

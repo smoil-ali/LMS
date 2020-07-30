@@ -3,11 +3,13 @@ package com.example.lms.ui.addcourses;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -18,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.lms.MainActivity;
+import com.example.lms.Model.Container;
 import com.example.lms.R;
 import com.example.lms.databinding.FragmentRequirementsCourseBinding;
 import com.google.android.material.textfield.TextInputEditText;
@@ -25,16 +28,20 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RequirementsFragment extends Fragment {
 
+    public final String TAG= RequirementsFragment.class.getSimpleName();
     FragmentRequirementsCourseBinding binding;
-
+    List<String> listOfRequirements = new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding=FragmentRequirementsCourseBinding.inflate(inflater,container,false);
         Bundle data =getArguments();
-        Toast.makeText(getContext(), ""+data.getString("key"), Toast.LENGTH_SHORT).show();
+
 
         binding.addbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,6 +51,18 @@ public class RequirementsFragment extends Fragment {
         });
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG, Container.getModel().getCourseTitle());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getAllChildElements(binding.container);
     }
 
     private void generateField() {
@@ -92,9 +111,24 @@ public class RequirementsFragment extends Fragment {
         linearLayout.addView(linearLayout1);
 
         binding.container.addView(linearLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-
     }
 
+    public final void getAllChildElements(ViewGroup layoutCont) {
+        if (layoutCont == null) return;
+        final int mCount = layoutCont.getChildCount();
+        for (int i = 0; i < mCount; i++) {
+           Log.i(TAG,i+" loop val");
+            final ViewGroup mChild = (ViewGroup) layoutCont.getChildAt(i);
+            final TextInputLayout textInputLayout= (TextInputLayout) mChild.getChildAt(0);
+            final EditText editText=textInputLayout.getEditText();
+            if (editText instanceof EditText) {
+                Log.i(TAG,editText.getText().toString()+" val");
+                if (!editText.getText().toString().trim().matches("")){
+                    listOfRequirements.add(editText.getText().toString());
+                }
+            }
+        }
+        Container.setListOfRequirements(listOfRequirements);
+    }
 
 }

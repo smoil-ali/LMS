@@ -16,6 +16,7 @@ import com.example.lms.Model.SharedPref;
 import com.example.lms.Model.Utils;
 import com.example.lms.activity.AddCategory;
 import com.example.lms.activity.AddCourse;
+import com.example.lms.activity.AddStudent;
 import com.example.lms.activity.Login;
 import com.example.lms.databinding.ActivityMainBinding;
 import com.example.lms.databinding.AppBarBinding;
@@ -44,6 +45,10 @@ import com.example.lms.ui.settings.WebsiteSettingFragment;
 import com.example.lms.ui.students.StudentFragment;
 import com.google.android.material.navigation.NavigationView;
 
+import static com.example.lms.Model.Constants.FROM;
+import static com.example.lms.Model.Constants.INSTRUCTOR;
+import static com.example.lms.Model.Constants.STUDENT;
+
 public class MainActivity extends AppCompatActivity implements ResetListener {
 
     private ActivityMainBinding binding;
@@ -63,6 +68,12 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
         setContentView(view);
         fragment=new Fragment();
         resetDialog.setResetListener(this);
+
+        if (savedInstanceState == null){
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.hostFragment,new HomeFragment()).commit();
+        }
+
         setBottomNavigation();
         sideNavigation();
 
@@ -71,8 +82,6 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
 
     private void sideNavigation(){
         binding.floatingNavigationView.setCheckedItem(R.id.nav_home);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.hostFragment,new HomeFragment()).commit();
         binding.floatingNavigationView.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,6 +113,11 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     case R.id.nav_addCourses:
                             startActivity(new Intent(MainActivity.this, AddCourse.class));
                         break;
+                    case R.id.addInstructor:
+                        Intent intent1 = new Intent(MainActivity.this,AddStudent.class);
+                        intent1.putExtra(FROM,INSTRUCTOR);
+                        startActivity(intent1);
+                        break;
                     case R.id.nav_instructorList:
                         fragment=new InstructorListFragment();
                         break;
@@ -119,11 +133,13 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     case R.id.nav_student:
                         fragment=new StudentFragment();
                         break;
+                    case R.id.addStudent:
+                        Intent intent2 = new Intent(MainActivity.this,AddStudent.class);
+                        intent2.putExtra(FROM,STUDENT);
+                        startActivity(intent2);
+                        break;
                     case R.id.nav_enrolHistory:
                         fragment=new EnrolHistoryFragment();
-                        break;
-                    case R.id.nav_enrolStudent:
-
                         break;
                     case R.id.nav_adminRevenue:
                         fragment=new AdminRevenueFragment();
@@ -133,12 +149,6 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                         break;
                     case R.id.nav_message:
                         fragment=new MessageFragment();
-                        break;
-                    case R.id.nav_addonManager:
-                        fragment=new AddonManagerFragment();
-                        break;
-                    case R.id.nav_availableAddons:
-                        fragment=new AvailableAddonsFragment();
                         break;
                     case R.id.nav_systemSetting:
                         fragment=new SystemSettingsFragment();

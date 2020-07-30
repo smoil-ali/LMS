@@ -4,14 +4,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.app.role.RoleManager;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.TableLayout;
+import android.widget.Toast;
 
 import com.example.lms.R;
-import com.example.lms.databinding.ActivityAddCourseBinding;
-import com.example.lms.ui.HomeFragment;
+import com.example.lms.StudentLoginCredentials;
+import com.example.lms.StudentSocialInformation;
+import com.example.lms.Student_Basic_Info;
+import com.example.lms.Student_Payment_info;
+import com.example.lms.Student_finish;
+import com.example.lms.databinding.ActivityAddStudentBinding;
 import com.example.lms.ui.addcourses.BasicFragment;
 import com.example.lms.ui.addcourses.FinishFragment;
 import com.example.lms.ui.addcourses.MediaFragment;
@@ -21,23 +27,31 @@ import com.example.lms.ui.addcourses.RequirementsFragment;
 import com.example.lms.ui.addcourses.SeoFragment;
 import com.google.android.material.tabs.TabLayout;
 
-public class AddCourse extends AppCompatActivity {
-    ActivityAddCourseBinding binding;
+import static com.example.lms.Model.Constants.FROM;
+
+public class AddStudent extends AppCompatActivity {
+
+    ActivityAddStudentBinding binding;
     Fragment fragment;
-    int position = 0 ;
+    public int position = 0;
+    Bundle bundle;
+    public static String ROLE;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding=ActivityAddCourseBinding.inflate(getLayoutInflater());
+        binding = ActivityAddStudentBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        bundle = getIntent().getExtras();
+        ROLE = bundle.getString(FROM);
 
         if (savedInstanceState == null){
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.hostFragment,new BasicFragment()).commit();
+                    .replace(R.id.hostFragment,new Student_Basic_Info()).commit();
         }else {
             position = savedInstanceState.getInt("pos");
             binding.tabAddCourses.getTabAt(position).select();
         }
+
         binding.nextBtn.setOnClickListener(v -> {
             int position=binding.tabAddCourses.getSelectedTabPosition();
             Log.i("position",String.valueOf(position));
@@ -52,46 +66,32 @@ public class AddCourse extends AppCompatActivity {
         setTabLayout();
     }
 
-
-
-    private void setTabLayout() {
-
-
+    private void setTabLayout()
+    {
         binding.tabAddCourses.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (binding.tabAddCourses.getSelectedTabPosition()){
                     case 0:
                         position = 0;
-                        fragment=new BasicFragment();
+                        fragment=new Student_Basic_Info();
                         break;
                     case 1:
                         position = 1;
-                        Bundle data = new Bundle();
-                        data.putString("key","hello");
-                        fragment=new RequirementsFragment();
-                        fragment.setArguments(data);
+                        fragment=new StudentLoginCredentials();
                         break;
                     case 2:
                         position = 2;
-                        fragment=new OutcomesFragment();
+                        fragment=new StudentSocialInformation();
                         break;
                     case 3:
                         position = 3;
-                        fragment=new PricingFragment();
+                        fragment=new Student_Payment_info();
                         break;
                     case 4:
                         position = 4;
-                        fragment=new MediaFragment();
-                        break;
-                    case 5:
-                        position = 5;
-                        fragment=new SeoFragment();
-                        break;
-                    case 6:
-                        position = 6;
                         binding.frwBckContainer.setVisibility(View.GONE);
-                        fragment=new FinishFragment();
+                        fragment=new Student_finish();
                         break;
                 }
                 getSupportFragmentManager().beginTransaction()

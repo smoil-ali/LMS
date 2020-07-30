@@ -44,6 +44,9 @@ public class BasicFragment extends Fragment implements AdapterView.OnItemSelecte
     List<CategoryData> dataList;
     List<String> categoryList = new ArrayList<>();
     BasicFragmentModel model = new BasicFragmentModel();
+    int categoryPos,languagePos,levelPos;
+    boolean checkTopCourse;
+    String courseTitle,shortDescription,Description;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,6 +58,7 @@ public class BasicFragment extends Fragment implements AdapterView.OnItemSelecte
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 model.setLanguage(Constants.listOfLanguages.get(i));
+                languagePos = i;
             }
 
             @Override
@@ -67,6 +71,7 @@ public class BasicFragment extends Fragment implements AdapterView.OnItemSelecte
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 model.setLevel(Constants.listOfLevel.get(i));
+                levelPos = i;
             }
 
             @Override
@@ -91,6 +96,7 @@ public class BasicFragment extends Fragment implements AdapterView.OnItemSelecte
             @Override
             public void afterTextChanged(Editable editable) {
                 Log.i(TAG,editable.toString()+" AFter");
+                courseTitle = editable.toString();
                 model.setCourseTitle(editable.toString());
             }
         });
@@ -108,6 +114,7 @@ public class BasicFragment extends Fragment implements AdapterView.OnItemSelecte
 
             @Override
             public void afterTextChanged(Editable editable) {
+                shortDescription = editable.toString();
                 model.setShortDescription(editable.toString());
             }
         });
@@ -125,6 +132,7 @@ public class BasicFragment extends Fragment implements AdapterView.OnItemSelecte
 
             @Override
             public void afterTextChanged(Editable editable) {
+                Description = editable.toString();
                 model.setDescription(editable.toString());
             }
         });
@@ -132,12 +140,26 @@ public class BasicFragment extends Fragment implements AdapterView.OnItemSelecte
         binding.checkTopCourse.setOnCheckedChangeListener((compoundButton, b) -> {
             Log.i(TAG,b+" checkbox");
             model.setIsTopCourse(String.valueOf(b));
+             checkTopCourse = b;
         });
 
+        if (savedInstanceState != null){
+            setupLevelSpinner();
+            setupLanguageSpinner();
+            getCategoryList();
 
-        setupLevelSpinner();
-        setupLanguageSpinner();
-        getCategoryList();
+            binding.levelSpinner.setSelection(savedInstanceState.getInt("level"));
+            binding.languageSpinner.setSelection(savedInstanceState.getInt("language"));
+            binding.categorySpinner.setSelection(savedInstanceState.getInt("cat"));
+            binding.checkTopCourse.setSelected(savedInstanceState.getBoolean("ctc"));
+            binding.courseTitle.setText(savedInstanceState.getString("ct"));
+            binding.shortDescription.setText(savedInstanceState.getString("sd"));
+            binding.description.setText(savedInstanceState.getString("des"));
+        }else {
+            setupLevelSpinner();
+            setupLanguageSpinner();
+            getCategoryList();
+        }
         return binding.getRoot();
     }
 
@@ -200,6 +222,7 @@ public class BasicFragment extends Fragment implements AdapterView.OnItemSelecte
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         model.setCategory_id(dataList.get(i).getId());
+        categoryPos = i;
     }
 
     @Override
@@ -211,5 +234,17 @@ public class BasicFragment extends Fragment implements AdapterView.OnItemSelecte
     public void onDestroy() {
         super.onDestroy();
         Container.setModel(model);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("cat",categoryPos);
+        outState.putInt("level",levelPos);
+        outState.putInt("language",languagePos);
+        outState.putBoolean("ctc",checkTopCourse);
+        outState.putString("ct",courseTitle);
+        outState.putString("sd",shortDescription);
+        outState.putString("des",Description);
     }
 }

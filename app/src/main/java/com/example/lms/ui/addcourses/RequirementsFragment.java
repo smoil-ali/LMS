@@ -41,7 +41,7 @@ public class RequirementsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding=FragmentRequirementsCourseBinding.inflate(inflater,container,false);
         Bundle data =getArguments();
-        Toast.makeText(getContext(), ""+data.getString("key"), Toast.LENGTH_SHORT).show();
+
 
         binding.addbtn.setOnClickListener(new View.OnClickListener() {
             @Override

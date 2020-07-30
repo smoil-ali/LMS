@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -17,6 +18,7 @@ import com.example.lms.Adapters.EnrollHistoryAdapter;
 import com.example.lms.Adapters.StudentAdapter;
 import com.example.lms.Factories.EnrollHistoryFactory;
 import com.example.lms.Factories.StudentFactory;
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.EnrollHistoryUserData;
 import com.example.lms.Model.StudentData;
 import com.example.lms.R;
@@ -27,7 +29,7 @@ import com.example.lms.databinding.FragmentStudentsBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentFragment extends Fragment {
+public class StudentFragment extends Fragment implements deleteListener {
 
     StudentViewModel viewModel;
     FragmentStudentsBinding binding;
@@ -47,6 +49,7 @@ public class StudentFragment extends Fragment {
                     dataList.clear();
                     dataList.addAll(studentData);
                     adapter.notifyDataSetChanged();
+                    adapter.setDeleteListener(StudentFragment.this);
                     binding.studentProgressbar.setVisibility(View.GONE);
                     binding.studentAlertMessage.setVisibility(View.GONE);
                 }else {
@@ -77,5 +80,14 @@ public class StudentFragment extends Fragment {
         binding.rvStudent.setNestedScrollingEnabled(false);
         adapter=new StudentAdapter(getContext(),dataList);
         binding.rvStudent.setAdapter(adapter);
+    }
+
+    @Override
+    public void OnDelete(String status, String message) {
+        viewModel.update(getContext(),binding.studentProgressbar);
+        new AlertDialog.Builder(getContext())
+                .setTitle(status)
+                .setMessage(message)
+                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
     }
 }

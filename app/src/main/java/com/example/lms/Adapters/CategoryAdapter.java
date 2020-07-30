@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.CategoryData;
 import com.example.lms.Model.CategoryResponse;
 import com.example.lms.Model.EnrollmentHistoryData;
@@ -41,11 +42,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     List<CategoryData> subCategoryList = new ArrayList<>();
     public final String TAG = CategoryAdapter.class.getSimpleName();
     subCategoryAdapter adapter;
+    deleteListener deleteListener;
 
     public CategoryAdapter(Context context, List<CategoryData> categoryData) {
         this.context = context;
         this.categoryData = categoryData;
 
+    }
+
+    public void setDeleteListener(deleteListener deleteListener){
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
@@ -80,11 +86,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             binding.categoryName.setText(categoryData.getName());
             binding.categoriesProgressBar.setVisibility(View.VISIBLE);
             getSubCategoryById(categoryData.getId());
-            binding.deleteBtn.setOnClickListener(view -> new AlertDialog.Builder(context)
-                    .setTitle("Alert!!!")
-                    .setMessage("Are You Sure?")
-                    .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
-                    .setPositiveButton("OK", (dialogInterface, i) -> DeleteCategory(categoryData.getId(),Position)).show());
+            binding.deleteBtn.setOnClickListener(view -> {
+                new AlertDialog.Builder(context)
+                        .setTitle("Alert!!!")
+                        .setMessage("Are You Sure?")
+                        .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+                        .setPositiveButton("OK", (dialogInterface, i) -> DeleteCategory(categoryData.getId(), Position)).show();
+            });
 
             binding.editBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -153,14 +161,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
                     if (response.isSuccessful()){
                         CategoryResponse categoryResponse = response.body();
-                        if (categoryResponse.getCode().equals("200")){
+                        if (categoryResponse.getCode().equals("200") && !categoryResponse.getStatus().equals("FAILED")){
                             binding.categoriesProgressBar.setVisibility(View.GONE);
-                            new AlertDialog.Builder(context)
-                                    .setTitle(categoryResponse.getStatus())
-                                    .setMessage(categoryResponse.getMessage())
-                                    .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
-                            categoryData.remove(position);
-                            notifyItemChanged(position);
+                            deleteListener.OnDelete(categoryResponse.getStatus(),categoryResponse.getMessage());
                         }else {
                             binding.categoriesProgressBar.setVisibility(View.GONE);
                             new AlertDialog.Builder(context)

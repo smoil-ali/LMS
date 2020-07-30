@@ -12,15 +12,20 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.example.lms.Model.BasicFragmentModel;
 import com.example.lms.Model.Container;
 import com.example.lms.Model.CourseUpdateResponse;
 import com.example.lms.Model.CourseUpdateResponse;
+import com.example.lms.Model.MediaFragmentModel;
+import com.example.lms.Model.PriceFragmentModel;
+import com.example.lms.Model.SeoModelClass;
 import com.example.lms.Retorfit.AcademyApis;
 import com.example.lms.Retorfit.RetrofitService;
 import com.example.lms.activity.AddCategory;
 import com.example.lms.databinding.FragmentFinishCourseBinding;
 
 import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,6 +79,7 @@ public class FinishFragment extends Fragment {
                                 .setTitle(CourseUpdateResponse.getStatus())
                                 .setMessage(CourseUpdateResponse.getMessage())
                                 .setPositiveButton("OK",((dialog, which) -> getActivity().finish())).show();
+                        makeEmpty();
                     }else {
                         new AlertDialog.Builder(getContext())
                                 .setTitle(CourseUpdateResponse.getStatus())
@@ -97,5 +103,14 @@ public class FinishFragment extends Fragment {
                         .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
             }
         });
+    }
+
+    public void makeEmpty(){
+        Container.setModel(new BasicFragmentModel());
+        Container.setListOfRequirements(new ArrayList<>());
+        Container.setListOfOutcomes(new ArrayList<>());
+        Container.setSeoModelClass(new SeoModelClass());
+        Container.setMediaFragmentModel(new MediaFragmentModel());
+        Container.setPriceFragmentModel(new PriceFragmentModel());
     }
 }

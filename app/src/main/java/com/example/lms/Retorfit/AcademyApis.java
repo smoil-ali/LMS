@@ -141,14 +141,14 @@ public interface AcademyApis {
 
     //Student List
     //http://lms.amnaikhlaq.com/api/index.php?action=allUser&role=student
-    @GET("?action=allUser")
+    @GET("?action=userList")
     Call<StudentResponse> getStudentList(@Query("role") String role);
 
 
 
     //Instructor List
     //http://lms.amnaikhlaq.com/api/index.php?action=allUser&role=instructor
-    @GET("?action=allUser")
+    @GET("?action=userList")
     Call<InstructorResponse> getInstructorList(@Query("role") String role);
 
 
@@ -167,6 +167,67 @@ public interface AcademyApis {
 
     @GET("?action=deleteCourse")
     Call<CourseResponse> deleteCourse(@Query("id") String id);
+
+    //Update Profile
+    //http://lms.amnaikhlaq.com/api/index.php?action=updateProfile&first_name=Shoaib&last_name=Akmal&email=amnaikhlaq1@gmail.com&facebook=facebook.com&twitter=twitter.com&title=Mr&linkedin=link&biography=this%20is%20bio&id=1
+    @GET("?action=updateProfile")
+    Observable<LoginResponse> updateProfile(@Query("first_name")String first_name,
+                                       @Query("last_name")String last_name,
+                                       @Query("email")String email,
+                                       @Query("facebook")String facebook,
+                                       @Query("twitter")String twitter,
+                                       @Query("title")String title,
+                                       @Query("linkedin")String linkedin,
+                                       @Query("biography")String biography,
+                                       @Query("id")String id);
+    //DELETE USER
+    //http://lms.amnaikhlaq.com/api/index.php?action=delete&id=5
+    @GET("?action=delete")
+    Call<StudentResponse> deleteStudent(@Query("id")String id);
+
+
+    //ADD STUDENT
+    //Stripe_keys : public_key and secret key
+    //Paypal keys proclient_id and prosecret_key
+
+    //http://lms.amnaikhlaq.com/api/index.php?action=addUser&type=student&first_name=waleed&last_name=usama&biography=vavasvasav&email=emai&password=12314&proclient_id=13123&prosecret_key=121312&secret_key=121231221&public_key=213213&date_added=1596100613&title=Mr&facebook=sadasd&twitter=twitter&linkedin=sadasd
+    @GET("?action=addUser")
+    Observable<StudentResponse> AddUser(@Query("type")String type,
+                                           @Query("first_name")String first_name,
+                                           @Query("last_name")String last_name,
+                                           @Query("biography")String biography,
+                                           @Query("email")String email,
+                                           @Query("password")String password,
+                                           @Query("proclient_id")String proclient_id,
+                                           @Query("prosecret_key")String prosecret_key,
+                                           @Query("secret_key")String secret_key,
+                                           @Query("public_key")String public_key,
+                                           @Query("date_added")String date_added,
+                                           @Query("title")String title,
+                                           @Query("facebook")String facebook,
+                                           @Query("twitter")String twitter,
+                                           @Query("linkedin")String linkedin);
+
+
+
+
+    //http://lms.amnaikhlaq.com/api/index.php?action=addUser&type=student&first_name=waleed&last_name=usama&biography=vavasvasav&email=emai&password=12314&proclient_id=13123&prosecret_key=121312&secret_key=121231221&public_key=213213&date_added=1596100613&title=Mr&facebook=sadasd&twitter=twitter&linkedin=sadasd
+    @GET("?action=addUser")
+    Call<StudentResponse> callUser(@Query("type")String type,
+                                        @Query("first_name")String first_name,
+                                        @Query("last_name")String last_name,
+                                        @Query("biography")String biography,
+                                        @Query("email")String email,
+                                        @Query("password")String password,
+                                        @Query("proclient_id")String proclient_id,
+                                        @Query("prosecret_key")String prosecret_key,
+                                        @Query("secret_key")String secret_key,
+                                        @Query("public_key")String public_key,
+                                        @Query("date_added")String date_added,
+                                        @Query("title")String title,
+                                        @Query("facebook")String facebook,
+                                        @Query("twitter")String twitter,
+                                        @Query("linkedin")String linkedin);
 
 
 

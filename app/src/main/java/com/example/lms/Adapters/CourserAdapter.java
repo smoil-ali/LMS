@@ -2,6 +2,7 @@ package com.example.lms.Adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -10,8 +11,10 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lms.Model.CategoryData;
 import com.example.lms.Model.CourseData;
 import com.example.lms.Model.CourseResponse;
 import com.example.lms.R;
@@ -22,6 +25,7 @@ import com.example.lms.activity.Login;
 import com.example.lms.databinding.CoursesItemBinding;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,6 +51,7 @@ public class CourserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return new CourseViewHolder(binding);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Log.i(TAG,courseDataArrayList.size()+"");
@@ -65,32 +70,30 @@ public class CourserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             this.binding = binding;
         }
 
-        public void bindView(CourseData courseData,int position){
-            binding.courseCategory.setText((courseData.getCategory() != null)?courseData.getCategory().getName():"Null");
-            binding.totalSection.setText(String.valueOf((courseData.getSection() != null)?courseData.getSection().getCount():"Null"));
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        public void bindView(CourseData courseData, int position){
+            binding.courseCategory.setText(courseData.getCategory().getName());
+            binding.totalSection.setText(String.valueOf(courseData.getSection().getCount()));
             binding.courseStatus.setText(courseData.getStatus());
             binding.courseTitle.setText(courseData.getTitle());
-            binding.totalEnrol.setText(String.valueOf((courseData.getEnrollment() != null)?courseData.getEnrollment().getCount():"Null"));
+            binding.totalEnrol.setText(String.valueOf(courseData.getEnrollment().getCount()));
             Log.i(TAG,courseData.getPrice());
             binding.price.setText("$"+courseData.getPrice());
-            binding.courseInstructor.setText("Instructor : "+((courseData.getInstructor() != null)?courseData.getInstructor().getFirst_name():"Null"));
-            binding.totalLesson.setText(String.valueOf((courseData.getLesson() != null)?courseData.getLesson().getCount():"Null"));
-            binding.moreMenu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PopupMenu menu=new PopupMenu(context,binding.moreMenu);
-                    menu.getMenuInflater().inflate(R.menu.popup_menu,menu.getMenu());
-                    menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            if (item.getItemId()==R.id.delete)
-                            deleteCaourses(courseData.getId(),position);
-                            return true;
-                        }
-                    });
-                    menu.show();
+            binding.courseInstructor.setText("Instructor : "+(courseData.getInstructor().getFirst_name()));
+            binding.totalLesson.setText(String.valueOf(courseData.getLesson().getCount()));
+            binding.moreMenu.setOnClickListener(v -> {
+                PopupMenu menu=new PopupMenu(context,binding.moreMenu);
+                menu.getMenuInflater().inflate(R.menu.popup_menu,menu.getMenu());
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId()==R.id.delete)
+                        deleteCaourses(courseData.getId(),position);
+                        return true;
+                    }
+                });
+                menu.show();
 
-                }
             });
 
         }

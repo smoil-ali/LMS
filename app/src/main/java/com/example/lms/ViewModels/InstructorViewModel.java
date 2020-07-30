@@ -28,6 +28,11 @@ public class InstructorViewModel extends ViewModel implements InstructorListener
         repository.setListener(this);
     }
 
+    public void update(Context context,ProgressBar progressBar){
+        repository = new InstructorRepository(context,progressBar);
+        repository.setListener(this);
+    }
+
     public androidx.lifecycle.MutableLiveData<List<InstructorData>> getMutableLiveData() {
         return MutableLiveData;
     }

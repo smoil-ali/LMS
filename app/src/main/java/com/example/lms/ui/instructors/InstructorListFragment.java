@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -17,6 +18,7 @@ import com.example.lms.Adapters.InstructorAdapter;
 import com.example.lms.Adapters.StudentAdapter;
 import com.example.lms.Factories.InstructorFactory;
 import com.example.lms.Factories.StudentFactory;
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.InstructorData;
 import com.example.lms.Model.StudentData;
 import com.example.lms.R;
@@ -27,7 +29,7 @@ import com.example.lms.databinding.FragmentInstructorListBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InstructorListFragment extends Fragment {
+public class InstructorListFragment extends Fragment implements deleteListener {
 
     FragmentInstructorListBinding binding;
     InstructorViewModel viewModel;
@@ -44,6 +46,7 @@ public class InstructorListFragment extends Fragment {
                 dataList.clear();
                 dataList.addAll(instructorData);
                 adapter.notifyDataSetChanged();
+                adapter.setDeleteListener(InstructorListFragment.this);
                 binding.instructorProgressbar.setVisibility(View.GONE);
                 binding.instructorAlertMessage.setVisibility(View.GONE);
             }else {
@@ -74,5 +77,14 @@ public class InstructorListFragment extends Fragment {
         binding.rvInstructor.setNestedScrollingEnabled(false);
         adapter=new InstructorAdapter(getContext(),dataList);
         binding.rvInstructor.setAdapter(adapter);
+    }
+
+    @Override
+    public void OnDelete(String status, String message) {
+        viewModel.update(getContext(),binding.instructorProgressbar);
+        new AlertDialog.Builder(getContext())
+                .setTitle(status)
+                .setMessage(message)
+                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
     }
 }

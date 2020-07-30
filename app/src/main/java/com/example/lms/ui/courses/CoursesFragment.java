@@ -52,6 +52,17 @@ public class CoursesFragment extends Fragment {
 
         });
 
+        courseViewModel.errorMessage.observe(requireActivity(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                binding.courseProgressBar.setVisibility(View.GONE);
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Data Not Found")
+                        .setMessage(s)
+                        .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+            }
+        });
+
         courseViewModel.getCourseCountMutableLiveData().observe(requireActivity(), courseCount -> {
             binding.countActiveCourses.setText(courseCount.getActive());
             binding.countFreeCourses.setText(courseCount.getFree());

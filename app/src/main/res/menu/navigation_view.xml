@@ -38,6 +38,10 @@
         android:title="@string/instructors"
         >
         <menu>
+
+            <item android:id="@+id/addInstructor"
+                android:title="Add Instructor"/>
+
             <item
                 android:id="@+id/nav_instructorList"
                 android:title="@string/instructor_list"
@@ -64,6 +68,9 @@
             <item android:id="@+id/nav_student"
                 android:title="@string/student"
                 />
+
+            <item android:id="@+id/addStudent"
+                android:title="@string/add_student"/>
         </menu>
     </item>
 
@@ -72,9 +79,6 @@
         <menu>
             <item android:id="@+id/nav_enrolHistory"
                 android:title="@string/enroll_history"/>
-            <item android:id="@+id/nav_enrolStudent"
-                android:title="@string/enrol_a_student"
-                />
         </menu>
 
     </item>
@@ -103,17 +107,6 @@
         </menu>
     </item>
 
-    <item android:id="@+id/addons"
-        android:title="@string/addons"
-        >
-        <menu>
-            <item android:id="@+id/nav_addonManager"
-                android:title="@string/addon_manager"
-                />
-            <item android:id="@+id/nav_availableAddons"
-                android:title="@string/available_addons"/>
-        </menu>
-    </item>
 
     <item android:id="@+id/settings"
         android:title="@string/settings"

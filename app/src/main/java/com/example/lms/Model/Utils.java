@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -20,6 +22,13 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 
 public class Utils {
+
+    public static void showDialog(Context context,String title, String message){
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+    }
 
     public static void openDialog(FragmentManager manager, DialogFragment fragment){
         FragmentTransaction ft = manager.beginTransaction();

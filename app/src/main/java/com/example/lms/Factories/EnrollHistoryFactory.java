@@ -13,15 +13,17 @@ import com.example.lms.ViewModels.EnrollHistoryViewModel;
 public class EnrollHistoryFactory implements ViewModelProvider.Factory {
     Context context;
     ProgressBar progressBar;
-
-    public EnrollHistoryFactory(Context context, ProgressBar progressBar) {
+    String from,to;
+    public EnrollHistoryFactory(Context context, ProgressBar progressBar,String from,String to) {
         this.context = context;
         this.progressBar = progressBar;
+        this.from = from;
+        this.to = to;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new EnrollHistoryViewModel(context,progressBar);
+        return (T) new EnrollHistoryViewModel(context,progressBar,from,to);
     }
 }

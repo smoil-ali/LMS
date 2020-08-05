@@ -21,18 +21,18 @@ public class EnrollmentHistoryRepository {
     EnrollListener enrollListener;
     AcademyApis academyApis ;
 
-    public EnrollmentHistoryRepository(Context context, ProgressBar progressBar) {
+    public EnrollmentHistoryRepository(Context context, ProgressBar progressBar,String from,String to) {
         progressBar.setVisibility(View.VISIBLE);
         this.context = context;
         academyApis = RetrofitService.createService(AcademyApis.class);
-        Call<EnrollmentHistoryResponse> enrollmentHistoryResponseCall = academyApis.getEnrollmentHistory();
+        Call<EnrollmentHistoryResponse> enrollmentHistoryResponseCall = academyApis.getEnrollHistoryByDateRange(from,to);
         Log.i(TAG,enrollmentHistoryResponseCall.request().url()+"");
         enrollmentHistoryResponseCall.enqueue(new Callback<EnrollmentHistoryResponse>() {
             @Override
             public void onResponse(Call<EnrollmentHistoryResponse> call, Response<EnrollmentHistoryResponse> response) {
                 if (response.isSuccessful()){
                     EnrollmentHistoryResponse enrollmentHistoryResponse = response.body();
-                    if (enrollmentHistoryResponse.getCode().equals("200")){
+                    if (enrollmentHistoryResponse.getCode().equals("200") && enrollmentHistoryResponse.getStatus().equals("success")){
                         enrollListener.enrollListener(enrollmentHistoryResponse.getData(),"successful");
                     }else {
                         enrollListener.errorListener(enrollmentHistoryResponse.getMessage());

@@ -81,4 +81,8 @@
     <string name="stripe_public_key">Stripe Public Key</string>
     <string name="stripe_secret_key">Stripe Secret Key</string>
     <string name="paypal_client_id">PayPal Client id</string>
+    <string name="from">From</string>
+    <string name="image">Image</string>
+    <string name="to">To</string>
+    <string name="filter">Filter</string>
 </resources>

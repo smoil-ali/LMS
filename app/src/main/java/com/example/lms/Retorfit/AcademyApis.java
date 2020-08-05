@@ -230,5 +230,16 @@ public interface AcademyApis {
                                         @Query("linkedin")String linkedin);
 
 
+    //Enroll Student
+    //http://lms.amnaikhlaq.com/api/index.php?action=enrolStudent&type=insert&userid=2&courseid=4
+    @GET("?action=enrolStudent")
+    Call<StudentResponse> enrollStudent(@Query("type")String type,
+                                        @Query("userid")String userid,
+                                        @Query("courseid")String courseid);
 
+    //Enroll History by date range
+    //http://lms.amnaikhlaq.com/api/index.php?action=enrolbydate&from=2020-08-04&to=2020-08-04
+    @GET("?action=enrolbydate")
+    Call<EnrollmentHistoryResponse> getEnrollHistoryByDateRange(@Query("from")String from,
+                                                                @Query("to")String to);
 }

@@ -112,8 +112,8 @@ public class Login extends AppCompatActivity {
             }else {
                 binding.loginProgressBar.setVisibility(View.GONE);
                 new AlertDialog.Builder(Login.this)
-                        .setTitle(response.message())
-                        .setMessage(response.body().toString())
+                        .setTitle("Login Failed")
+                        .setMessage(response.message())
                         .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
             }
         }

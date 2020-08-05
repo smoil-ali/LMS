@@ -16,7 +16,9 @@ import com.example.lms.databinding.CoursesItemBinding;
 import com.example.lms.databinding.EnrolCourseBinding;
 import com.example.lms.databinding.EnrollHistoryBinding;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -26,8 +28,13 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private static final int COURSE_TYPE = 0;
     private static final int LIST_TYPE = 1;
     int viewType;
+    SimpleDateFormat simpleDateFormat;
 
     public EnrollHistoryAdapter(Context context, List<EnrollHistoryUserData> enrollmentHistoryData,int viewType) {
+        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        long date = Long.parseLong("1594011600");
+        Log.i(TAG, String.valueOf(date));
+        Log.i(TAG,simpleDateFormat.format(new Date(date)));
         this.context = context;
         this.enrollmentHistoryData = enrollmentHistoryData;
         System.out.println(enrollmentHistoryData);
@@ -80,6 +87,7 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
 
         public void bindView(EnrollHistoryUserData enrollmentHistoryData){
+            Log.i(TAG,enrollmentHistoryData.getDate_added());
             binding.setEnrollDate.setText(enrollmentHistoryData.getDate_added());
             binding.studentEmail.setText("Email here");
             binding.studentName.setText(enrollmentHistoryData.getUserName());

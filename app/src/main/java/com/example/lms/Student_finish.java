@@ -97,8 +97,8 @@ public class Student_finish extends Fragment {
 
     public void addUser(){
         AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd HH-mm-ss");
-        String date = String.valueOf(new Date().getTime());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYYMMddHHmmss");
+        String date = simpleDateFormat.format(new Date());
         Log.i(TAG,date);
         Observable<StudentResponse> observable = academyApis.AddUser(AddStudent.ROLE,addContainer.getModel().getFirstName(),
                 addContainer.getModel().getLastName(),addContainer.getModel().getBiography(),addContainer.getAddUserLogindata().getEmail(),
@@ -139,7 +139,7 @@ public class Student_finish extends Fragment {
                     @Override
                     public void onError(Throwable e) {
                         new AlertDialog.Builder(getContext())
-                                .setTitle("Error")
+                                .setTitle("Error Failed")
                                 .setMessage(e.getMessage())
                                 .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
                         binding.finishProgressBar.setVisibility(View.GONE);

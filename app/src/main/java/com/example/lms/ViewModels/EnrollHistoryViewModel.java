@@ -23,10 +23,15 @@ public class EnrollHistoryViewModel extends ViewModel implements EnrollListener 
     EnrollmentHistoryRepository enrollmentHistoryRepository;
     String TAG = EnrollHistoryViewModel.class.getSimpleName();
 
-    public EnrollHistoryViewModel(Context context, ProgressBar progressBar) {
+    public EnrollHistoryViewModel(Context context, ProgressBar progressBar, String from,String to) {
         historyDataMutableLiveData = new MutableLiveData<>();
         errorMessage = new MutableLiveData<>();
-        enrollmentHistoryRepository = new EnrollmentHistoryRepository(context,progressBar);
+        enrollmentHistoryRepository = new EnrollmentHistoryRepository(context,progressBar,from,to);
+        enrollmentHistoryRepository.setEnrollListener(this);
+    }
+
+    public void update(Context context,ProgressBar progressBar,String from,String to){
+        enrollmentHistoryRepository = new EnrollmentHistoryRepository(context,progressBar,from,to);
         enrollmentHistoryRepository.setEnrollListener(this);
     }
 

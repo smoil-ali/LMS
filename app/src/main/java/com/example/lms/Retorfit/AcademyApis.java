@@ -2,6 +2,7 @@ package com.example.lms.Retorfit;
 
 import android.util.Log;
 
+import com.example.lms.Model.AllCurrencies;
 import com.example.lms.Model.CategoryResponse;
 import com.example.lms.Model.CourseCount;
 import com.example.lms.Model.CourseCountResponse;
@@ -261,5 +262,10 @@ public interface AcademyApis {
     //http://lms.amnaikhlaq.com/api/index.php?action=settings&type=fetch
     @GET("?action=settings&type=fetch")
     Call<SettingsResponse> getSettingsData();
+
+    //all currency
+    // http://lms.amnaikhlaq.com/api/index.php?action=settings&currency=all
+    @GET("?action=settings&currency=all")
+    Call<AllCurrencies> getAllCurrencies();
 
 }

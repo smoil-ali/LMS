@@ -58,6 +58,8 @@ public class WebsiteSettingFragment extends Fragment {
             else if (websiteSettingData.getCookie_status().equals("inactive"))
                 binding.inActive.setChecked(true);
 
+            binding.progressBar.setVisibility(View.GONE);
+
         });
         handler=new Handler();
 

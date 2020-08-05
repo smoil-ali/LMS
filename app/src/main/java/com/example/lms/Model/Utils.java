@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -76,6 +77,30 @@ public class Utils {
         Log.i("'json",profileObj);
         SharedPreferences.Editor editor  = preferences.edit();
         editor.putString("AdminProfile",profileObj);
+        editor.apply();
+    }
+    public static data getPaypalSettingsData(Context context){
+        SharedPreferences preferences=context.getSharedPreferences("paypal",0);
+        String paypalObj=preferences.getString("paypalSettings",null);
+        return  new Gson().fromJson(paypalObj,new TypeToken<SettingsData>(){}.getType());
+    }
+    public static void setPaypalSettingsData(SettingsData data, Context context, boolean check){
+        if (check){
+            String json=data.getPaypal();
+            Paypal model=new Gson().fromJson(json,Paypal.class);
+            data.setActive(model.getActive());
+            data.setMode(model.getMode());
+            data.setSandbox(model.getSandbox());
+            data.setSandbox_client_id(model.getSandbox_client_id());
+            data.setSandbox_secret_key(model.getSandbox_secret_key());
+            data.setProduction_client_id(model.getProduction_client_id());
+            data.setProduction_secret_key(model.getProduction_secret_key());
+        }
+        SharedPreferences preferences=context.getSharedPreferences("paypal",0);
+        String paypalObj=new Gson().toJson(data);
+        Log.i("'json",paypalObj);
+        SharedPreferences.Editor editor=preferences.edit();
+        editor.putString("paypalSettings",paypalObj);
         editor.apply();
     }
 

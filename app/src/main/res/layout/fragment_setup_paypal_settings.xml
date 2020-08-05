@@ -69,6 +69,7 @@
                 android:id="@+id/clientIdSandbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
                 android:hint="Client Id (Sandbox)" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,6 +84,7 @@
                 android:id="@+id/secretKeySandbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
                 android:hint="Secret Key (Sandbox)" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -97,6 +99,7 @@
                 android:id="@+id/clientIdProduction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
                 android:hint="Client Id (Production)" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -111,6 +114,7 @@
                 android:id="@+id/secretKeyProduction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
                 android:hint="Secret Key (Production)" />
         </com.google.android.material.textfield.TextInputLayout>
 

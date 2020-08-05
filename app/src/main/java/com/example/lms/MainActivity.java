@@ -141,9 +141,6 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     case R.id.nav_enrolHistory:
                         fragment=new EnrolHistoryFragment();
                         break;
-                    case R.id.nav_enrolStudent:
-
-                        break;
                     case R.id.nav_adminRevenue:
                         fragment=new AdminRevenueFragment();
                         break;
@@ -153,12 +150,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     case R.id.nav_message:
                         fragment=new MessageFragment();
                         break;
-                    case R.id.nav_addonManager:
-                        fragment=new AddonManagerFragment();
-                        break;
-                    case R.id.nav_availableAddons:
-                        fragment=new AvailableAddonsFragment();
-                        break;
+
                     case R.id.nav_systemSetting:
                         fragment=new SystemSettingsFragment();
                         break;

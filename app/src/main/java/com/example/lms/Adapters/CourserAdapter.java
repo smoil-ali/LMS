@@ -84,13 +84,10 @@ public class CourserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             binding.moreMenu.setOnClickListener(v -> {
                 PopupMenu menu=new PopupMenu(context,binding.moreMenu);
                 menu.getMenuInflater().inflate(R.menu.popup_menu,menu.getMenu());
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId()==R.id.delete)
-                        deleteCaourses(courseData.getId(),position);
-                        return true;
-                    }
+                menu.setOnMenuItemClickListener(item -> {
+                    if (item.getItemId()==R.id.delete)
+                    deleteCaourses(courseData.getId(),position);
+                    return true;
                 });
                 menu.show();
 
@@ -101,7 +98,6 @@ public class CourserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private void deleteCaourses(String id, int position){
             AcademyApis apis= RetrofitService.createService(AcademyApis.class);
            Call<CourseResponse> courseResponseCall=apis.deleteCourse(id);
-
            courseResponseCall.enqueue(new Callback<CourseResponse>() {
                @Override
                public void onResponse(Call<CourseResponse> call, Response<CourseResponse> response) {

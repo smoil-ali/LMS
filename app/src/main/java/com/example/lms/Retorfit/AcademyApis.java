@@ -242,4 +242,8 @@ public interface AcademyApis {
     @GET("?action=enrolbydate")
     Call<EnrollmentHistoryResponse> getEnrollHistoryByDateRange(@Query("from")String from,
                                                                 @Query("to")String to);
+    //Delete History
+    //http://lms.amnaikhlaq.com/api/index.php?action=enrolStudent&type=delete&id=2
+    @GET("?action=enrolStudent&type=delete")
+    Call<EnrollmentHistoryResponse> deleteEnrollHistory(@Query("id")String id);
 }

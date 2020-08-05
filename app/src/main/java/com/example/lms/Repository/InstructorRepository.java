@@ -6,7 +6,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.example.lms.Listener.InstructorListener;
+import com.example.lms.Model.Constants;
 import com.example.lms.Model.InstructorResponse;
+import com.example.lms.Model.Utils;
 import com.example.lms.Retorfit.AcademyApis;
 import com.example.lms.Retorfit.RetrofitService;
 
@@ -15,37 +17,24 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class InstructorRepository {
-    Context context;
     String TAG = InstructorRepository.class.getSimpleName();
     InstructorListener listener;
     AcademyApis academyApis ;
 
     public InstructorRepository(Context context, ProgressBar progressBar) {
         progressBar.setVisibility(View.VISIBLE);
-        this.context = context;
         academyApis = RetrofitService.createService(AcademyApis.class);
         Call<InstructorResponse> InstructorResponseCall = academyApis.getInstructorList("instructor");
         Log.i(TAG,InstructorResponseCall.request().url()+"");
         InstructorResponseCall.enqueue(new Callback<InstructorResponse>() {
             @Override
             public void onResponse(Call<InstructorResponse> call, Response<InstructorResponse> response) {
-                if (response.isSuccessful()){
-                    InstructorResponse InstructorResponse = response.body();
-                    if (InstructorResponse.getCode().equals("200")){
-                        listener.onSuccess(InstructorResponse.getData());
-                    }else {
-                        listener.onError(InstructorResponse.getMessage());
-                    }
-                }else {
-                    Log.i(TAG,"in response unSuccessful");
-                    listener.onError(response.message());
-                }
+                listener.onSuccess(response);
             }
-
             @Override
             public void onFailure(Call<InstructorResponse> call, Throwable t) {
                 Log.i(TAG,"in response failed");
-                listener.onError(t.getMessage());
+                Utils.showDialog(context, Constants.FAILED,t.getMessage());
             }
         });
     }

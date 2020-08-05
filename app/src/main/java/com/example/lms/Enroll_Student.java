@@ -81,16 +81,13 @@ public class Enroll_Student extends Fragment {
             }
         });
 
-        binding.submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (userIndex>=0 && courseIndex>=0){
-                    binding.submitProgressBar.setVisibility(View.VISIBLE);
-                    binding.submit.setVisibility(View.GONE);
-                    enrollStudent();
-                }else {
-                    Utils.showDialog(getContext(),"Data Not Selected","Please select student and course!!!");
-                }
+        binding.submit.setOnClickListener(view -> {
+            if (userIndex>=0 && courseIndex>=0){
+                binding.submitProgressBar.setVisibility(View.VISIBLE);
+                binding.submit.setVisibility(View.GONE);
+                enrollStudent();
+            }else {
+                Utils.showDialog(getContext(),"Data Not Selected","Please select student and course!!!");
             }
         });
         getStudentList();

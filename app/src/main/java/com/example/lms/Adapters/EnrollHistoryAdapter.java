@@ -3,15 +3,24 @@ package com.example.lms.Adapters;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.CourseData;
 import com.example.lms.Model.EnrollHistoryUserData;
 import com.example.lms.Model.EnrollmentHistoryData;
+import com.example.lms.Model.EnrollmentHistoryResponse;
+import com.example.lms.R;
+import com.example.lms.Retorfit.AcademyApis;
+import com.example.lms.Retorfit.RetrofitService;
 import com.example.lms.databinding.CoursesItemBinding;
 import com.example.lms.databinding.EnrolCourseBinding;
 import com.example.lms.databinding.EnrollHistoryBinding;
@@ -21,6 +30,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
     List<EnrollHistoryUserData> enrollmentHistoryData;
@@ -29,6 +42,7 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private static final int LIST_TYPE = 1;
     int viewType;
     SimpleDateFormat simpleDateFormat;
+    deleteListener deleteListener;
 
     public EnrollHistoryAdapter(Context context, List<EnrollHistoryUserData> enrollmentHistoryData,int viewType) {
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -39,6 +53,10 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.enrollmentHistoryData = enrollmentHistoryData;
         System.out.println(enrollmentHistoryData);
         this.viewType = viewType;
+    }
+
+    public void setDeleteListener(deleteListener deleteListener){
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
@@ -92,8 +110,65 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             binding.studentEmail.setText("Email here");
             binding.studentName.setText(enrollmentHistoryData.getUserName());
             binding.enrolCourse.setText(enrollmentHistoryData.getCourseName());
+            binding.moreMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PopupMenu menu=new PopupMenu(context,binding.moreMenu);
+                    menu.getMenuInflater().inflate(R.menu.del_menu,menu.getMenu());
+                    menu.setOnMenuItemClickListener(item -> {
+                        if (item.getItemId() == R.id.delete)
+                            new AlertDialog.Builder(context)
+                                    .setTitle("Alert!!!")
+                                    .setMessage("You want to delete?")
+                                    .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+                                    .setPositiveButton("OK", (dialogInterface, i) -> DeleteHistory(enrollmentHistoryData.getId())).show();
+                        return true;
+                    });
+                    menu.show();
+                }
+            });
         }
+
+        private void DeleteHistory(String id){
+            AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
+            Call<EnrollmentHistoryResponse> EnrollmentHistoryResponseCall = academyApis.deleteEnrollHistory(id);
+            Log.i(TAG,EnrollmentHistoryResponseCall.request().url()+"");
+            EnrollmentHistoryResponseCall.enqueue(new Callback<EnrollmentHistoryResponse>() {
+                @Override
+                public void onResponse(Call<EnrollmentHistoryResponse> call, Response<EnrollmentHistoryResponse> response) {
+                    if (response.isSuccessful()){
+                        EnrollmentHistoryResponse EnrollmentHistoryResponse = response.body();
+                        if (EnrollmentHistoryResponse.getCode().equals("200") && !EnrollmentHistoryResponse.getStatus().equals("FAILED")){
+                            deleteListener.OnDelete(EnrollmentHistoryResponse.getStatus(),EnrollmentHistoryResponse.getMessage());
+                        }else {
+                            new AlertDialog.Builder(context)
+                                    .setTitle(EnrollmentHistoryResponse.getStatus())
+                                    .setMessage(EnrollmentHistoryResponse.getMessage())
+                                    .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                            Log.i(TAG,EnrollmentHistoryResponse.getStatus()+" delete");
+                        }
+                    }else {
+                        new AlertDialog.Builder(context)
+                                .setTitle("Failed")
+                                .setMessage(response.message())
+                                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                        Log.i(TAG,response.message()+" delete");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<EnrollmentHistoryResponse> call, Throwable t) {
+                    new AlertDialog.Builder(context)
+                            .setTitle("Failed")
+                            .setMessage(t.getMessage())
+                            .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                    Log.i(TAG,t.getMessage()+" delete");
+                }
+            });
+        }
+
     }
+
 
     public class EnrollCourseViewholder extends RecyclerView.ViewHolder {
         EnrolCourseBinding binding;
@@ -106,4 +181,6 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             binding.textView2.setText(enrollHistoryUserData.getCourseName());
         }
     }
+
+
 }

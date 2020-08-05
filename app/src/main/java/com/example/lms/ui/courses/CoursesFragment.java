@@ -16,14 +16,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.lms.Adapters.CourserAdapter;
 import com.example.lms.Factories.CourseFactory;
+import com.example.lms.Model.Constants;
 import com.example.lms.Model.CourseCount;
+import com.example.lms.Model.CourseCountResponse;
 import com.example.lms.Model.CourseData;
+import com.example.lms.Model.CourseResponse;
+import com.example.lms.Model.InstructorResponse;
+import com.example.lms.Model.Utils;
 import com.example.lms.R;
 import com.example.lms.ViewModels.CourseViewModel;
 import com.example.lms.activity.Login;
 import com.example.lms.databinding.FragmentCoursesBinding;
+import com.example.lms.ui.instructors.InstructorListFragment;
 
 import java.util.ArrayList;
+
+import retrofit2.Response;
 
 public class CoursesFragment extends Fragment {
 
@@ -37,38 +45,45 @@ public class CoursesFragment extends Fragment {
         binding = FragmentCoursesBinding.inflate(inflater,container,false);
         setUpRecyclerView();
         courseViewModel = new ViewModelProvider(getActivity(),new CourseFactory(getContext(),binding.courseProgressBar)).get(CourseViewModel.class);
-        courseViewModel.getArrayListMutableLiveData().observe(requireActivity(), courseData -> {
-            if (courseData.size() > 0 ){
-                courseDataArrayList.clear();
-                courseDataArrayList.addAll(courseData);
-                courserAdapter.notifyDataSetChanged();
-                binding.courseProgressBar.setVisibility(View.GONE);
-            }else {
-                new AlertDialog.Builder(getContext())
-                        .setTitle("Data Not Found")
-                        .setMessage("data not found")
-                        .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
-            }
-
-        });
-
-        courseViewModel.errorMessage.observe(requireActivity(), new Observer<String>() {
+        courseViewModel.getArrayListMutableLiveData().observe(requireActivity(), new Observer<Response<CourseResponse>>() {
             @Override
-            public void onChanged(String s) {
-                binding.courseProgressBar.setVisibility(View.GONE);
-                new AlertDialog.Builder(getContext())
-                        .setTitle("Data Not Found")
-                        .setMessage(s)
-                        .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+            public void onChanged(Response<CourseResponse> response) {
+                if (response.isSuccessful()){
+                    CourseResponse response1 = response.body();
+                    if (response1.getCode().equals("200") && response1.getStatus().equals(Constants.SUCCESS)){
+                        courseDataArrayList.clear();
+                        courseDataArrayList.addAll(response1.getData());
+                        courserAdapter.notifyDataSetChanged();
+                        binding.courseProgressBar.setVisibility(View.GONE);
+                    }else {
+                        Utils.showDialog(getContext(),response1.getStatus(),response1.getMessage());
+                    }
+                }else {
+                    Utils.showDialog(getContext(),Constants.RESPONSE_FAILED,response.message());
+                }
+
             }
         });
 
-        courseViewModel.getCourseCountMutableLiveData().observe(requireActivity(), courseCount -> {
-            binding.countActiveCourses.setText(courseCount.getActive());
-            binding.countFreeCourses.setText(courseCount.getFree());
-            binding.countPaidCourses.setText(courseCount.getPaid());
-            binding.countPendingCourses.setText(courseCount.getPending());
+        courseViewModel.getCourseCountMutableLiveData().observe(requireActivity(), new Observer<Response<CourseCountResponse>>() {
+            @Override
+            public void onChanged(Response<CourseCountResponse> response) {
+                if (response.isSuccessful()){
+                    CourseCountResponse response1 = response.body();
+                    if (response1.getCode().equals("200") && response1.getStatus().equals(Constants.SUCCESS)){
+                        binding.countActiveCourses.setText(response1.getCourse_count().getActive());
+                        binding.countFreeCourses.setText(response1.getCourse_count().getFree());
+                        binding.countPaidCourses.setText(response1.getCourse_count().getPaid());
+                        binding.countPendingCourses.setText(response1.getCourse_count().getPending());
+                    }else {
+                        Utils.showDialog(getContext(),response1.getStatus(),response1.getMessage());
+                    }
+                }else {
+                    Utils.showDialog(getContext(),Constants.RESPONSE_FAILED,response.message());
+                }
+            }
         });
+
         return binding.getRoot();
     }
 

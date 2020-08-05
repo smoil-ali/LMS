@@ -6,10 +6,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,8 +23,14 @@ import com.example.lms.Adapters.CourserAdapter;
 import com.example.lms.Adapters.EnrollHistoryAdapter;
 import com.example.lms.Factories.CourseFactory;
 import com.example.lms.Factories.EnrollHistoryFactory;
+import com.example.lms.Listener.deleteListener;
+import com.example.lms.Model.Constants;
 import com.example.lms.Model.EnrollHistoryUserData;
 import com.example.lms.Model.EnrollmentHistoryData;
+import com.example.lms.Model.EnrollmentHistoryResponse;
+import com.example.lms.Model.Error;
+import com.example.lms.Model.NetworkState;
+import com.example.lms.Model.Utils;
 import com.example.lms.R;
 import com.example.lms.ViewModels.CourseViewModel;
 import com.example.lms.ViewModels.EnrollHistoryViewModel;
@@ -35,7 +44,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class EnrolHistoryFragment extends Fragment {
+import retrofit2.Response;
+
+public class EnrolHistoryFragment extends Fragment implements deleteListener {
 
 
     private static final String TAG = EnrolHistoryFragment.class.getSimpleName();
@@ -47,6 +58,7 @@ public class EnrolHistoryFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentEnrolhistoryBinding.inflate(inflater,container,false);
+
 
         if (savedInstanceState == null){
             setInitDate(binding.txtFrom);
@@ -65,22 +77,33 @@ public class EnrolHistoryFragment extends Fragment {
         setUpRecyclerView();
         enrollHistoryViewModel= new ViewModelProvider(getActivity(),new EnrollHistoryFactory(getContext(),binding.enrollHistoryProgressbar,binding.txtFrom.getText().toString(),binding.txtTo.getText().toString()))
                 .get(EnrollHistoryViewModel.class);
-        enrollHistoryViewModel.getHistoryDataMutableLiveData().observe(requireActivity(), enrollHistoryUserData -> {
-            if (enrollHistoryUserData.size() > 0 ){
-                dataList.clear();
-                dataList.addAll(enrollHistoryUserData);
-                adapter.notifyDataSetChanged();
-                binding.enrollHistoryProgressbar.setVisibility(View.GONE);
-                binding.enrollHistoryAlertMessage.setVisibility(View.GONE);
-            }else {
-                binding.enrollHistoryProgressbar.setVisibility(View.GONE);
-                binding.enrollHistoryAlertMessage.setVisibility(View.VISIBLE);
+
+        enrollHistoryViewModel.getHistoryDataMutableLiveData().observe(requireActivity(), new Observer<Response<EnrollmentHistoryResponse>>() {
+            @Override
+            public void onChanged(Response<EnrollmentHistoryResponse> response) {
+                if (response.isSuccessful()){
+                    EnrollmentHistoryResponse response1 = response.body();
+                    if (response1.getCode().equals("200") && response1.getStatus().equals(Constants.SUCCESS)){
+                        dataList.clear();
+                        dataList.addAll(response1.getData());
+                        adapter.notifyDataSetChanged();
+                        adapter.setDeleteListener(EnrolHistoryFragment.this);
+                        binding.enrollHistoryRecyclerview.setVisibility(View.VISIBLE);
+                        binding.enrollHistoryProgressbar.setVisibility(View.GONE);
+                        binding.enrollHistoryAlertMessage.setVisibility(View.GONE);
+                    }else {
+                        binding.enrollHistoryRecyclerview.setVisibility(View.GONE);
+                        binding.enrollHistoryProgressbar.setVisibility(View.GONE);
+                        binding.enrollHistoryAlertMessage.setVisibility(View.VISIBLE);
+                        binding.enrollHistoryAlertMessage.setText(response1.getStatus()+" "+response1.getMessage());
+                    }
+                }else {
+                    binding.enrollHistoryRecyclerview.setVisibility(View.GONE);
+                    binding.enrollHistoryProgressbar.setVisibility(View.GONE);
+                    binding.enrollHistoryAlertMessage.setVisibility(View.VISIBLE);
+                    binding.enrollHistoryAlertMessage.setText(Constants.RESPONSE_FAILED+" "+response.message());
+                }
             }
-        });
-        enrollHistoryViewModel.getErrorMessage().observe(requireActivity(), s -> {
-            binding.enrollHistoryAlertMessage.setText(s);
-            binding.enrollHistoryAlertMessage.setVisibility(View.VISIBLE);
-            binding.enrollHistoryProgressbar.setVisibility(View.GONE);
         });
 
         return binding.getRoot();
@@ -126,7 +149,16 @@ public class EnrolHistoryFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("From",binding.txtFrom.toString());
-        outState.putString("To",binding.txtTo.toString());
+        outState.putString("From",binding.txtFrom.getText().toString());
+        outState.putString("To",binding.txtTo.getText().toString());
+    }
+
+    @Override
+    public void OnDelete(String status, String message) {
+        enrollHistoryViewModel.update(getContext(),binding.enrollHistoryProgressbar,binding.txtFrom.getText().toString(),binding.txtTo.getText().toString());
+        new AlertDialog.Builder(getContext())
+                .setTitle(status)
+                .setMessage(message)
+                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
     }
 }

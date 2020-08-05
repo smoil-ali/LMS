@@ -19,15 +19,21 @@ import com.example.lms.Adapters.StudentAdapter;
 import com.example.lms.Factories.EnrollHistoryFactory;
 import com.example.lms.Factories.StudentFactory;
 import com.example.lms.Listener.deleteListener;
+import com.example.lms.Model.Constants;
 import com.example.lms.Model.EnrollHistoryUserData;
+import com.example.lms.Model.EnrollmentHistoryResponse;
 import com.example.lms.Model.StudentData;
+import com.example.lms.Model.StudentResponse;
 import com.example.lms.R;
 
 import com.example.lms.ViewModels.StudentViewModel;
 import com.example.lms.databinding.FragmentStudentsBinding;
+import com.example.lms.ui.enrolment.EnrolHistoryFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Response;
 
 public class StudentFragment extends Fragment implements deleteListener {
 
@@ -42,32 +48,34 @@ public class StudentFragment extends Fragment implements deleteListener {
 
         setUpRecyclerView();
         viewModel= new ViewModelProvider(getActivity(),new StudentFactory(getContext(),binding.studentProgressbar)).get(StudentViewModel.class);
-        viewModel.getMutableLiveData().observe(requireActivity(), new Observer<List<StudentData>>() {
-            @Override
-            public void onChanged(List<StudentData> studentData) {
-                if (studentData.size() > 0 ){
+        viewModel.getMutableLiveData().observe(requireActivity(), response -> {
+            if (response.isSuccessful()){
+                StudentResponse response1 = response.body();
+                if (response1.getCode().equals("200") && response1.getStatus().equals(Constants.SUCCESS)){
                     dataList.clear();
-                    dataList.addAll(studentData);
+                    dataList.addAll(response1.getData());
                     adapter.notifyDataSetChanged();
                     adapter.setDeleteListener(StudentFragment.this);
+                    binding.rvStudent.setVisibility(View.VISIBLE);
                     binding.studentProgressbar.setVisibility(View.GONE);
                     binding.studentAlertMessage.setVisibility(View.GONE);
                 }else {
+                    binding.rvStudent.setVisibility(View.GONE);
                     binding.studentProgressbar.setVisibility(View.GONE);
                     binding.studentAlertMessage.setVisibility(View.VISIBLE);
+                    binding.studentAlertMessage.setText(response1.getStatus()+" "+response1.getMessage());
                 }
-            }
-        });
-
-
-        viewModel.getErrorMessage().observe(requireActivity(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                binding.studentAlertMessage.setText(s);
-                binding.studentAlertMessage.setVisibility(View.VISIBLE);
+            }else {
+                binding.rvStudent.setVisibility(View.GONE);
                 binding.studentProgressbar.setVisibility(View.GONE);
+                binding.studentAlertMessage.setVisibility(View.VISIBLE);
+                binding.studentAlertMessage.setText(Constants.RESPONSE_FAILED+" "+response.message());
             }
+
         });
+
+
+
         
         return binding.getRoot();
     }

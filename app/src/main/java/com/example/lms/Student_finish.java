@@ -28,6 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -35,6 +37,11 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.example.lms.Model.Constants.ADD;
+import static com.example.lms.Model.Constants.FAILED;
+import static com.example.lms.Model.Constants.RESPONSE_FAILED;
+import static com.example.lms.Model.Constants.SUCCESS;
 
 public class Student_finish extends Fragment {
 
@@ -47,9 +54,42 @@ public class Student_finish extends Fragment {
         binding = FragmentStudentFinishBinding.inflate(inflater,container,false);
         Log.i(TAG, String.valueOf(new Date().getTime()));
         binding.submit.setOnClickListener(view -> {
-            validate();
+            if (AddStudent.ACTION.equals(ADD)){
+                validate();
+            }else {
+                updateValidate();
+            }
         });
         return binding.getRoot();
+    }
+
+    public void updateValidate(){
+        if (!addContainer.getModel().getFirstName().trim().matches("") &&
+                !addContainer.getModel().getLastName().trim().matches("") &&
+                !addContainer.getAddUserLogindata().getEmail().trim().matches("")){
+
+            //Update User
+            binding.finishProgressBar.setVisibility(View.VISIBLE);
+            binding.submit.setVisibility(View.GONE);
+            updateUser();
+
+        }else if (addContainer.getModel().getFirstName().trim().matches("")){
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Error")
+                    .setMessage("First Name Required")
+                    .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+
+        }else if (addContainer.getModel().getLastName().trim().matches("")){
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Error")
+                    .setMessage("Last Name Required")
+                    .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+        }else {
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Error")
+                    .setMessage("Email Required")
+                    .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+        }
     }
 
     public void validate(){
@@ -151,5 +191,77 @@ public class Student_finish extends Fragment {
                         Log.i(TAG,"complete");
                     }
                 });
+    }
+
+    public void updateUser(){
+        Observable<Response<StudentResponse>> observable = Observable.create(new ObservableOnSubscribe<Response<StudentResponse>>() {
+            @Override
+            public void subscribe(ObservableEmitter<Response<StudentResponse>> emitter) throws Exception {
+                AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
+                Call<StudentResponse> call = academyApis.updateUser(AddStudent.userData.getId(),AddStudent.ROLE,addContainer.getModel().getFirstName(),
+                        addContainer.getModel().getLastName(),addContainer.getModel().getBiography(),addContainer.getAddUserLogindata().getEmail(),
+                        addContainer.getAddUserPaymentData().getPaypalClientId(),
+                        addContainer.getAddUserPaymentData().getPaypalSecretId(),addContainer.getAddUserPaymentData().getStripeSecretKey(),
+                        addContainer.getAddUserPaymentData().getStripePublicKey(),"",
+                        addContainer.getAddUserSocialData().getFacebook(),addContainer.getAddUserSocialData().getTwitter(),
+                        addContainer.getAddUserSocialData().getLinkedin());
+                Log.i(TAG,call.request().url().toString());
+                call.enqueue(new Callback<StudentResponse>() {
+                    @Override
+                    public void onResponse(Call<StudentResponse> call, Response<StudentResponse> response) {
+                        emitter.onNext(response);
+                        emitter.onComplete();
+                    }
+
+                    @Override
+                    public void onFailure(Call<StudentResponse> call, Throwable t) {
+                        emitter.onError(t);
+                    }
+                });
+
+            }
+        });
+
+        observable.subscribeOn(Schedulers.io()).
+                observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new Observer<Response<StudentResponse>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Response<StudentResponse> studentResponseResponse) {
+                if (studentResponseResponse.isSuccessful()){
+                    StudentResponse studentResponse = studentResponseResponse.body();
+                    if (studentResponse.getCode().equals("200") && studentResponse.getStatus().equals(SUCCESS)){
+                        Utils.showDialog(getContext(),studentResponse.getStatus(),studentResponse.getMessage());
+                        binding.finishProgressBar.setVisibility(View.GONE);
+                        binding.submit.setVisibility(View.VISIBLE);
+                        makeEmpty();
+                    }else {
+                        binding.finishProgressBar.setVisibility(View.GONE);
+                        binding.submit.setVisibility(View.VISIBLE);
+                        Utils.showDialog(getContext(),studentResponse.getStatus(),studentResponse.getMessage());
+                    }
+                }else {
+                    binding.finishProgressBar.setVisibility(View.GONE);
+                    binding.submit.setVisibility(View.VISIBLE);
+                    Utils.showDialog(getContext(),RESPONSE_FAILED,studentResponseResponse.message());
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                binding.finishProgressBar.setVisibility(View.GONE);
+                binding.submit.setVisibility(View.VISIBLE);
+                Utils.showDialog(getContext(),FAILED,e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 }

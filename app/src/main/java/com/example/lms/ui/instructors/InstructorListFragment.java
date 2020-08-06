@@ -15,20 +15,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.lms.Adapters.InstructorAdapter;
-import com.example.lms.Adapters.StudentAdapter;
 import com.example.lms.Factories.InstructorFactory;
-import com.example.lms.Factories.StudentFactory;
 import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.Constants;
-import com.example.lms.Model.InstructorData;
 import com.example.lms.Model.InstructorResponse;
-import com.example.lms.Model.StudentData;
-import com.example.lms.Model.StudentResponse;
-import com.example.lms.R;
+import com.example.lms.Model.UserData;
 import com.example.lms.ViewModels.InstructorViewModel;
-import com.example.lms.ViewModels.StudentViewModel;
 import com.example.lms.databinding.FragmentInstructorListBinding;
-import com.example.lms.ui.students.StudentFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +32,7 @@ public class InstructorListFragment extends Fragment implements deleteListener {
 
     FragmentInstructorListBinding binding;
     InstructorViewModel viewModel;
-    List<InstructorData> dataList = new ArrayList<>();
+    List<UserData> dataList = new ArrayList<>();
     InstructorAdapter adapter;
     @Nullable
     @Override
@@ -87,7 +80,7 @@ public class InstructorListFragment extends Fragment implements deleteListener {
                 DividerItemDecoration.HORIZONTAL);
         binding.rvInstructor.addItemDecoration(dividerItemDecoration);
         binding.rvInstructor.setNestedScrollingEnabled(false);
-        adapter=new InstructorAdapter(getContext(),dataList);
+        adapter=new InstructorAdapter(getContext(),dataList,getParentFragmentManager());
         binding.rvInstructor.setAdapter(adapter);
     }
 

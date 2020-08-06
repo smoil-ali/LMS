@@ -7,36 +7,31 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.lms.Adapters.CourserAdapter;
+import com.example.lms.Adapters.CourseAdapter;
 import com.example.lms.Factories.CourseFactory;
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.Constants;
-import com.example.lms.Model.CourseCount;
 import com.example.lms.Model.CourseCountResponse;
 import com.example.lms.Model.CourseData;
 import com.example.lms.Model.CourseResponse;
-import com.example.lms.Model.InstructorResponse;
 import com.example.lms.Model.Utils;
-import com.example.lms.R;
 import com.example.lms.ViewModels.CourseViewModel;
-import com.example.lms.activity.Login;
 import com.example.lms.databinding.FragmentCoursesBinding;
-import com.example.lms.ui.instructors.InstructorListFragment;
 
 import java.util.ArrayList;
 
 import retrofit2.Response;
 
-public class CoursesFragment extends Fragment {
+public class CoursesFragment extends Fragment implements deleteListener {
 
     FragmentCoursesBinding binding;
-    CourserAdapter courserAdapter;
+    CourseAdapter courseAdapter;
     ArrayList<CourseData> courseDataArrayList=new ArrayList<>();
     CourseViewModel courseViewModel;
     @Nullable
@@ -53,7 +48,8 @@ public class CoursesFragment extends Fragment {
                     if (response1.getCode().equals("200") && response1.getStatus().equals(Constants.SUCCESS)){
                         courseDataArrayList.clear();
                         courseDataArrayList.addAll(response1.getData());
-                        courserAdapter.notifyDataSetChanged();
+                        courseAdapter.notifyDataSetChanged();
+                        courseAdapter.setDeleteListener(CoursesFragment.this);
                         binding.courseProgressBar.setVisibility(View.GONE);
                     }else {
                         Utils.showDialog(getContext(),response1.getStatus(),response1.getMessage());
@@ -93,7 +89,13 @@ public class CoursesFragment extends Fragment {
                 DividerItemDecoration.HORIZONTAL);
         binding.rvCourses.addItemDecoration(dividerItemDecoration);
      //   binding.rvCourses.setNestedScrollingEnabled(false);
-        courserAdapter=new CourserAdapter(getContext(),courseDataArrayList);
-        binding.rvCourses.setAdapter(courserAdapter);
+        courseAdapter =new CourseAdapter(getContext(),courseDataArrayList,getParentFragmentManager());
+        binding.rvCourses.setAdapter(courseAdapter);
+    }
+
+    @Override
+    public void OnDelete(String status, String message) {
+        courseViewModel.update(getContext(),binding.courseProgressBar);
+        Utils.showDialog(getContext(),status,message);
     }
 }

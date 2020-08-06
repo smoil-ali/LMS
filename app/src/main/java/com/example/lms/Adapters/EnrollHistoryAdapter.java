@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lms.Listener.deleteListener;
@@ -18,12 +19,14 @@ import com.example.lms.Model.CourseData;
 import com.example.lms.Model.EnrollHistoryUserData;
 import com.example.lms.Model.EnrollmentHistoryData;
 import com.example.lms.Model.EnrollmentHistoryResponse;
+import com.example.lms.Model.Utils;
 import com.example.lms.R;
 import com.example.lms.Retorfit.AcademyApis;
 import com.example.lms.Retorfit.RetrofitService;
 import com.example.lms.databinding.CoursesItemBinding;
 import com.example.lms.databinding.EnrolCourseBinding;
 import com.example.lms.databinding.EnrollHistoryBinding;
+import com.example.lms.dialogs.DeleteDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,8 +46,10 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     int viewType;
     SimpleDateFormat simpleDateFormat;
     deleteListener deleteListener;
+    DeleteDialog deleteDialog = new DeleteDialog();
+    FragmentManager fragmentManager;
 
-    public EnrollHistoryAdapter(Context context, List<EnrollHistoryUserData> enrollmentHistoryData,int viewType) {
+    public EnrollHistoryAdapter(Context context, List<EnrollHistoryUserData> enrollmentHistoryData,int viewType,FragmentManager fragmentManager) {
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         long date = Long.parseLong("1594011600");
         Log.i(TAG, String.valueOf(date));
@@ -53,6 +58,7 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.enrollmentHistoryData = enrollmentHistoryData;
         System.out.println(enrollmentHistoryData);
         this.viewType = viewType;
+        this.fragmentManager = fragmentManager;
     }
 
     public void setDeleteListener(deleteListener deleteListener){
@@ -121,7 +127,10 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                                     .setTitle("Alert!!!")
                                     .setMessage("You want to delete?")
                                     .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
-                                    .setPositiveButton("OK", (dialogInterface, i) -> DeleteHistory(enrollmentHistoryData.getId())).show();
+                                    .setPositiveButton("OK", (dialogInterface, i) -> {
+                                        Utils.openDialog(fragmentManager,deleteDialog);
+                                        DeleteHistory(enrollmentHistoryData.getId());
+                                    }).show();
                         return true;
                     });
                     menu.show();
@@ -139,8 +148,10 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                     if (response.isSuccessful()){
                         EnrollmentHistoryResponse EnrollmentHistoryResponse = response.body();
                         if (EnrollmentHistoryResponse.getCode().equals("200") && !EnrollmentHistoryResponse.getStatus().equals("FAILED")){
+                            deleteDialog.dismiss();
                             deleteListener.OnDelete(EnrollmentHistoryResponse.getStatus(),EnrollmentHistoryResponse.getMessage());
                         }else {
+                            deleteDialog.dismiss();
                             new AlertDialog.Builder(context)
                                     .setTitle(EnrollmentHistoryResponse.getStatus())
                                     .setMessage(EnrollmentHistoryResponse.getMessage())
@@ -148,6 +159,7 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                             Log.i(TAG,EnrollmentHistoryResponse.getStatus()+" delete");
                         }
                     }else {
+                        deleteDialog.dismiss();
                         new AlertDialog.Builder(context)
                                 .setTitle("Failed")
                                 .setMessage(response.message())
@@ -158,6 +170,7 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
                 @Override
                 public void onFailure(Call<EnrollmentHistoryResponse> call, Throwable t) {
+                    deleteDialog.dismiss();
                     new AlertDialog.Builder(context)
                             .setTitle("Failed")
                             .setMessage(t.getMessage())

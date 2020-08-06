@@ -1,30 +1,34 @@
 package com.example.lms.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lms.Listener.deleteListener;
-import com.example.lms.Model.CategoryData;
 import com.example.lms.Model.StudentResponse;
 import com.example.lms.Model.EnrollmentHistoryResponse;
 import com.example.lms.Model.EnrollHistoryUserData;
-import com.example.lms.Model.EnrollmentHistoryResponse;
-import com.example.lms.Model.StudentData;
-import com.example.lms.Model.StudentResponse;
+import com.example.lms.Model.UserData;
+import com.example.lms.Model.Utils;
+import com.example.lms.R;
 import com.example.lms.Retorfit.AcademyApis;
 import com.example.lms.Retorfit.RetrofitService;
+import com.example.lms.activity.AddStudent;
 import com.example.lms.databinding.StudentItemBinding;
-import com.example.lms.databinding.SubcategoryItemBinding;
+import com.example.lms.dialogs.DeleteDialog;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,17 +36,26 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.lms.Model.Constants.ACTION;
+import static com.example.lms.Model.Constants.DATA;
+import static com.example.lms.Model.Constants.EDIT;
+import static com.example.lms.Model.Constants.FROM;
+import static com.example.lms.Model.Constants.STUDENT;
+
 public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
-    List<StudentData> dataList;
+    List<UserData> dataList;
     List<EnrollHistoryUserData> enrollHistoryUserDataList=new ArrayList<>();
     EnrollHistoryAdapter adapter;
     final String TAG = StudentAdapter.class.getSimpleName();
     deleteListener deleteListener;
+    DeleteDialog deleteDialog  = new DeleteDialog();
+    FragmentManager fragmentManager;
 
-    public StudentAdapter(Context context, List<StudentData> dataList) {
+    public StudentAdapter(Context context, List<UserData> dataList,FragmentManager fragmentManager) {
         this.context = context;
         this.dataList = dataList;
+        this.fragmentManager = fragmentManager;
     }
 
     public void setDeleteListener(deleteListener deleteListener){
@@ -60,7 +73,7 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Log.i(TAG,dataList.size()+"");
-        ((StudentViewHolder)holder).bindView(dataList.get(position),position);
+        ((StudentViewHolder)holder).bindView(dataList.get(position));
     }
 
     @Override
@@ -75,16 +88,36 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             this.binding = binding;
         }
 
-        public void bindView(StudentData studentData,int pos){
-            binding.studentName.setText(studentData.getFirst_name());
-            binding.studentEmail.setText(studentData.getEmail());
-            binding.studentStatus.setText(studentData.getStatus());
-            binding.studentCard.setOnClickListener(view -> new AlertDialog.Builder(context)
-                    .setTitle("Alert!!!")
-                    .setMessage("You want to delete?")
-                    .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
-                    .setPositiveButton("OK", (dialogInterface, i) -> DeleteStudent(studentData.getId())).show());
-            getEnrollHistoryById(studentData.getId());
+        public void bindView(UserData userData){
+            binding.studentName.setText(userData.getFirst_name());
+            binding.studentEmail.setText(userData.getEmail());
+            binding.studentStatus.setText(userData.getStatus());
+            binding.moreMenu.setOnClickListener(view -> {
+                PopupMenu menu=new PopupMenu(context,binding.moreMenu);
+                menu.getMenuInflater().inflate(R.menu.popup_menu,menu.getMenu());
+                menu.setOnMenuItemClickListener(item -> {
+                    if (item.getItemId() == R.id.delete){
+                        new AlertDialog.Builder(context)
+                                .setTitle("Alert!!!")
+                                .setMessage("You want to delete?")
+                                .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+                                .setPositiveButton("OK", (dialogInterface, i) -> {
+                                    Utils.openDialog(fragmentManager,deleteDialog);
+                                    DeleteStudent(userData.getId());
+                                }).show();
+                    }else {
+                        Intent intent = new Intent(context, AddStudent.class);
+                        intent.putExtra(FROM,STUDENT);
+                        intent.putExtra(ACTION,EDIT);
+                        intent.putExtra(DATA,(Serializable) userData);
+                        context.startActivity(intent);
+                    }
+                    return true;
+                });
+                menu.show();
+            });
+
+            getEnrollHistoryById(userData.getId());
         }
 
         private void setUpRecyclerView(){
@@ -92,7 +125,7 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.coursesEnrol.getContext(),
                     DividerItemDecoration.HORIZONTAL);
             binding.coursesEnrol.addItemDecoration(dividerItemDecoration);
-            adapter=new EnrollHistoryAdapter(context,enrollHistoryUserDataList,0);
+            adapter=new EnrollHistoryAdapter(context,enrollHistoryUserDataList,0,fragmentManager);
             binding.coursesEnrol.setAdapter(adapter);
         }
 
@@ -133,7 +166,6 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         private void DeleteStudent(String id){
-            binding.studentItemProgressbar.setVisibility(View.VISIBLE);
             AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
             Call<StudentResponse> StudentResponseCall = academyApis.deleteStudent(id);
             Log.i(TAG,StudentResponseCall.request().url()+"");
@@ -143,10 +175,10 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     if (response.isSuccessful()){
                         StudentResponse StudentResponse = response.body();
                         if (StudentResponse.getCode().equals("200") && !StudentResponse.getStatus().equals("FAILED")){
-                            binding.studentItemProgressbar.setVisibility(View.GONE);
+                            deleteDialog.dismiss();
                             deleteListener.OnDelete(StudentResponse.getStatus(),StudentResponse.getMessage());
                         }else {
-                            binding.studentItemProgressbar.setVisibility(View.GONE);
+                            deleteDialog.dismiss();
                             new AlertDialog.Builder(context)
                                     .setTitle(StudentResponse.getStatus())
                                     .setMessage(StudentResponse.getMessage())
@@ -154,7 +186,7 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             Log.i(TAG,StudentResponse.getStatus()+" delete");
                         }
                     }else {
-                        binding.studentItemProgressbar.setVisibility(View.GONE);
+                        deleteDialog.dismiss();
                         new AlertDialog.Builder(context)
                                 .setTitle("Failed")
                                 .setMessage(response.message())
@@ -165,7 +197,7 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                 @Override
                 public void onFailure(Call<StudentResponse> call, Throwable t) {
-                    binding.studentItemProgressbar.setVisibility(View.GONE);
+                    deleteDialog.dismiss();
                     new AlertDialog.Builder(context)
                             .setTitle("Failed")
                             .setMessage(t.getMessage())

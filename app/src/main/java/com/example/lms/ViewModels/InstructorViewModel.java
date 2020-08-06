@@ -1,20 +1,14 @@
 package com.example.lms.ViewModels;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.ProgressBar;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.lms.Listener.InstructorListener;
-import com.example.lms.Model.InstructorData;
 import com.example.lms.Model.InstructorResponse;
-import com.example.lms.Model.StudentData;
 import com.example.lms.Repository.InstructorRepository;
-import com.example.lms.Repository.StudentRepository;
-
-import java.util.List;
 
 import retrofit2.Response;
 

@@ -2,7 +2,6 @@ package com.example.lms;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -12,18 +11,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
-import com.example.lms.Adapters.EnrollHistoryAdapter;
 import com.example.lms.Model.CourseData;
 import com.example.lms.Model.CourseResponse;
-import com.example.lms.Model.StudentData;
+import com.example.lms.Model.UserData;
 import com.example.lms.Model.StudentResponse;
 import com.example.lms.Model.Utils;
 import com.example.lms.Retorfit.AcademyApis;
 import com.example.lms.Retorfit.RetrofitService;
-import com.example.lms.activity.AddCategory;
 import com.example.lms.databinding.FragmentEnrollStudentBinding;
 
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +43,7 @@ public class Enroll_Student extends Fragment {
     final String TAG = Enroll_Student.class.getSimpleName();
     final String ROLE =  "student";
     FragmentEnrollStudentBinding binding;
-    List<StudentData> dataList = new ArrayList<>();
+    List<UserData> dataList = new ArrayList<>();
     List<String> stringList = new ArrayList<>();
 
     List<CourseData> courseData = new ArrayList<>();
@@ -129,7 +125,7 @@ public class Enroll_Student extends Fragment {
                     StudentResponse studentResponse = studentResponseResponse.body();
                     if (studentResponse.getCode().equals("200") && studentResponse.getStatus().equals("success")){
                         dataList = studentResponse.getData();
-                        for (StudentData data:dataList){
+                        for (UserData data:dataList){
                             stringList.add(data.getFirst_name()+" "+data.getLast_name());
                         }
                         setupUserSpinner();

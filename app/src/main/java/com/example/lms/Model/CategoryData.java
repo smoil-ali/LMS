@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class CategoryData implements Serializable {
     String id;
     String code;
-    String name;
+    String name="CGIT";
     String parent;
     String slug;
     String date_added;

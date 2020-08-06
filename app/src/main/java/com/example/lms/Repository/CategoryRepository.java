@@ -40,9 +40,6 @@ public class CategoryRepository {
 
         });
     }
-
-
-
     public void setCategoryListener(CategoryListener categoryListener){
         this.categoryListener = categoryListener;
     }

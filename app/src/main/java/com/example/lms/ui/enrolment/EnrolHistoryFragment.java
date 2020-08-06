@@ -6,9 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,25 +17,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.lms.Adapters.CourserAdapter;
 import com.example.lms.Adapters.EnrollHistoryAdapter;
-import com.example.lms.Factories.CourseFactory;
 import com.example.lms.Factories.EnrollHistoryFactory;
 import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.Constants;
 import com.example.lms.Model.EnrollHistoryUserData;
-import com.example.lms.Model.EnrollmentHistoryData;
 import com.example.lms.Model.EnrollmentHistoryResponse;
-import com.example.lms.Model.Error;
-import com.example.lms.Model.NetworkState;
-import com.example.lms.Model.Utils;
-import com.example.lms.R;
-import com.example.lms.ViewModels.CourseViewModel;
 import com.example.lms.ViewModels.EnrollHistoryViewModel;
 import com.example.lms.databinding.FragmentEnrolhistoryBinding;
 
 import java.text.SimpleDateFormat;
-import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -115,7 +104,7 @@ public class EnrolHistoryFragment extends Fragment implements deleteListener {
                 DividerItemDecoration.HORIZONTAL);
         binding.enrollHistoryRecyclerview.addItemDecoration(dividerItemDecoration);
         binding.enrollHistoryRecyclerview.setNestedScrollingEnabled(false);
-        adapter=new EnrollHistoryAdapter(getContext(),dataList,1);
+        adapter=new EnrollHistoryAdapter(getContext(),dataList,1,getParentFragmentManager());
         binding.enrollHistoryRecyclerview.setAdapter(adapter);
     }
 

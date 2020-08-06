@@ -1,6 +1,6 @@
 package com.example.lms.Adapters;
 
-import android.app.AlertDialog;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
@@ -9,20 +9,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.CategoryData;
 import com.example.lms.Model.CourseData;
 import com.example.lms.Model.CourseResponse;
+import com.example.lms.Model.Utils;
 import com.example.lms.R;
 import com.example.lms.Retorfit.AcademyApis;
 import com.example.lms.Retorfit.RetrofitService;
 import com.example.lms.ViewModels.CourseViewModel;
 import com.example.lms.activity.Login;
 import com.example.lms.databinding.CoursesItemBinding;
+import com.example.lms.dialogs.DeleteDialog;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -31,15 +37,25 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CourserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+import static com.example.lms.Model.Constants.SUCCESS;
+
+public class CourseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Context context;
     ArrayList<CourseData> courseDataArrayList ;
-    String TAG = CourserAdapter.class.getSimpleName();
+    String TAG = CourseAdapter.class.getSimpleName();
+    DeleteDialog deleteDialog = new DeleteDialog();
+    deleteListener deleteListener;
+    FragmentManager manager;
 
-    public CourserAdapter(Context context, ArrayList<CourseData> courseDataArrayList) {
+    public CourseAdapter(Context context, ArrayList<CourseData> courseDataArrayList,FragmentManager manager) {
         this.context = context;
         this.courseDataArrayList = courseDataArrayList;
+        this.manager = manager;
+    }
+
+    public void setDeleteListener(deleteListener deleteListener){
+        this.deleteListener = deleteListener;
     }
 
 
@@ -55,7 +71,7 @@ public class CourserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Log.i(TAG,courseDataArrayList.size()+"");
-        ((CourseViewHolder)holder).bindView(courseDataArrayList.get(position),position);
+        ((CourseViewHolder)holder).bindView(courseDataArrayList.get(position));
     }
 
     @Override
@@ -71,7 +87,7 @@ public class CourserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         @RequiresApi(api = Build.VERSION_CODES.N)
-        public void bindView(CourseData courseData, int position){
+        public void bindView(CourseData courseData){
             binding.courseCategory.setText(courseData.getCategory().getName());
             binding.totalSection.setText(String.valueOf(courseData.getSection().getCount()));
             binding.courseStatus.setText(courseData.getStatus());
@@ -85,8 +101,19 @@ public class CourserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 PopupMenu menu=new PopupMenu(context,binding.moreMenu);
                 menu.getMenuInflater().inflate(R.menu.popup_menu,menu.getMenu());
                 menu.setOnMenuItemClickListener(item -> {
-                    if (item.getItemId()==R.id.delete)
-                    deleteCaourses(courseData.getId(),position);
+                    if (item.getItemId()==R.id.delete){
+                        new AlertDialog.Builder(context)
+                                .setTitle("Alert!!!")
+                                .setMessage("You want to delete?")
+                                .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+                                .setPositiveButton("OK", (dialogInterface, i) -> {
+                                    Utils.openDialog(manager,deleteDialog);
+                                    deleteCourse(courseData.getId());
+                                }).show();
+
+                    }else {
+                        Toast.makeText(context, "edit", Toast.LENGTH_SHORT).show();
+                    }
                     return true;
                 });
                 menu.show();
@@ -95,7 +122,7 @@ public class CourserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         }
 
-        private void deleteCaourses(String id, int position){
+        private void deleteCourse(String id){
             AcademyApis apis= RetrofitService.createService(AcademyApis.class);
            Call<CourseResponse> courseResponseCall=apis.deleteCourse(id);
            courseResponseCall.enqueue(new Callback<CourseResponse>() {
@@ -103,14 +130,11 @@ public class CourserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                public void onResponse(Call<CourseResponse> call, Response<CourseResponse> response) {
                    if (response.isSuccessful()){
                        CourseResponse courseResponse=response.body();
-                       if (courseResponse.getCode().equals("200")){
-                           new AlertDialog.Builder(context)
-                                   .setTitle(courseResponse.getStatus())
-                                   .setMessage(courseResponse.getMessage())
-                                   .setPositiveButton("OK",(((dialog, which) -> dialog.dismiss()))).show();
-                           courseDataArrayList.remove(position);
-                           notifyItemChanged(position);
+                       if (courseResponse.getCode().equals("200") && courseResponse.getStatus().equals(SUCCESS)){
+                           deleteDialog.dismiss();
+                           deleteListener.OnDelete(courseResponse.getStatus(),courseResponse.getMessage());
                        }else{
+                           deleteDialog.dismiss();
                            new androidx.appcompat.app.AlertDialog.Builder(context)
                                    .setTitle(courseResponse.getStatus())
                                    .setMessage(courseResponse.getMessage())
@@ -118,6 +142,7 @@ public class CourserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                            Log.i(TAG,courseResponse.getStatus()+" delete");
                        }
                    }else {
+                       deleteDialog.dismiss();
                        new androidx.appcompat.app.AlertDialog.Builder(context)
                                .setTitle("Failed")
                                .setMessage(response.message())
@@ -128,6 +153,7 @@ public class CourserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                @Override
                public void onFailure(Call<CourseResponse> call, Throwable t) {
+                   deleteDialog.dismiss();
                    new androidx.appcompat.app.AlertDialog.Builder(context)
                            .setTitle("Failed")
                            .setMessage(t.getMessage())

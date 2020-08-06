@@ -251,8 +251,9 @@ public class CourseData {
         this.is_admin = is_admin;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public String getStatus() {
-        return status;
+        return Optional.ofNullable(status).orElse("CGIT");
     }
 
     public void setStatus(String status) {

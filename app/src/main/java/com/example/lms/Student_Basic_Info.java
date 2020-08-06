@@ -14,8 +14,11 @@ import android.view.ViewGroup;
 
 import com.example.lms.Model.AddBasicUserModel;
 import com.example.lms.Model.addContainer;
+import com.example.lms.activity.AddStudent;
 import com.example.lms.databinding.FragmentStudentBasicInfoBinding;
 import com.example.lms.ui.addcourses.FinishFragment;
+
+import static com.example.lms.Model.Constants.EDIT;
 
 
 public class Student_Basic_Info extends Fragment {
@@ -32,11 +35,6 @@ public class Student_Basic_Info extends Fragment {
 
         binding = FragmentStudentBasicInfoBinding.inflate(inflater,container,false);
 
-        if (savedInstanceState != null){
-            binding.firstName.setText(savedInstanceState.getString("firstName"));
-            binding.lastName.setText(savedInstanceState.getString("lastName"));
-            binding.biography.setText(savedInstanceState.getString("bio"));
-        }
 
         binding.firstName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -95,6 +93,16 @@ public class Student_Basic_Info extends Fragment {
             }
         });
 
+        if (savedInstanceState != null){
+            binding.firstName.setText(savedInstanceState.getString("firstName"));
+            binding.lastName.setText(savedInstanceState.getString("lastName"));
+            binding.biography.setText(savedInstanceState.getString("bio"));
+        }else {
+            if (AddStudent.ACTION.equals(EDIT)){
+                setValues();
+            }
+        }
+
         return binding.getRoot();
     }
 
@@ -110,5 +118,11 @@ public class Student_Basic_Info extends Fragment {
         outState.putString("lastName",LastName);
         outState.putString("firstName",FirstName);
         outState.putString("bio",Bio);
+    }
+
+    public void setValues(){
+        binding.firstName.setText(AddStudent.userData.getFirst_name());
+        binding.lastName.setText(AddStudent.userData.getLast_name());
+        binding.biography.setText(AddStudent.userData.getBiography());
     }
 }

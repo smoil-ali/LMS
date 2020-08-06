@@ -88,7 +88,7 @@ public class CategoriesFragment extends Fragment implements deleteListener {
                 DividerItemDecoration.HORIZONTAL);
         binding.rvCategories.addItemDecoration(dividerItemDecoration);
         //binding.rvCategories.setNestedScrollingEnabled(false);
-        adapter=new CategoryAdapter(getContext(),dataList);
+        adapter=new CategoryAdapter(getContext(),dataList,getParentFragmentManager());
         binding.rvCategories.setAdapter(adapter);
     }
 

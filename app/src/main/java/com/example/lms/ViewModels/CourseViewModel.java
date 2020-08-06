@@ -33,6 +33,11 @@ public class CourseViewModel extends ViewModel implements CourseListener {
         courseRepository.setCourseListener(this);
     }
 
+    public void update(Context context,ProgressBar progressBar){
+        courseRepository = new CourseRepository(context,progressBar);
+        courseRepository.setCourseListener(this);
+    }
+
     @Override
     public void courseListener(Response<CourseResponse> response) {
         arrayListMutableLiveData.setValue(response);

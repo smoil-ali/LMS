@@ -9,37 +9,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.lms.Adapters.EnrollHistoryAdapter;
 import com.example.lms.Adapters.StudentAdapter;
-import com.example.lms.Factories.EnrollHistoryFactory;
 import com.example.lms.Factories.StudentFactory;
 import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.Constants;
-import com.example.lms.Model.EnrollHistoryUserData;
-import com.example.lms.Model.EnrollmentHistoryResponse;
-import com.example.lms.Model.StudentData;
+import com.example.lms.Model.UserData;
 import com.example.lms.Model.StudentResponse;
-import com.example.lms.R;
 
 import com.example.lms.ViewModels.StudentViewModel;
 import com.example.lms.databinding.FragmentStudentsBinding;
-import com.example.lms.ui.enrolment.EnrolHistoryFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Response;
 
 public class StudentFragment extends Fragment implements deleteListener {
 
     StudentViewModel viewModel;
     FragmentStudentsBinding binding;
-    List<StudentData> dataList = new ArrayList<>();
+    List<UserData> dataList = new ArrayList<>();
     StudentAdapter adapter;
     @Nullable
     @Override
@@ -86,7 +77,7 @@ public class StudentFragment extends Fragment implements deleteListener {
                 DividerItemDecoration.HORIZONTAL);
         binding.rvStudent.addItemDecoration(dividerItemDecoration);
         binding.rvStudent.setNestedScrollingEnabled(false);
-        adapter=new StudentAdapter(getContext(),dataList);
+        adapter=new StudentAdapter(getContext(),dataList,getParentFragmentManager());
         binding.rvStudent.setAdapter(adapter);
     }
 

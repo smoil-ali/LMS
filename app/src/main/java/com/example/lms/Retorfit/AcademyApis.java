@@ -268,4 +268,44 @@ public interface AcademyApis {
     @GET("?action=settings&currency=all")
     Call<AllCurrencies> getAllCurrencies();
 
+    //paypal currency
+    //http://lms.amnaikhlaq.com/api/index.php?action=settings&currency=paypal
+    @GET("?action=settings&currency=paypal")
+    Call<AllCurrencies> getPaypalCurrencies();
+
+    //stripe Currency
+    //http://lms.amnaikhlaq.com/api/index.php?action=settings&currency=stripe
+    @GET("?action=settings&currency=stripe")
+    Call<AllCurrencies> getStripeCurrencies();
+
+    //update all currency
+    //http://lms.amnaikhlaq.com/api/index.php?action=settings&type=update&key=system_email&value=email.com
+
+
+
+    //update paypal currency
+    //http://lms.amnaikhlaq.com/api/index.php?action=settings&type=update&key=paypal&active=act&mode=1&sandbox_client_id=null&sandbox_secret_key=null&production_client_id=null&production_secret_key=null
+
+    @GET("?action=settings&type=update&key=paypal")
+    Call<AllCurrencies> updatePaypalSettings(@Query("active") String active,
+                                               @Query("mode") String mode,
+                                               @Query("sandbox_client_id") String sandbox_client_id,
+                                               @Query("sandbox_secret_key") String sandbox_secret_key,
+                                               @Query("production_client_id") String production_client_id,
+                                               @Query("production_secret_key") String production_secret_key
+                                               );
+
+    //update stripe keys
+    //http://lms.amnaikhlaq.com/api/index.php?action=settings&type=update&key=stripe_key&active=1&testmode=on&public_key=null&secret_key=null&public_live_key=null&secret_live_key=null
+
+    @GET("?action=settings&type=update&key=stripe_keys")
+    Call<AllCurrencies> updateStripeSettings(@Query("active") String active,
+                                             @Query("testmode") String testmode,
+                                             @Query("public_key") String public_key,
+                                             @Query("secret_key") String secret_key,
+                                             @Query("public_live_key") String public_live_key,
+                                             @Query("secret_live_key") String secret_live_key
+                                             );
+
+
 }

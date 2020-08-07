@@ -86,4 +86,8 @@
     <string name="to">To</string>
     <string name="filter">Filter</string>
     <string name="deleting">Deleting...</string>
+    <string name="add_section">Add Section</string>
+    <string name="add_lesson">Add Lesson</string>
+    <string name="add_quiz">Add Quiz</string>
+    <string name="curriculum">Curriculum</string>
 </resources>

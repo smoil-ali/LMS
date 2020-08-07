@@ -2,6 +2,7 @@ package com.example.lms.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,9 +28,11 @@ import com.example.lms.Retorfit.AcademyApis;
 import com.example.lms.Retorfit.RetrofitService;
 import com.example.lms.ViewModels.CourseViewModel;
 import com.example.lms.activity.Login;
+import com.example.lms.activity.UpdateCourse;
 import com.example.lms.databinding.CoursesItemBinding;
 import com.example.lms.dialogs.DeleteDialog;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -37,6 +40,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.lms.Model.Constants.DATA;
+import static com.example.lms.Model.Constants.FROM;
 import static com.example.lms.Model.Constants.SUCCESS;
 
 public class CourseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -112,7 +117,9 @@ public class CourseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 }).show();
 
                     }else {
-                        Toast.makeText(context, "edit", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(context, UpdateCourse.class);
+                        intent.putExtra(DATA,(Serializable) courseData);
+                        context.startActivity(intent);
                     }
                     return true;
                 });

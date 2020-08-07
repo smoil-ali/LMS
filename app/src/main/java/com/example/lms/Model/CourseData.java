@@ -5,9 +5,10 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import java.io.Serializable;
 import java.util.Optional;
 
-public class CourseData {
+public class CourseData implements Serializable {
     private String id;
 
     private String title;
@@ -23,15 +24,6 @@ public class CourseData {
     private String category_id;
 
     private String sub_category_id;
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public Section getSection() {
-        return Optional.ofNullable(section).orElse(new Section());
-    }
-
-    public void setSection(Section section) {
-        this.section = section;
-    }
 
     private Section section;
 
@@ -80,6 +72,16 @@ public class CourseData {
     private Enrollment enrollment;
 
     private Instructor instructor;
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public Section getSection() {
+        return Optional.ofNullable(section).orElse(new Section());
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
+    }
+
 
     public String getId() {
         return id;

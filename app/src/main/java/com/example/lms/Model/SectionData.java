@@ -1,6 +1,8 @@
 package com.example.lms.Model;
 
-public class SectionData {
+import java.io.Serializable;
+
+public class SectionData implements Serializable {
     private String id;
 
     private String title;

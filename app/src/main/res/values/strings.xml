@@ -90,4 +90,5 @@
     <string name="add_lesson">Add Lesson</string>
     <string name="add_quiz">Add Quiz</string>
     <string name="curriculum">Curriculum</string>
+    <string name="video_url_for_web_app">Video Url For Web App</string>
 </resources>

@@ -136,13 +136,11 @@ public class Student_Payment_info extends Fragment {
         try {
             JSONArray jsonArray = new JSONArray(json);
             JSONArray jsonArray1 = new JSONArray(json2);
-
             for (int i=0;i < jsonArray.length();i++){
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 binding.payPalSecretId.setText(binding.payPalSecretId.getText().toString()+" "+jsonObject.getString("production_secret_key"));
                 binding.paypalClientId.setText(binding.paypalClientId.getText().toString()+" "+jsonObject.getString("production_client_id"));
             }
-
             for (int i=0;i<jsonArray1.length();i++){
                 JSONObject jsonObject = jsonArray1.getJSONObject(i);
                 binding.stripeSecretKey.setText(binding.stripeSecretKey.getText().toString()+" "+jsonObject.getString("secret_live_key"));

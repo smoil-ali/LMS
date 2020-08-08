@@ -25,6 +25,7 @@ import com.example.lms.R;
 import com.example.lms.Retorfit.AcademyApis;
 import com.example.lms.Retorfit.RetrofitService;
 import com.example.lms.activity.AddCourse;
+import com.example.lms.activity.UpdateCourse;
 import com.example.lms.databinding.ActivityAddCourseBinding;
 import com.example.lms.databinding.FragmentBasicBinding;
 import com.google.android.material.tabs.TabLayout;
@@ -143,19 +144,8 @@ public class BasicFragment extends Fragment implements AdapterView.OnItemSelecte
              checkTopCourse = b;
         });
 
-        if (savedInstanceState != null){
-            setupLevelSpinner();
-            setupLanguageSpinner();
-            getCategoryList();
-
-            binding.levelSpinner.setSelection(savedInstanceState.getInt("level"));
-            binding.languageSpinner.setSelection(savedInstanceState.getInt("language"));
-            binding.categorySpinner.setSelection(savedInstanceState.getInt("cat"));
-            binding.checkTopCourse.setSelected(savedInstanceState.getBoolean("ctc"));
-            binding.courseTitle.setText(savedInstanceState.getString("ct"));
-            binding.shortDescription.setText(savedInstanceState.getString("sd"));
-            binding.description.setText(savedInstanceState.getString("des"));
-        }else {
+        if (savedInstanceState == null){
+            setValues();
             setupLevelSpinner();
             setupLanguageSpinner();
             getCategoryList();
@@ -230,21 +220,18 @@ public class BasicFragment extends Fragment implements AdapterView.OnItemSelecte
 
     }
 
+    public void setValues(){
+        binding.courseTitle.setText(UpdateCourse.courseData.getTitle());
+        binding.shortDescription.setText(UpdateCourse.courseData.getShort_description());
+        binding.description.setText(UpdateCourse.courseData.getDescription());
+        binding.checkTopCourse.setSelected(Boolean.parseBoolean(UpdateCourse.courseData.getIs_top_course()));
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         Container.setModel(model);
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("cat",categoryPos);
-        outState.putInt("level",levelPos);
-        outState.putInt("language",languagePos);
-        outState.putBoolean("ctc",checkTopCourse);
-        outState.putString("ct",courseTitle);
-        outState.putString("sd",shortDescription);
-        outState.putString("des",Description);
-    }
+
 }

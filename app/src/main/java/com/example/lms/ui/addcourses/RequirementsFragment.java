@@ -22,14 +22,21 @@ import androidx.fragment.app.Fragment;
 import com.example.lms.MainActivity;
 import com.example.lms.Model.Container;
 import com.example.lms.R;
+import com.example.lms.activity.AddStudent;
 import com.example.lms.databinding.FragmentRequirementsCourseBinding;
+import com.example.lms.dialogs.AddLesson;
+import com.example.lms.dialogs.AddSection;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static com.example.lms.activity.UpdateCourse.courseData;
 
 public class RequirementsFragment extends Fragment {
 
@@ -41,14 +48,8 @@ public class RequirementsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding=FragmentRequirementsCourseBinding.inflate(inflater,container,false);
         Bundle data =getArguments();
-
-
-        binding.addbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                generateField();
-            }
-        });
+        setValues();
+        binding.addbtn.setOnClickListener(v -> generateField("null"));
 
         return binding.getRoot();
     }
@@ -65,16 +66,16 @@ public class RequirementsFragment extends Fragment {
         getAllChildElements(binding.container);
     }
 
-    private void generateField() {
-
+    private void generateField(String text) {
         LinearLayout linearLayout=new LinearLayout(getContext());
         linearLayout.setWeightSum(2);
-
         TextInputEditText textInputEditText=new TextInputEditText(getContext());
         textInputEditText.setInputType(InputType.TYPE_CLASS_TEXT);
         TextInputLayout textInputLayout=new TextInputLayout(getContext());
         textInputLayout.addView(textInputEditText);
         textInputLayout.setHint(getResources().getString(R.string.requirements));
+        if (!text.equals("null"))
+            textInputEditText.setText(text);
         LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,(float)1.5);
         textInputLayout.setLayoutParams(layoutParams);
 
@@ -95,12 +96,7 @@ public class RequirementsFragment extends Fragment {
         imageButton.setBackgroundTintList(ContextCompat.getColorStateList(getContext(),R.color.colorRed));
         imageButton.setElevation(elevation);
 
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                linearLayout.removeAllViews();
-            }
-        });
+        imageButton.setOnClickListener(v -> linearLayout.removeAllViews());
 
         linearLayout1.addView(imageButton);
         linearLayout1.setGravity(Gravity.END);
@@ -129,6 +125,19 @@ public class RequirementsFragment extends Fragment {
             }
         }
         Container.setListOfRequirements(listOfRequirements);
+    }
+
+
+    public void setValues(){
+        Log.i(TAG, courseData.getRequirements());
+        String json = courseData.getRequirements();
+        if (!json.equals("null")){
+            List<String> listOfRequirements = Arrays.asList(new Gson().fromJson(json,String[].class));
+            binding.requiremets.setText(listOfRequirements.get(0));
+            for (int i=1;i<listOfRequirements.size();i++){
+                generateField(listOfRequirements.get(i));
+            }
+        }
     }
 
 }

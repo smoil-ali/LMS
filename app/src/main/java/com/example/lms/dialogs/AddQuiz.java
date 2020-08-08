@@ -16,30 +16,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.lms.databinding.DeleteProgressDialogBinding;
+import com.example.lms.databinding.AddQuizBinding;
 
-public class DeleteDialog extends DialogFragment {
-    final String TAG = DeleteDialog.class.getSimpleName();
-    DeleteProgressDialogBinding binding;
-    String text;
+public class AddQuiz extends DialogFragment {
 
-    public void setText(String text) {
-        this.text = text;
+    final String TAG= AddQuiz.class.getSimpleName();
+    AddQuizBinding binding;
+
+    public AddQuiz() {
     }
-
-    public DeleteDialog() {
-    }
-
-
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DeleteProgressDialogBinding.inflate(inflater,container,false);
+        binding = AddQuizBinding.inflate(inflater,container,false);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        if (text != null){
-            binding.textView.setText(text);
-        }
+
+
         return binding.getRoot();
     }
 
@@ -59,4 +52,5 @@ public class DeleteDialog extends DialogFragment {
         // Call super onResume after sizing
         super.onResume();
     }
+
 }

@@ -8,8 +8,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.example.lms.Model.AddBasicUserModel;
+import com.example.lms.Model.AddUserLogindata;
 import com.example.lms.Model.Constants;
+import com.example.lms.Model.SocialLinks;
 import com.example.lms.Model.UserData;
+import com.example.lms.Model.addContainer;
+import com.example.lms.Model.addUserPaymentData;
+import com.example.lms.Model.addUserSocialData;
 import com.example.lms.R;
 import com.example.lms.StudentLoginCredentials;
 import com.example.lms.StudentSocialInformation;
@@ -18,6 +24,11 @@ import com.example.lms.Student_Payment_info;
 import com.example.lms.Student_finish;
 import com.example.lms.databinding.ActivityAddStudentBinding;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static com.example.lms.Model.Constants.DATA;
 import static com.example.lms.Model.Constants.EDIT;
@@ -43,7 +54,7 @@ public class AddStudent extends AppCompatActivity {
         ACTION = bundle.getString(Constants.ACTION);
         if (ACTION.equals(EDIT)){
             userData = (UserData) bundle.getSerializable(DATA);
-
+            setData();
         }
 
         if (savedInstanceState == null){
@@ -114,5 +125,60 @@ public class AddStudent extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("pos",position);
+    }
+
+    public void setData(){
+        setBasicData();
+        setLoginData();
+        setSocialData();
+        setPaymentData();
+    }
+
+    public void setBasicData(){
+        AddBasicUserModel model= new AddBasicUserModel();
+        model.setFirstName(userData.getFirst_name());
+        model.setLastName(userData.getLast_name());
+        model.setBiography(userData.getBiography());
+        addContainer.setModel(model);
+    }
+
+    public void setLoginData(){
+        AddUserLogindata model = new AddUserLogindata();
+        model.setEmail(userData.getEmail());
+        model.setPassword(userData.getPassword());
+        addContainer.setAddUserLogindata(model);
+    }
+
+    public void setSocialData(){
+        addUserSocialData model = new addUserSocialData();
+        String json = AddStudent.userData.getSocial_links();
+        SocialLinks socialLinks = new Gson().fromJson(json,SocialLinks.class);
+        model.setFacebook(socialLinks.getFacebook());
+        model.setTwitter(socialLinks.getTwitter());
+        model.setLinkedin(socialLinks.getLinkedin());
+        addContainer.setAddUserSocialData(model);
+    }
+
+    public void setPaymentData(){
+        addUserPaymentData model = new addUserPaymentData();
+        String json = AddStudent.userData.getPaypal_keys();
+        String json2 = AddStudent.userData.getStripe_keys();
+        try {
+            JSONArray jsonArray = new JSONArray(json);
+            JSONArray jsonArray1 = new JSONArray(json2);
+            for (int i=0;i < jsonArray.length();i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                model.setPaypalSecretId(jsonObject.getString("production_secret_key"));
+                model.setPaypalClientId(jsonObject.getString("production_client_id"));
+            }
+            for (int i=0;i<jsonArray1.length();i++){
+                JSONObject jsonObject = jsonArray1.getJSONObject(i);
+                model.setStripeSecretKey(jsonObject.getString("secret_live_key"));
+                model.setStripePublicKey(jsonObject.getString("public_live_key"));
+            }
+            addContainer.setAddUserPaymentData(model);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

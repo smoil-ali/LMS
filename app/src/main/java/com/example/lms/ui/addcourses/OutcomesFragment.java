@@ -20,9 +20,13 @@ import com.example.lms.R;
 import com.example.lms.databinding.FragmentOutcomesCourseBinding;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static com.example.lms.activity.UpdateCourse.courseData;
 
 public class OutcomesFragment extends Fragment {
 
@@ -34,16 +38,17 @@ public class OutcomesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding=FragmentOutcomesCourseBinding.inflate(inflater,container,false);
+        setValues();
         binding.addbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                generateField();
+                generateField("null");
             }
         });
         return binding.getRoot();
     }
 
-    private void generateField() {
+    private void generateField(String text) {
 
         LinearLayout linearLayout=new LinearLayout(getContext());
         linearLayout.setWeightSum(2);
@@ -52,6 +57,8 @@ public class OutcomesFragment extends Fragment {
         TextInputLayout textInputLayout=new TextInputLayout(requireContext());
         textInputLayout.addView(textInputEditText);
         textInputLayout.setHint(getResources().getString(R.string.outcomes));
+        if (!text.equals("null"))
+            textInputEditText.setText(text);
         LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,(float)1.5);
         textInputLayout.setLayoutParams(layoutParams);
 
@@ -114,5 +121,17 @@ public class OutcomesFragment extends Fragment {
         }
         Container.setListOfOutcomes(listOfOutcomes);
         Container.setListOfOutcomes(listOfOutcomes);
+    }
+
+    public void setValues(){
+        Log.i(TAG, courseData.getOutcomes());
+        String json = courseData.getOutcomes();
+        if (!json.equals("null")){
+            List<String> listOfRequirements = Arrays.asList(new Gson().fromJson(json,String[].class));
+            binding.requiremets.setText(listOfRequirements.get(0));
+            for (int i=1;i<listOfRequirements.size();i++){
+                generateField(listOfRequirements.get(i));
+            }
+        }
     }
 }

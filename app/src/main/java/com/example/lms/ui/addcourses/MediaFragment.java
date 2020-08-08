@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.example.lms.Model.Constants;
 import com.example.lms.Model.Container;
 import com.example.lms.Model.MediaFragmentModel;
+import com.example.lms.activity.UpdateCourse;
 import com.example.lms.databinding.FragmentMediaCourseBinding;
 
 import java.util.ArrayList;
@@ -59,6 +60,9 @@ public class MediaFragment extends Fragment {
 
             }
         });
+        setValues();
+
+        
         return binding.getRoot();
     }
 
@@ -73,5 +77,10 @@ public class MediaFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         Container.setMediaFragmentModel(model);
+    }
+
+    public void setValues(){
+        binding.url.setText(UpdateCourse.courseData.getVideo_url());
+        binding.selectThumbnail.setText(UpdateCourse.courseData.getThumbnail());
     }
 }

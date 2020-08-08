@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.lms.Model.BasicFragmentModel;
+import com.example.lms.Model.Constants;
 import com.example.lms.Model.Container;
 import com.example.lms.Model.CourseUpdateResponse;
 import com.example.lms.Model.CourseUpdateResponse;
@@ -31,6 +32,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.lms.Model.Constants.SUCCESS;
+
 public class FinishFragment extends Fragment {
 
     FragmentFinishCourseBinding binding;
@@ -40,7 +43,7 @@ public class FinishFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding= FragmentFinishCourseBinding.inflate(inflater,container,false);
-
+        binding.submit.setText("Update Course");
         binding.submit.setOnClickListener(view -> validate());
         return binding.getRoot();
     }
@@ -57,8 +60,10 @@ public class FinishFragment extends Fragment {
     }
 
     public void submit(){
+        binding.submit.setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.VISIBLE);
         AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
-        Call<CourseUpdateResponse> CourseUpdateResponseCall = academyApis.addCourse(Container.getModel().getCourseTitle(),
+        Call<CourseUpdateResponse> CourseUpdateResponseCall = academyApis.updateCourse(Constants.COURSE_ID,Container.getModel().getCourseTitle(),
                 Container.getModel().getShortDescription(),Container.getModel().getDescription(),
                 Container.getListOfOutcomes(),Container.getModel().getLanguage(),Container.getModel().getLevel(),
                 Container.getModel().getIsTopCourse(),Container.getModel().getCategory_id(),Container.getListOfRequirements(),
@@ -74,19 +79,25 @@ public class FinishFragment extends Fragment {
             public void onResponse(Call<CourseUpdateResponse> call, Response<CourseUpdateResponse> response) {
                 if (response.isSuccessful()){
                     CourseUpdateResponse CourseUpdateResponse = response.body();
-                    if (CourseUpdateResponse.getCode().equals("200")){
+                    if (CourseUpdateResponse.getCode().equals("200") && CourseUpdateResponse.getStatus().equals(SUCCESS)){
+                        binding.submit.setVisibility(View.VISIBLE);
+                        binding.progressBar.setVisibility(View.GONE);
                         new AlertDialog.Builder(getContext())
                                 .setTitle(CourseUpdateResponse.getStatus())
                                 .setMessage(CourseUpdateResponse.getMessage())
                                 .setPositiveButton("OK",((dialog, which) -> getActivity().finish())).show();
                         makeEmpty();
                     }else {
+                        binding.submit.setVisibility(View.VISIBLE);
+                        binding.progressBar.setVisibility(View.GONE);
                         new AlertDialog.Builder(getContext())
                                 .setTitle(CourseUpdateResponse.getStatus())
                                 .setMessage(CourseUpdateResponse.getMessage())
                                 .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
                     }
                 }else {
+                    binding.submit.setVisibility(View.VISIBLE);
+                    binding.progressBar.setVisibility(View.GONE);
                     new AlertDialog.Builder(getContext())
                             .setTitle("Failed")
                             .setMessage(response.message())
@@ -97,6 +108,8 @@ public class FinishFragment extends Fragment {
 
             @Override
             public void onFailure(Call<CourseUpdateResponse> call, Throwable t) {
+                binding.submit.setVisibility(View.VISIBLE);
+                binding.progressBar.setVisibility(View.GONE);
                 new AlertDialog.Builder(getContext())
                         .setTitle("Failed")
                         .setMessage(t.getMessage())

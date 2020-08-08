@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.example.lms.Model.Constants;
 import com.example.lms.Model.Container;
 import com.example.lms.Model.PriceFragmentModel;
+import com.example.lms.activity.UpdateCourse;
 import com.example.lms.databinding.FragmentPricingCourseBinding;
 
 import java.time.temporal.TemporalAccessor;
@@ -85,6 +86,8 @@ public class PricingFragment extends Fragment {
             }
         });
 
+        setValues();
+
         return binding.getRoot();
     }
 
@@ -93,5 +96,13 @@ public class PricingFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         Container.setPriceFragmentModel(model);
+    }
+
+    public void setValues(){
+        binding.freeCourseCheck.setSelected(Boolean.parseBoolean(UpdateCourse.courseData.getIs_free_course()));
+        binding.coursePrice.setText(UpdateCourse.courseData.getPrice());
+        binding.discountCheck.setSelected(Boolean.parseBoolean(UpdateCourse.courseData.getDiscount_flag()));
+        binding.discountPrice.setText(UpdateCourse.courseData.getDiscounted_price());
+
     }
 }

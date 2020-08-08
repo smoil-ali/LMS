@@ -23,9 +23,13 @@ import com.example.lms.R;
 import com.example.lms.databinding.FragmentSeoCourseBinding;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static com.example.lms.activity.UpdateCourse.courseData;
 
 public class SeoFragment extends Fragment {
 
@@ -38,19 +42,16 @@ public class SeoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding=FragmentSeoCourseBinding.inflate(inflater,container,false);
 
-        binding.metaKeywords.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event.getAction()==KeyEvent.ACTION_DOWN) && (keyCode==KeyEvent.KEYCODE_ENTER)){
-                    Log.i(TAG,"press enter btn");
-                    if (!binding.metaKeywords.getText().toString().matches("")){
-                        addChip();
-                    }
-                    return true;
+        binding.metaKeywords.setOnKeyListener((v, keyCode, event) -> {
+            if ((event.getAction()==KeyEvent.ACTION_DOWN) && (keyCode==KeyEvent.KEYCODE_ENTER)){
+                Log.i(TAG,"press enter btn");
+                if (!binding.metaKeywords.getText().toString().matches("")){
+                    addChip("null");
                 }
-                return false;
-
+                return true;
             }
+            return false;
+
         });
 
         binding.seoDescription.addTextChangedListener(new TextWatcher() {
@@ -70,14 +71,19 @@ public class SeoFragment extends Fragment {
             }
         });
 
+        setValues();
         return binding.getRoot();
     }
 
 
-    private void addChip(){
+    private void addChip(String text){
         Chip chip=new Chip(requireContext());
         ChipDrawable chipDrawable = ChipDrawable.createFromResource(requireContext(), R.xml.chip_item);
-        chipDrawable.setText(binding.metaKeywords.getText().toString().trim());
+        if (!text.equals("null")){
+            chipDrawable.setText(text.trim());
+        }else {
+            chipDrawable.setText(binding.metaKeywords.getText().toString().trim());
+        }
         meta_keyWords.add(binding.metaKeywords.getText().toString());
         binding.metaKeywords.getText().clear();
         chip.setChipDrawable(chipDrawable);
@@ -95,5 +101,17 @@ public class SeoFragment extends Fragment {
         super.onDestroy();
         model.setMeta_list(meta_keyWords);
         Container.setSeoModelClass(model);
+    }
+
+    public void setValues(){
+        binding.metaDescription.setText(courseData.getMeta_description());
+        Log.i(TAG, courseData.getMeta_keywords());
+        String json = courseData.getMeta_keywords();
+        if (!json.equals("null")){
+            List<String> listOfRequirements = Arrays.asList(new Gson().fromJson(json,String[].class));
+            for (int i=0;i<listOfRequirements.size();i++){
+                addChip(listOfRequirements.get(i));
+            }
+        }
     }
 }

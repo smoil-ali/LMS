@@ -1,8 +1,11 @@
 package com.example.lms.Retorfit;
 
+import android.app.Application;
 import android.util.Log;
 
 import com.example.lms.Model.AllCurrencies;
+import com.example.lms.Model.ApplicationResponse;
+import com.example.lms.Model.ApprovedApplication;
 import com.example.lms.Model.CategoryResponse;
 import com.example.lms.Model.CourseCount;
 import com.example.lms.Model.CourseCountResponse;
@@ -306,6 +309,21 @@ public interface AcademyApis {
                                              @Query("public_live_key") String public_live_key,
                                              @Query("secret_live_key") String secret_live_key
                                              );
+
+
+
+
+    //approved application instructor
+    //http://lms.amnaikhlaq.com/api/index.php?action=applications&type=fetch&fetch=approved
+
+    @GET("?action=applications&type=fetch&fetch=approved")
+    Call<ApplicationResponse> getApprovedApplication();
+
+    //pending application instructor
+    //http://lms.amnaikhlaq.com/api/index.php?action=applications&type=fetch&fetch=pending
+
+    @GET("?action=applications&type=fetch&fetch=pending")
+    Call<ApplicationResponse> getPendingApplication();
 
 
 }

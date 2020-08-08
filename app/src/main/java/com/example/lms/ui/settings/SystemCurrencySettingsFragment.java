@@ -48,7 +48,9 @@ public class SystemCurrencySettingsFragment extends Fragment {
     Context context;
     String key,value;
     Handler handler;
+    String currency;
     int pos;
+    static int count=0;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,16 +63,19 @@ public class SystemCurrencySettingsFragment extends Fragment {
         settingsViewModel=new ViewModelProvider(requireActivity(), new SettingsFactory(binding.progressBar)).get(SettingsViewModel.class);
         settingsViewModel.getSettingsMutableData().observe(requireActivity(),data -> {
             String item=data.getCurrency_position().substring(0,1).toUpperCase()+data.getCurrency_position().substring(1);
-            int position=arrayAdapter.getPosition(item);
-            Log.i("position",String.valueOf(position+" "+item));
-            binding.currencyPositionSettings.setSelection(position);
+            if (data.getCurrency_position().equalsIgnoreCase("left"))
+                binding.currencyPositionSettings.setSelection(0);
+            else if (data.getCurrency_position().equalsIgnoreCase("right"))
+                binding.currencyPositionSettings.setSelection(1);
+            else if (data.getCurrency_position().equals("left-space"))
+                binding.currencyPositionSettings.setSelection(2);
+            else
+                binding.currencyPositionSettings.setSelection(3);
             binding.progressBar.setVisibility(View.GONE);
+
+            currency=data.getSystem_currency();
             getAllCurrency();
 
-            if (currencyAdapter!=null)
-            pos=currencyAdapter.getPosition(data.getSystem_currency());
-
-            binding.currencySettings.setSelection(pos);
         });
 
         binding.currencySettings.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -101,6 +106,7 @@ public class SystemCurrencySettingsFragment extends Fragment {
 
                 key="currency_position";
                 Log.i("spin",value);
+                ++count;
                 handler.removeCallbacks(runnable);
                 handler.postDelayed(runnable,1000);
             }
@@ -139,7 +145,10 @@ public class SystemCurrencySettingsFragment extends Fragment {
                         currencyAdapter=new ArrayAdapter<String>(context,android.R.layout.simple_spinner_dropdown_item,list);
                         currencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         binding.currencySettings.setAdapter(currencyAdapter);
-                       Log.i("list",list.get(1));
+                        pos=currencyAdapter.getPosition(currency);
+                        binding.currencySettings.setSelection(pos);
+                       Log.i("list",String.valueOf(pos));
+                       Log.i("currency",currency+"");
 
                     }else{
                         Toast.makeText(requireContext(),response.message(),Toast.LENGTH_LONG).show();

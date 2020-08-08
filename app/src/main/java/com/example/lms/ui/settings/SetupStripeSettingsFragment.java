@@ -1,11 +1,14 @@
 package com.example.lms.ui.settings;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -16,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.lms.Factories.SettingsFactory;
 import com.example.lms.Model.AllCurrencies;
+import com.example.lms.Model.SettingsResponse;
 import com.example.lms.Model.StripeKey;
 import com.example.lms.R;
 import com.example.lms.Retorfit.AcademyApis;
@@ -44,6 +48,11 @@ public class SetupStripeSettingsFragment extends Fragment {
     ArrayAdapter arrayAdapter;
     List<String> list;
     Context context;
+    String key;
+    String value;
+    Handler handler;
+    String currency;
+    int pos;
 
     @Nullable
     @Override
@@ -51,7 +60,24 @@ public class SetupStripeSettingsFragment extends Fragment {
         binding=FragmentSetupStripeSettingsBinding.inflate(inflater, container, false);
         setActiveSpinner();
         setTestModeSpinner();
-        getAllCurrency();
+
+        handler=new Handler();
+
+        binding.stripeCurrency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                value=binding.stripeCurrency.getSelectedItem().toString();
+                key="stripe_currency";
+                handler.removeCallbacks(runnable);
+                handler.postDelayed(runnable,1000);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         binding.updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +111,11 @@ public class SetupStripeSettingsFragment extends Fragment {
                 binding.mode.setSelection(0);
             else
                 binding.mode.setSelection(1);
+
+
+            currency=data.getStripe_currency();
+            getAllCurrency();
+
             binding.progressBar.setVisibility(View.GONE);
         });
 
@@ -115,6 +146,9 @@ public class SetupStripeSettingsFragment extends Fragment {
                         currencyAdapter=new ArrayAdapter<String>(context,android.R.layout.simple_spinner_dropdown_item,list);
                         currencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         binding.stripeCurrency.setAdapter(currencyAdapter);
+                        pos=currencyAdapter.getPosition(currency);
+
+                        binding.stripeCurrency.setSelection(pos);
                         Log.i("list",list.get(1));
 
                     }else{
@@ -166,5 +200,41 @@ public class SetupStripeSettingsFragment extends Fragment {
         });
     }
 
+    Runnable runnable=new Runnable() {
+        @Override
+        public void run() {
+            updateRecord(key,value);
+        }
+    };
 
+
+
+    public void updateRecord(String key, String value){
+
+        AcademyApis academyApis= RetrofitService.createService(AcademyApis.class);
+        Call<SettingsResponse> settingsResponseCall=academyApis.updateSettings(key,value);
+        settingsResponseCall.enqueue(new Callback<SettingsResponse>() {
+            @Override
+            public void onResponse(Call<SettingsResponse> call, Response<SettingsResponse> response) {
+
+                SettingsResponse settingsResponse=response.body();
+                if (response.isSuccessful()){
+                    settingsViewModel.udpateData(binding.progressBar);
+                    Toast.makeText(context,settingsResponse.getStatus(),Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(context,settingsResponse.getStatus(),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SettingsResponse> call, Throwable t) {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Failed")
+                        .setMessage(t.getMessage())
+                        .setPositiveButton("Ok",(((dialog, which) -> dialog.dismiss()))).show();
+            }
+        });
+
+
+    }
 }

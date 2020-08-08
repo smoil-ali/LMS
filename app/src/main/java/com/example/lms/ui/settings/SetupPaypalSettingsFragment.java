@@ -1,11 +1,14 @@
 package com.example.lms.ui.settings;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -17,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.lms.Factories.SettingsFactory;
 import com.example.lms.Model.AllCurrencies;
 import com.example.lms.Model.Paypal;
+import com.example.lms.Model.SettingsResponse;
 import com.example.lms.Model.paypalArray;
 import com.example.lms.R;
 import com.example.lms.Retorfit.AcademyApis;
@@ -46,13 +50,19 @@ public class SetupPaypalSettingsFragment extends Fragment {
     ArrayAdapter<String> currencyAdapter;
     List<String> list;
     Context context;
+    String key,value;
+    Handler handler;
+    String curr;
+    int pos;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding=FragmentSetupPaypalSettingsBinding.inflate(inflater, container, false);
         setActiveSpinner();
         setModeSpinner();
-        getAllCurrency();
+
+        handler=new Handler();
+
         binding.updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +84,21 @@ public class SetupPaypalSettingsFragment extends Fragment {
                 e.printStackTrace();
             }
 
+            binding.paypalCurrency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    key="paypal_currency";
+                    value=binding.paypalCurrency.getSelectedItem().toString();
+                    handler.removeCallbacks(runnable);
+                    handler.postDelayed(runnable,1000);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
             Paypal model=new Gson().fromJson(String.valueOf(paypalObj),  Paypal.class);
 //            data.setMode(model.getMode());
            /* data.setSandbox(model.getSandbox());
@@ -92,9 +117,17 @@ public class SetupPaypalSettingsFragment extends Fragment {
             String item=model.getMode().substring(0,1).toUpperCase()+model.getMode().substring(1).toLowerCase();
             int position=adapter.getPosition(item);
             binding.mode.setSelection(position);
+
+
+            curr=data.getPaypal_currency();
+
+            getAllCurrency();
+
+
             binding.progressBar.setVisibility(View.GONE);
 
         });
+
         return binding.getRoot();
     }
 
@@ -126,7 +159,10 @@ public class SetupPaypalSettingsFragment extends Fragment {
                         currencyAdapter=new ArrayAdapter<String>(context,android.R.layout.simple_spinner_dropdown_item,list);
                         currencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         binding.paypalCurrency.setAdapter(currencyAdapter);
-                        Log.i("list",list.get(1));
+                        pos=currencyAdapter.getPosition(curr);
+                        binding.paypalCurrency.setSelection(pos);
+
+                        Log.i("list",curr);
                     }else{
                         Toast.makeText(requireContext(),response.message(),Toast.LENGTH_LONG).show();
                     }
@@ -179,5 +215,43 @@ public class SetupPaypalSettingsFragment extends Fragment {
                 Toast.makeText(context,t.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    Runnable runnable=new Runnable() {
+        @Override
+        public void run() {
+            updateRecord(key,value);
+        }
+    };
+
+
+
+    public void updateRecord(String key, String value){
+
+        AcademyApis academyApis= RetrofitService.createService(AcademyApis.class);
+        Call<SettingsResponse> settingsResponseCall=academyApis.updateSettings(key,value);
+        settingsResponseCall.enqueue(new Callback<SettingsResponse>() {
+            @Override
+            public void onResponse(Call<SettingsResponse> call, Response<SettingsResponse> response) {
+
+                SettingsResponse settingsResponse=response.body();
+                if (response.isSuccessful()){
+                    settingsViewModel.udpateData(binding.progressBar);
+                    Toast.makeText(context,settingsResponse.getStatus(),Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(context,settingsResponse.getStatus(),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SettingsResponse> call, Throwable t) {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Failed")
+                        .setMessage(t.getMessage())
+                        .setPositiveButton("Ok",(((dialog, which) -> dialog.dismiss()))).show();
+            }
+        });
+
+
     }
 }

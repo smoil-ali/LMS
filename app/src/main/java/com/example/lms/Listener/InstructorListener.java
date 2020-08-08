@@ -1,11 +1,9 @@
 package com.example.lms.Listener;
 
-import com.example.lms.Model.InstructorData;
-import com.example.lms.Model.StudentData;
+import com.example.lms.Model.InstructorResponse;
 
-import java.util.List;
+import retrofit2.Response;
 
 public interface InstructorListener {
-    public void onSuccess(List<InstructorData> instructorData);
-    public void onError(String error);
+    public void onSuccess(Response<InstructorResponse> response);
 }

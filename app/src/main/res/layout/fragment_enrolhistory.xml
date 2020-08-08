@@ -3,12 +3,85 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/parent">
+    android:id="@+id/parent"
+    android:padding="@dimen/_10sdp"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/imgbtn_from"
+        app:layout_constraintBottom_toBottomOf="@id/imgbtn_from"
+        android:text="@string/from"
+        android:id="@+id/From"
+        app:layout_constraintStart_toStartOf="parent"/>
+    <ImageButton
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:src="@drawable/ic_date_range"
+        android:background="@null"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="@id/btn_filterResult"
+        app:layout_constraintBottom_toBottomOf="@id/btn_filterResult"
+        app:layout_constraintStart_toEndOf="@id/From"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:tint="@color/colorAccent"
+        android:id="@+id/imgbtn_from"
+        android:contentDescription="@string/image"/>
+    <TextView
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/imgbtn_from"
+        app:layout_constraintBottom_toBottomOf="@id/imgbtn_from"
+        app:layout_constraintStart_toEndOf="@id/imgbtn_from"
+        android:id="@+id/txt_from"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/imgbtn_to"
+        app:layout_constraintBottom_toBottomOf="@id/imgbtn_to"
+        android:text="@string/to"
+        android:id="@+id/To"
+        app:layout_constraintStart_toEndOf="@id/txt_from"
+        android:layout_marginStart="@dimen/_5sdp"/>
+
+    <ImageButton
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:src="@drawable/ic_date_range"
+        android:background="@null"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="@id/btn_filterResult"
+        app:layout_constraintBottom_toBottomOf="@id/btn_filterResult"
+        app:layout_constraintStart_toEndOf="@id/To"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:tint="@color/colorAccent"
+        android:id="@+id/imgbtn_to"
+        android:contentDescription="@string/image"/>
+    <TextView
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/imgbtn_to"
+        app:layout_constraintBottom_toBottomOf="@id/imgbtn_to"
+        app:layout_constraintStart_toEndOf="@id/imgbtn_to"
+        android:id="@+id/txt_to"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/filter"
+        android:layout_marginEnd="@dimen/_5sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/btn_filterResult"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="@dimen/_5sdp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/enroll_history_recyclerview"/>
+        android:layout_height="0dp"
+        android:id="@+id/enroll_history_recyclerview"
+        app:layout_constraintTop_toBottomOf="@id/btn_filterResult"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
     <ProgressBar
         android:layout_width="wrap_content"

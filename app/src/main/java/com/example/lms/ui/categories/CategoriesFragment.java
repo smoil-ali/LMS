@@ -20,14 +20,20 @@ import com.example.lms.Factories.CategoryFactory;
 import com.example.lms.Factories.EnrollHistoryFactory;
 import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.CategoryData;
+import com.example.lms.Model.CategoryResponse;
+import com.example.lms.Model.Constants;
 import com.example.lms.Model.EnrollmentHistoryData;
+import com.example.lms.Model.InstructorResponse;
 import com.example.lms.R;
 import com.example.lms.ViewModels.CategoryViewModel;
 import com.example.lms.databinding.FragmentCategoryBinding;
+import com.example.lms.ui.instructors.InstructorListFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Response;
 
 public class CategoriesFragment extends Fragment implements deleteListener {
 
@@ -42,32 +48,36 @@ public class CategoriesFragment extends Fragment implements deleteListener {
         binding = FragmentCategoryBinding.inflate(inflater,container,false);
         setUpRecyclerView();
         viewModel= new ViewModelProvider(getActivity(),new CategoryFactory(getContext(),binding.categoryProgressBar)).get(CategoryViewModel.class);
-        viewModel.getCategoryLiveData().observe(requireActivity(), new Observer<List<CategoryData>>() {
+
+        viewModel.getCategoryLiveData().observe(requireActivity(), new Observer<Response<CategoryResponse>>() {
             @Override
-            public void onChanged(List<CategoryData> categoryDataList) {
-                if (categoryDataList.size() > 0 ){
-                    Log.i(TAG,"here");
-                    dataList.clear();
-                    dataList.addAll(categoryDataList);
-                    adapter.notifyDataSetChanged();
-                    adapter.setDeleteListener(CategoriesFragment.this);
-                    binding.categoryProgressBar.setVisibility(View.GONE);
-                    binding.alertCategoryMessage.setVisibility(View.GONE);
+            public void onChanged(Response<CategoryResponse> response) {
+                if (response.isSuccessful()){
+                    CategoryResponse response1 = response.body();
+                    if (response1.getCode().equals("200") && response1.getStatus().equals(Constants.SUCCESS)){
+                        dataList.clear();
+                        dataList.addAll(response1.getData());
+                        adapter.notifyDataSetChanged();
+                        adapter.setDeleteListener(CategoriesFragment.this);
+                        binding.rvCategories.setVisibility(View.VISIBLE);
+                        binding.categoryProgressBar.setVisibility(View.GONE);
+                        binding.alertCategoryMessage.setVisibility(View.GONE);
+                    }else {
+                        binding.rvCategories.setVisibility(View.GONE);
+                        binding.categoryProgressBar.setVisibility(View.GONE);
+                        binding.alertCategoryMessage.setVisibility(View.VISIBLE);
+                        binding.alertCategoryMessage.setText(response1.getStatus()+" "+response1.getMessage());
+                    }
                 }else {
+                    binding.rvCategories.setVisibility(View.GONE);
                     binding.categoryProgressBar.setVisibility(View.GONE);
                     binding.alertCategoryMessage.setVisibility(View.VISIBLE);
+                    binding.alertCategoryMessage.setText(Constants.RESPONSE_FAILED+" "+response.message());
                 }
+
             }
         });
 
-        viewModel.getErrorMessage().observe(requireActivity(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                binding.alertCategoryMessage.setText(s);
-                binding.alertCategoryMessage.setVisibility(View.VISIBLE);
-                binding.categoryProgressBar.setVisibility(View.GONE);
-            }
-        });
 
         return binding.getRoot();
     }
@@ -78,7 +88,7 @@ public class CategoriesFragment extends Fragment implements deleteListener {
                 DividerItemDecoration.HORIZONTAL);
         binding.rvCategories.addItemDecoration(dividerItemDecoration);
         //binding.rvCategories.setNestedScrollingEnabled(false);
-        adapter=new CategoryAdapter(getContext(),dataList);
+        adapter=new CategoryAdapter(getContext(),dataList,getParentFragmentManager());
         binding.rvCategories.setAdapter(adapter);
     }
 

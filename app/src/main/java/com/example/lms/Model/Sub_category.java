@@ -1,6 +1,8 @@
 package com.example.lms.Model;
 
-public class Sub_category {
+import java.io.Serializable;
+
+public class Sub_category implements Serializable {
     private String id;
 
     private String code;

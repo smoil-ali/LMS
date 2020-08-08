@@ -1,14 +1,16 @@
 package com.example.lms.Listener;
 
 import com.example.lms.Model.CourseCount;
+import com.example.lms.Model.CourseCountResponse;
 import com.example.lms.Model.CourseData;
+import com.example.lms.Model.CourseResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Response;
+
 public interface CourseListener {
-    public void courseListener(List<CourseData> courseData, String msg);
-    public void errorListener(String error);
-    public void courseCountListener(CourseCount courseCount);
-    public void courseCounterror(String error);
+    public void courseListener(Response<CourseResponse> response);
+    public void courseCountListener(Response<CourseCountResponse> response);
 }

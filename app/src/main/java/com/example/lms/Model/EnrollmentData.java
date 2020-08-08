@@ -1,6 +1,10 @@
 package com.example.lms.Model;
 
-public class EnrollmentData {
+import android.net.sip.SipErrorCode;
+
+import java.io.Serializable;
+
+public class EnrollmentData implements Serializable {
     private String id;
 
     private String title;

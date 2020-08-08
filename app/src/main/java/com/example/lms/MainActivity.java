@@ -45,6 +45,8 @@ import com.example.lms.ui.settings.WebsiteSettingFragment;
 import com.example.lms.ui.students.StudentFragment;
 import com.google.android.material.navigation.NavigationView;
 
+import static com.example.lms.Model.Constants.ACTION;
+import static com.example.lms.Model.Constants.ADD;
 import static com.example.lms.Model.Constants.FROM;
 import static com.example.lms.Model.Constants.INSTRUCTOR;
 import static com.example.lms.Model.Constants.STUDENT;
@@ -116,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     case R.id.addInstructor:
                         Intent intent1 = new Intent(MainActivity.this,AddStudent.class);
                         intent1.putExtra(FROM,INSTRUCTOR);
+                        intent1.putExtra(ACTION,ADD);
                         startActivity(intent1);
                         break;
                     case R.id.nav_instructorList:
@@ -136,10 +139,14 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     case R.id.addStudent:
                         Intent intent2 = new Intent(MainActivity.this,AddStudent.class);
                         intent2.putExtra(FROM,STUDENT);
+                        intent2.putExtra(ACTION,ADD);
                         startActivity(intent2);
                         break;
                     case R.id.nav_enrolHistory:
                         fragment=new EnrolHistoryFragment();
+                        break;
+                    case R.id.enroll_Student:
+                        fragment = new Enroll_Student();
                         break;
                     case R.id.nav_adminRevenue:
                         fragment=new AdminRevenueFragment();

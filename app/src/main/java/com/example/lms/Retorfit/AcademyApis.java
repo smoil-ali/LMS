@@ -325,5 +325,41 @@ public interface AcademyApis {
     @GET("?action=applications&type=fetch&fetch=pending")
     Call<ApplicationResponse> getPendingApplication();
 
+    //Enroll Student
+    //http://lms.amnaikhlaq.com/api/index.php?action=enrolStudent&type=insert&userid=2&courseid=4
+    @GET("?action=enrolStudent")
+    Call<StudentResponse> enrollStudent(@Query("type")String type,
+                                        @Query("userid")String userid,
+                                        @Query("courseid")String courseid);
+
+    //Enroll History by date range
+    //http://lms.amnaikhlaq.com/api/index.php?action=enrolbydate&from=2020-08-04&to=2020-08-04
+    @GET("?action=enrolbydate")
+    Call<EnrollmentHistoryResponse> getEnrollHistoryByDateRange(@Query("from")String from,
+                                                                @Query("to")String to);
+    //Delete History
+    //http://lms.amnaikhlaq.com/api/index.php?action=enrolStudent&type=delete&id=2
+    @GET("?action=enrolStudent&type=delete")
+    Call<EnrollmentHistoryResponse> deleteEnrollHistory(@Query("id")String id);
+
+    //USER UPDATE
+    //http://lms.amnaikhlaq.com/api/index.php?action=updateUser&id=100&type=instructor&first_name=hammid&
+    // last_name=usama&biography=vavasvasav&email=emai&proclient_id=13123&prosecret_key=121312&secret_key=121231221
+    // &public_key=213213&title=Mr&facebook=sadasd&twitter=twitter&linkedin=sadasd
+    @GET("?action=updateUser")
+    Call<StudentResponse> updateUser(@Query("id")String id,
+                                     @Query("type")String type,
+                                     @Query("first_name")String first_name,
+                                     @Query("last_name")String last_name,
+                                     @Query("biography")String biography,
+                                     @Query("email")String email,
+                                     @Query("proclient_id")String proclient_id,
+                                     @Query("prosecret_key")String prosecret_key,
+                                     @Query("secret_key")String secret_key,
+                                     @Query("public_key")String public_key,
+                                     @Query("title")String title,
+                                     @Query("facebook")String facebook,
+                                     @Query("twitter")String twitter,
+                                     @Query("linkedin")String linkedin);
 
 }

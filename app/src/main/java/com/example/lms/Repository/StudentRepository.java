@@ -7,8 +7,10 @@ import android.widget.ProgressBar;
 
 import com.example.lms.Listener.EnrollListener;
 import com.example.lms.Listener.StudentListener;
+import com.example.lms.Model.Constants;
 import com.example.lms.Model.StudentResponse;
 import com.example.lms.Model.StudentResponse;
+import com.example.lms.Model.Utils;
 import com.example.lms.Retorfit.AcademyApis;
 import com.example.lms.Retorfit.RetrofitService;
 
@@ -31,23 +33,13 @@ public class StudentRepository {
         StudentResponseCall.enqueue(new Callback<StudentResponse>() {
             @Override
             public void onResponse(Call<StudentResponse> call, Response<StudentResponse> response) {
-                if (response.isSuccessful()){
-                    StudentResponse StudentResponse = response.body();
-                    if (StudentResponse.getCode().equals("200")){
-                        studentListener.onSuccess(StudentResponse.getData());
-                    }else {
-                        studentListener.onError(StudentResponse.getMessage());
-                    }
-                }else {
-                    Log.i(TAG,"in response unSuccessful");
-                    studentListener.onError(response.message());
-                }
+                studentListener.onSuccess(response);
             }
 
             @Override
             public void onFailure(Call<StudentResponse> call, Throwable t) {
                 Log.i(TAG,"in response failed");
-                studentListener.onError(t.getMessage());
+                Utils.showDialog(context, Constants.FAILED,t.getMessage());
             }
         });
     }

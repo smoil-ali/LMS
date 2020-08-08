@@ -14,8 +14,11 @@ import android.view.ViewGroup;
 
 import com.example.lms.Model.AddUserLogindata;
 import com.example.lms.Model.addContainer;
+import com.example.lms.activity.AddStudent;
 import com.example.lms.databinding.FragmentLoginCredentialsBinding;
 import com.example.lms.databinding.FragmentStudentsBinding;
+
+import static com.example.lms.Model.Constants.EDIT;
 
 
 public class StudentLoginCredentials extends Fragment {
@@ -28,11 +31,6 @@ public class StudentLoginCredentials extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentLoginCredentialsBinding.inflate(inflater,container,false);
-
-        if (savedInstanceState != null){
-            binding.email.setText(savedInstanceState.getString("email"));
-            binding.password.setText(savedInstanceState.getString("password"));
-        }
 
         binding.email.addTextChangedListener(new TextWatcher() {
             @Override
@@ -71,6 +69,17 @@ public class StudentLoginCredentials extends Fragment {
                 model.setPassword(editable.toString());
             }
         });
+
+        if (savedInstanceState != null){
+            binding.email.setText(savedInstanceState.getString("email"));
+            binding.password.setText(savedInstanceState.getString("password"));
+        }else {
+            if (AddStudent.ACTION.equals(EDIT)){
+                binding.password.setEnabled(false);
+                setValues();
+            }
+
+        }
         return binding.getRoot();
     }
 
@@ -85,5 +94,9 @@ public class StudentLoginCredentials extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putString("email",email);
         outState.putString("password",password);
+    }
+
+    public void setValues(){
+        binding.email.setText(AddStudent.userData.getEmail());
     }
 }

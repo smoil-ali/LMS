@@ -11,4 +11,5 @@
     <color name="black">#000000</color>
     <color name="btnbg_inst_setting">#727cf5</color>
     <color name="homeIcons">#000000</color>
+    <color name="section_item">#6c757d</color>
 </resources>

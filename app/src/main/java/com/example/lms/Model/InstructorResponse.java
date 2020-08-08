@@ -6,7 +6,7 @@ public class InstructorResponse {
     String message;
     String code;
     String status;
-    List<InstructorData> data;
+    List<UserData> data;
 
     public String getMessage() {
         return message;
@@ -32,11 +32,11 @@ public class InstructorResponse {
         this.status = status;
     }
 
-    public List<InstructorData> getData() {
+    public List<UserData> getData() {
         return data;
     }
 
-    public void setData(List<InstructorData> data) {
+    public void setData(List<UserData> data) {
         this.data = data;
     }
 }

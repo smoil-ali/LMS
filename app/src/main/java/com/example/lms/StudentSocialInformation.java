@@ -12,9 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.lms.Model.SocialLinks;
 import com.example.lms.Model.addContainer;
 import com.example.lms.Model.addUserSocialData;
+import com.example.lms.activity.AddStudent;
 import com.example.lms.databinding.FragmentStudentSocialInformationBinding;
+import com.google.gson.Gson;
+
+import static com.example.lms.Model.Constants.EDIT;
 
 
 public class StudentSocialInformation extends Fragment {
@@ -30,11 +35,6 @@ public class StudentSocialInformation extends Fragment {
 
         binding = FragmentStudentSocialInformationBinding.inflate(inflater,container,false);
 
-        if (savedInstanceState != null){
-            binding.facebook.setText(savedInstanceState.getString("fb"));
-            binding.twitter.setText(savedInstanceState.getString("twitter"));
-            binding.linkedin.setText(savedInstanceState.getString("linkedin"));
-        }
 
         binding.facebook.addTextChangedListener(new TextWatcher() {
             @Override
@@ -91,7 +91,25 @@ public class StudentSocialInformation extends Fragment {
             }
         });
 
+        if (savedInstanceState != null){
+            binding.facebook.setText(savedInstanceState.getString("fb"));
+            binding.twitter.setText(savedInstanceState.getString("twitter"));
+            binding.linkedin.setText(savedInstanceState.getString("linkedin"));
+        }else {
+            if (AddStudent.ACTION.equals(EDIT)){
+                setValues();
+            }
+        }
+
         return binding.getRoot();
+    }
+
+    private void setValues() {
+        String json = AddStudent.userData.getSocial_links();
+        SocialLinks model = new Gson().fromJson(json,SocialLinks.class);
+        binding.facebook.setText(model.getFacebook());
+        binding.twitter.setText(model.getTwitter());
+        binding.linkedin.setText(model.getLinkedin());
     }
 
     @Override

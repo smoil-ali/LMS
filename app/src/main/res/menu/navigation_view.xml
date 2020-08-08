@@ -79,7 +79,13 @@
         <menu>
             <item android:id="@+id/nav_enrolHistory"
                 android:title="@string/enroll_history"/>
+
+            <item
+                android:id="@+id/enroll_Student"
+                android:title="Enroll Student"/>
         </menu>
+
+
 
     </item>
 

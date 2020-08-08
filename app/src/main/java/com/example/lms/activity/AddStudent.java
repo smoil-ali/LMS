@@ -4,13 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.app.role.RoleManager;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
+import com.example.lms.Model.Constants;
+import com.example.lms.Model.UserData;
 import com.example.lms.R;
 import com.example.lms.StudentLoginCredentials;
 import com.example.lms.StudentSocialInformation;
@@ -18,16 +17,12 @@ import com.example.lms.Student_Basic_Info;
 import com.example.lms.Student_Payment_info;
 import com.example.lms.Student_finish;
 import com.example.lms.databinding.ActivityAddStudentBinding;
-import com.example.lms.ui.addcourses.BasicFragment;
-import com.example.lms.ui.addcourses.FinishFragment;
-import com.example.lms.ui.addcourses.MediaFragment;
-import com.example.lms.ui.addcourses.OutcomesFragment;
-import com.example.lms.ui.addcourses.PricingFragment;
-import com.example.lms.ui.addcourses.RequirementsFragment;
-import com.example.lms.ui.addcourses.SeoFragment;
 import com.google.android.material.tabs.TabLayout;
 
+import static com.example.lms.Model.Constants.DATA;
+import static com.example.lms.Model.Constants.EDIT;
 import static com.example.lms.Model.Constants.FROM;
+import static com.example.lms.Model.Constants.STUDENT;
 
 public class AddStudent extends AppCompatActivity {
 
@@ -35,7 +30,9 @@ public class AddStudent extends AppCompatActivity {
     Fragment fragment;
     public int position = 0;
     Bundle bundle;
-    public static String ROLE;
+    public static String ROLE,ACTION;
+    public static UserData userData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +40,11 @@ public class AddStudent extends AppCompatActivity {
         setContentView(binding.getRoot());
         bundle = getIntent().getExtras();
         ROLE = bundle.getString(FROM);
+        ACTION = bundle.getString(Constants.ACTION);
+        if (ACTION.equals(EDIT)){
+            userData = (UserData) bundle.getSerializable(DATA);
+
+        }
 
         if (savedInstanceState == null){
             getSupportFragmentManager().beginTransaction()
@@ -51,7 +53,6 @@ public class AddStudent extends AppCompatActivity {
             position = savedInstanceState.getInt("pos");
             binding.tabAddCourses.getTabAt(position).select();
         }
-
         binding.nextBtn.setOnClickListener(v -> {
             int position=binding.tabAddCourses.getSelectedTabPosition();
             Log.i("position",String.valueOf(position));
@@ -62,7 +63,6 @@ public class AddStudent extends AppCompatActivity {
             Log.i("position",String.valueOf(position));
             binding.tabAddCourses.getTabAt(--position).select();
         });
-
         setTabLayout();
     }
 

@@ -15,6 +15,7 @@ import com.example.lms.Model.EnrollmentHistoryResponse;
 import com.example.lms.Model.DashboardResponse;
 import com.example.lms.Model.InstructorResponse;
 import com.example.lms.Model.LoginResponse;
+import com.example.lms.Model.PayoutResponse;
 import com.example.lms.Model.ResetPassword;
 import com.example.lms.Model.SettingsResponse;
 import com.example.lms.Model.StudentResponse;
@@ -362,4 +363,18 @@ public interface AcademyApis {
                                      @Query("twitter")String twitter,
                                      @Query("linkedin")String linkedin);
 
+    //delete application
+    //http://lms.amnaikhlaq.com/api/index.php?action=applications&type=delete&id=4
+    @GET("?action=applications&type=delete")
+    Call<ApplicationResponse> deleteApplication(@Query("id") String id);
+
+    //update status application
+    //http://lms.amnaikhlaq.com/api/index.php?action=applications&type=update&id=4
+
+    @GET("?action=application&type=update")
+    Call<ApplicationResponse> updateApplication(@Query("id") String id);
+
+    //http://lms.amnaikhlaq.com/api/index.php?action=payout&type=fetch&status=0
+    @GET("?action=application&type=fetch")
+    Call<PayoutResponse> getPayout(@Query("status") String status);
 }

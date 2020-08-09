@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.CategoryData;
 import com.example.lms.Model.CategoryResponse;
 import com.example.lms.Model.Utils;
@@ -43,13 +44,16 @@ public class subCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     Context context;
     List<CategoryData> dataList ;
     DeleteDialog deleteDialog = new DeleteDialog();
+    com.example.lms.Listener.deleteListener deleteListener;
     FragmentManager fragmentManager;
 
-    public subCategoryAdapter(Context context, List<CategoryData> dataList,FragmentManager fragmentManager) {
+    public subCategoryAdapter(Context context, List<CategoryData> dataList,FragmentManager fragmentManager,deleteListener deleteListener) {
         this.context = context;
         this.dataList = dataList;
         this.fragmentManager = fragmentManager;
+        this.deleteListener = deleteListener;
     }
+
 
     @NonNull
     @Override
@@ -62,7 +66,7 @@ public class subCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Log.i(TAG,dataList.size()+"");
-        ((SubCategoryViewHolder)holder).bindView(dataList.get(position),position);
+        ((SubCategoryViewHolder)holder).bindView(dataList.get(position));
     }
 
     @Override
@@ -77,7 +81,7 @@ public class subCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             this.binding = binding;
         }
 
-        public void bindView(CategoryData categoryData,int position){
+        public void bindView(CategoryData categoryData){
             Log.i(TAG,"cat Name "+categoryData.getName());
             binding.subcategory.setText(categoryData.getName());
             binding.subcategory.setOnLongClickListener((View.OnLongClickListener) view -> {
@@ -99,7 +103,7 @@ public class subCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                     .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
                                     .setPositiveButton("OK", (dialogInterface, i) -> {
                                         Utils.openDialog(fragmentManager,deleteDialog);
-                                        DeleteCategory(categoryData.getId(), position);
+                                        DeleteCategory(categoryData.getId());
                                     }).show();
                             break;
                     }
@@ -110,8 +114,7 @@ public class subCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             });
         }
 
-        private void DeleteCategory(String id,int position){
-            binding.categoriesProgressBar.setVisibility(View.VISIBLE);
+        private void DeleteCategory(String id){
             AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
             Call<CategoryResponse> categoryResponseCall = academyApis.deleteCategory(id);
             Log.i(TAG,categoryResponseCall.request().url()+"");
@@ -122,12 +125,7 @@ public class subCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         CategoryResponse categoryResponse = response.body();
                         if (categoryResponse.getCode().equals("200") && categoryResponse.getStatus().equals(SUCCESS)){
                             deleteDialog.dismiss();
-                            new AlertDialog.Builder(context)
-                                    .setTitle(categoryResponse.getStatus())
-                                    .setMessage(categoryResponse.getMessage())
-                                    .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
-                            dataList.remove(position);
-                            notifyItemChanged(position);
+                            deleteListener.OnDelete(categoryResponse.getStatus(),categoryResponse.getMessage());
                         }else {
                             deleteDialog.dismiss();
                             new AlertDialog.Builder(context)

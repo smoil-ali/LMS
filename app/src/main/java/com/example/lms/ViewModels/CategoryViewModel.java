@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.lms.Listener.CategoryListener;
 import com.example.lms.Model.CategoryData;
 import com.example.lms.Model.CategoryResponse;
+import com.example.lms.Model.Category_subCategoryModel;
 import com.example.lms.Model.EnrollmentHistoryData;
 import com.example.lms.Repository.CategoryRepository;
 import com.example.lms.Repository.EnrollmentHistoryRepository;
@@ -20,7 +21,7 @@ import java.util.List;
 import retrofit2.Response;
 
 public class CategoryViewModel extends ViewModel implements CategoryListener {
-    MutableLiveData<Response<CategoryResponse>> categoryLiveData;
+    MutableLiveData<List<Category_subCategoryModel>> categoryLiveData;
     CategoryRepository categoryRepository;
     String TAG = CategoryViewModel.class.getSimpleName();
 
@@ -35,12 +36,12 @@ public class CategoryViewModel extends ViewModel implements CategoryListener {
         categoryRepository.setCategoryListener(this);
     }
 
-    @Override
-    public void onCategoryList(Response<CategoryResponse> response) {
-        categoryLiveData.setValue(response);
+    public MutableLiveData<List<Category_subCategoryModel>> getCategoryLiveData() {
+        return categoryLiveData;
     }
 
-    public MutableLiveData<Response<CategoryResponse>> getCategoryLiveData() {
-        return categoryLiveData;
+    @Override
+    public void onCategoryList(List<Category_subCategoryModel> list) {
+        categoryLiveData.setValue(list);
     }
 }

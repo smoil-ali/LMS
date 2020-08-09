@@ -24,7 +24,7 @@ import com.google.android.material.tabs.TabLayout;
 public class AddCourse extends AppCompatActivity {
     ActivityAddCourseBinding binding;
     Fragment fragment;
-    int position = 0 ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,9 +34,6 @@ public class AddCourse extends AppCompatActivity {
         if (savedInstanceState == null){
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.hostFragment,new BasicFragment()).commit();
-        }else {
-            position = savedInstanceState.getInt("pos");
-            binding.tabAddCourses.getTabAt(position).select();
         }
         binding.nextBtn.setOnClickListener(v -> {
             int position=binding.tabAddCourses.getSelectedTabPosition();
@@ -62,34 +59,24 @@ public class AddCourse extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (binding.tabAddCourses.getSelectedTabPosition()){
                     case 0:
-                        position = 0;
                         fragment=new BasicFragment();
                         break;
                     case 1:
-                        position = 1;
-                        Bundle data = new Bundle();
-                        data.putString("key","hello");
                         fragment=new RequirementsFragment();
-                        fragment.setArguments(data);
                         break;
                     case 2:
-                        position = 2;
                         fragment=new OutcomesFragment();
                         break;
                     case 3:
-                        position = 3;
                         fragment=new PricingFragment();
                         break;
                     case 4:
-                        position = 4;
                         fragment=new MediaFragment();
                         break;
                     case 5:
-                        position = 5;
                         fragment=new SeoFragment();
                         break;
                     case 6:
-                        position = 6;
                         binding.frwBckContainer.setVisibility(View.GONE);
                         fragment=new FinishFragment();
                         break;
@@ -110,9 +97,5 @@ public class AddCourse extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("pos",position);
-    }
+
 }

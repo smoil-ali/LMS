@@ -15,15 +15,18 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.AddLessonModel;
 import com.example.lms.Model.Constants;
 import com.example.lms.Model.LessonResponse;
 import com.example.lms.Model.SectionData;
+import com.example.lms.Model.Section_LessonModel;
 import com.example.lms.Model.Utils;
 import com.example.lms.Retorfit.AcademyApis;
 import com.example.lms.Retorfit.RetrofitService;
@@ -58,10 +61,16 @@ public class AddLesson extends DialogFragment {
     AddLessonBinding binding;
     List<String> sectionNames = new ArrayList<>();
     int sectionIndex,lessonTypeIndex,lessonProviderIndex = -1;
-    String action,id,summary,title;
+    String action,id,summary,title,section;
+    deleteListener deleteListener;
+    ArrayAdapter<String> dataAdapter;
+
 
     public void setAction(String action) {
         this.action = action;
+    }
+    public void setDeleteListener(com.example.lms.Listener.deleteListener deleteListener) {
+        this.deleteListener = deleteListener;
     }
 
 
@@ -77,6 +86,10 @@ public class AddLesson extends DialogFragment {
         this.title = title;
     }
 
+    public void setSection(String section) {
+        this.section = section;
+    }
+
     public AddLesson() {
     }
 
@@ -86,25 +99,31 @@ public class AddLesson extends DialogFragment {
         binding = AddLessonBinding.inflate(inflater,container,false);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        for (SectionData sectionData:Constants.sectionData){
-            sectionNames.add(sectionData.getTitle());
+
+        for (Section_LessonModel sectionData:Constants.sectionData){
+            sectionNames.add(sectionData.getSectionData().getTitle());
+            if (sectionData.getSectionData().getId().equals(section)){
+                section = sectionData.getSectionData().getTitle();
+            }
         }
         setupSectionSpinner();
+        binding.spinnerSectionType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                sectionIndex = i;
+                Log.i(TAG,"Section index "+i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
         if (action.equals(ADD)){
             setupLessonTypeSpinner();
             setupLessonProviderSpinner();
-
-            binding.spinnerSectionType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    sectionIndex = i;
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
             binding.spinnerLessonType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -132,6 +151,7 @@ public class AddLesson extends DialogFragment {
             });
         }else {
             binding.title.setText(title);
+            binding.spinnerSectionType.setSelection(dataAdapter.getPosition(section));
             binding.summary.setText(summary);
             binding.spinnerLessonType.setVisibility(View.GONE);
             binding.spinnerLessonProviderType.setVisibility(View.GONE);
@@ -172,7 +192,7 @@ public class AddLesson extends DialogFragment {
             binding.progressBar.setVisibility(View.VISIBLE);
             AddLessonModel model = new AddLessonModel();
             model.setCourse_id(COURSE_ID);
-            model.setSection_id(Constants.sectionData.get(sectionIndex).getId());
+            model.setSection_id(Constants.sectionData.get(sectionIndex).getSectionData().getId());
             model.setProvider_type(Constants.listOfProvider.get(lessonProviderIndex));
             model.setLesson_provider(Constants.listOfLessonsType.get(lessonTypeIndex));
             model.setWeb_video_url(binding.videoUrl.getText().toString());
@@ -195,7 +215,7 @@ public class AddLesson extends DialogFragment {
         }else {
             AddLessonModel model = new AddLessonModel();
             model.setTitle(binding.title.getText().toString());
-            model.setSection_id(Constants.sectionData.get(sectionIndex).getId());
+            model.setSection_id(Constants.sectionData.get(sectionIndex).getSectionData().getId());
             model.setSummary(binding.summary.getText().toString());
             model.setCourse_id(COURSE_ID);
             updateLesson(model);
@@ -239,9 +259,11 @@ public class AddLesson extends DialogFragment {
                         if (responseResponse.isSuccessful()){
                             LessonResponse LessonResponse = responseResponse.body();
                             if (LessonResponse.getCode().equals("200") && LessonResponse.getStatus().equals(SUCCESS)){
+                                deleteListener.OnDelete(LessonResponse.getStatus(),LessonResponse.getMessage());
+                                makeEmpty();
+                                dismiss();
                                 binding.submit.setVisibility(View.VISIBLE);
                                 binding.progressBar.setVisibility(View.GONE);
-                                Utils.showDialog(getContext(),LessonResponse.getStatus(),LessonResponse.getMessage());
                             }else {
                                 binding.submit.setVisibility(View.VISIBLE);
                                 binding.progressBar.setVisibility(View.GONE);
@@ -303,9 +325,11 @@ public class AddLesson extends DialogFragment {
                         if (responseResponse.isSuccessful()){
                             LessonResponse LessonResponse = responseResponse.body();
                             if (LessonResponse.getCode().equals("200") && LessonResponse.getStatus().equals(SUCCESS)){
+                                deleteListener.OnDelete(LessonResponse.getStatus(),LessonResponse.getMessage());
+                                makeEmpty();
+                                dismiss();
                                 binding.submit.setVisibility(View.VISIBLE);
                                 binding.progressBar.setVisibility(View.GONE);
-                                Utils.showDialog(getContext(),LessonResponse.getStatus(),LessonResponse.getMessage());
                             }else {
                                 binding.submit.setVisibility(View.VISIBLE);
                                 binding.progressBar.setVisibility(View.GONE);
@@ -341,8 +365,7 @@ public class AddLesson extends DialogFragment {
     }
 
     public void setupSectionSpinner(){
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, sectionNames);
+        dataAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, sectionNames);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.spinnerSectionType.setAdapter(dataAdapter);
     }
@@ -370,5 +393,19 @@ public class AddLesson extends DialogFragment {
         super.onResume();
     }
 
+    public void makeEmpty(){
+        binding.title.setText("");
+        binding.summary.setText("");
+        sectionNames = new ArrayList<>();
+        binding.videoUrl.setText("");
+        binding.duration.setText("");
+        binding.mobileVideoUrl.setText("");
+        binding.durationMobile.setText("");
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        makeEmpty();
+    }
 }

@@ -43,14 +43,20 @@ public class FinishFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding= FragmentFinishCourseBinding.inflate(inflater,container,false);
-        binding.submit.setText("Update Course");
+        if (!getActivity().getClass().getSimpleName().equals(Constants.AddCourse)){
+            binding.submit.setText("Update Course");
+        }
         binding.submit.setOnClickListener(view -> validate());
         return binding.getRoot();
     }
 
     public void validate(){
         if (!Container.getModel().getCategory_id().matches("") && !Container.getModel().getCourseTitle().matches("")){
-            submit();
+            if (!getActivity().getClass().getSimpleName().equals(Constants.AddCourse)){
+                updateCourse();
+            }else {
+                submit();
+            }
         }else {
             new AlertDialog.Builder(getContext())
                     .setTitle("Error!!!")
@@ -60,6 +66,65 @@ public class FinishFragment extends Fragment {
     }
 
     public void submit(){
+        binding.submit.setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.VISIBLE);
+        AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
+        Call<CourseUpdateResponse> CourseUpdateResponseCall = academyApis.addCourse(Container.getModel().getCourseTitle(),
+                Container.getModel().getShortDescription(),Container.getModel().getDescription(),
+                Container.getListOfOutcomes(),Container.getModel().getLanguage(),Container.getModel().getLevel(),
+                Container.getModel().getIsTopCourse(),Container.getModel().getCategory_id(),Container.getListOfRequirements(),
+                Container.getPriceFragmentModel().getIfFreeCourse(),Container.getPriceFragmentModel().getIfDiscount(),
+                Container.getPriceFragmentModel().getCoursePrice(),Container.getPriceFragmentModel().getDiscountPrice(),
+                Container.getMediaFragmentModel().getProvider(),Container.getMediaFragmentModel().getUrl(),
+                Container.getSeoModelClass().getMeta_list(),Container.getSeoModelClass().getMetaDiscription());
+
+        Log.i(TAG,CourseUpdateResponseCall.request().url()+"");
+
+        CourseUpdateResponseCall.enqueue(new Callback<CourseUpdateResponse>() {
+            @Override
+            public void onResponse(Call<CourseUpdateResponse> call, Response<CourseUpdateResponse> response) {
+                if (response.isSuccessful()){
+                    CourseUpdateResponse CourseUpdateResponse = response.body();
+                    if (CourseUpdateResponse.getCode().equals("200") && CourseUpdateResponse.getStatus().equals(SUCCESS)){
+                        binding.submit.setVisibility(View.VISIBLE);
+                        binding.progressBar.setVisibility(View.GONE);
+                        new AlertDialog.Builder(getContext())
+                                .setTitle(CourseUpdateResponse.getStatus())
+                                .setMessage(CourseUpdateResponse.getMessage())
+                                .setPositiveButton("OK",((dialog, which) -> getActivity().finish())).show();
+                        makeEmpty();
+                    }else {
+                        binding.submit.setVisibility(View.VISIBLE);
+                        binding.progressBar.setVisibility(View.GONE);
+                        new AlertDialog.Builder(getContext())
+                                .setTitle(CourseUpdateResponse.getStatus())
+                                .setMessage(CourseUpdateResponse.getMessage())
+                                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                    }
+                }else {
+                    binding.submit.setVisibility(View.VISIBLE);
+                    binding.progressBar.setVisibility(View.GONE);
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Failed")
+                            .setMessage(response.message())
+                            .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CourseUpdateResponse> call, Throwable t) {
+                binding.submit.setVisibility(View.VISIBLE);
+                binding.progressBar.setVisibility(View.GONE);
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Failed")
+                        .setMessage(t.getMessage())
+                        .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+            }
+        });
+    }
+
+    public void updateCourse(){
         binding.submit.setVisibility(View.GONE);
         binding.progressBar.setVisibility(View.VISIBLE);
         AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);

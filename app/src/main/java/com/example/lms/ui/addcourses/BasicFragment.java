@@ -41,7 +41,6 @@ public class BasicFragment extends Fragment implements AdapterView.OnItemSelecte
 
     public final String TAG = BasicFragment.class.getSimpleName();
     FragmentBasicBinding binding;
-    ActivityAddCourseBinding addbinding;
     List<CategoryData> dataList;
     List<String> categoryList = new ArrayList<>();
     BasicFragmentModel model = new BasicFragmentModel();
@@ -143,9 +142,11 @@ public class BasicFragment extends Fragment implements AdapterView.OnItemSelecte
             model.setIsTopCourse(String.valueOf(b));
              checkTopCourse = b;
         });
-
+        Log.i(TAG,getActivity().getClass().getSimpleName());
         if (savedInstanceState == null){
-            setValues();
+
+            if (!getActivity().getClass().getSimpleName().equals(Constants.AddCourse))
+                setValues();
             setupLevelSpinner();
             setupLanguageSpinner();
             getCategoryList();

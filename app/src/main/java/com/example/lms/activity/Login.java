@@ -46,6 +46,11 @@ public class Login extends AppCompatActivity {
             validate();
         });
 
+        if (Utils.getSharedPref(this).isStatus()){
+            startActivity(new Intent(Login.this, MainActivity.class));
+            finish();
+        }
+
     }
 
     private void validate(){

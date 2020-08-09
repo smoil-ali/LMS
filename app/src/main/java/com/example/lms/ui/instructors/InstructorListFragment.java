@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.lms.Adapters.InstructorAdapter;
 import com.example.lms.Factories.InstructorFactory;
@@ -50,17 +51,19 @@ public class InstructorListFragment extends Fragment implements deleteListener {
                         dataList.addAll(response1.getData());
                         adapter.notifyDataSetChanged();
                         adapter.setDeleteListener(InstructorListFragment.this);
+                        binding.swipeRefresher.setRefreshing(false);
                         binding.rvInstructor.setVisibility(View.VISIBLE);
                         binding.instructorProgressbar.setVisibility(View.GONE);
                         binding.instructorAlertMessage.setVisibility(View.GONE);
                     }else {
-
+                        binding.swipeRefresher.setRefreshing(false);
                         binding.rvInstructor.setVisibility(View.GONE);
                         binding.instructorProgressbar.setVisibility(View.GONE);
                         binding.instructorAlertMessage.setVisibility(View.VISIBLE);
                         binding.instructorAlertMessage.setText(response1.getStatus()+" "+response1.getMessage());
                     }
                 }else {
+                    binding.swipeRefresher.setRefreshing(false);
                     binding.rvInstructor.setVisibility(View.GONE);
                     binding.instructorProgressbar.setVisibility(View.GONE);
                     binding.instructorAlertMessage.setVisibility(View.VISIBLE);
@@ -70,6 +73,7 @@ public class InstructorListFragment extends Fragment implements deleteListener {
             }
         });
 
+        binding.swipeRefresher.setOnRefreshListener(() -> viewModel.update(getContext(),binding.instructorProgressbar));
 
         return binding.getRoot();
     }

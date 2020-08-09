@@ -8,12 +8,15 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.lms.Listener.StudentListener;
 import com.example.lms.Model.StudentResponse;
+import com.example.lms.Model.UserData_EnrollmentHistoryModel;
 import com.example.lms.Repository.StudentRepository;
+
+import java.util.List;
 
 import retrofit2.Response;
 
 public class StudentViewModel extends ViewModel implements StudentListener {
-    public MutableLiveData<Response<StudentResponse>> MutableLiveData;
+    public MutableLiveData<List<UserData_EnrollmentHistoryModel>> MutableLiveData;
     StudentRepository studentRepository;
     String TAG = StudentViewModel.class.getSimpleName();
 
@@ -28,12 +31,12 @@ public class StudentViewModel extends ViewModel implements StudentListener {
         studentRepository.setStudentListener(this);
     }
 
-    public androidx.lifecycle.MutableLiveData<Response<StudentResponse>> getMutableLiveData() {
+    public androidx.lifecycle.MutableLiveData<List<UserData_EnrollmentHistoryModel>> getMutableLiveData() {
         return MutableLiveData;
     }
 
     @Override
-    public void onSuccess(Response<StudentResponse> response) {
-        MutableLiveData.setValue(response);
+    public void onSuccess(List<UserData_EnrollmentHistoryModel> list) {
+        MutableLiveData.setValue(list);
     }
 }

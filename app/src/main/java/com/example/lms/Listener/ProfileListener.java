@@ -4,5 +4,5 @@ import com.example.lms.Model.data;
 
 public interface ProfileListener {
     public void onSuccess(data data);
-    public void onError(String error);
+
 }

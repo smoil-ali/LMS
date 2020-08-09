@@ -182,14 +182,19 @@ public class UpdateCourse extends AppCompatActivity {
         model.setProvider(courseData.getCourse_overview_provider());
         model.setUrl(courseData.getVideo_url());
         model.setThumbnail(courseData.getThumbnail());
+        Container.setMediaFragmentModel(model);
     }
 
     public void setSeo(){
         SeoModelClass model = new SeoModelClass();
         model.setMetaDiscription(courseData.getMeta_description());
         String json = courseData.getMeta_keywords();
-        List<String> listOfRequirements = new Gson().fromJson(json,ArrayList.class);
-        model.setMeta_list(listOfRequirements);
+        if (json.equals("null")){
+            List<String> listOfRequirements = new Gson().fromJson(json,ArrayList.class);
+            model.setMeta_list(listOfRequirements);
+            Container.setSeoModelClass(model);
+        }
+
     }
 
 }

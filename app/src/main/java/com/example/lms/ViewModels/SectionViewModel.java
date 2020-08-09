@@ -8,14 +8,17 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.lms.Listener.SectionListener;
 import com.example.lms.Model.SectionResponse;
+import com.example.lms.Model.Section_LessonModel;
 import com.example.lms.Model.StudentResponse;
 import com.example.lms.Repository.SectionRepository;
 import com.example.lms.Repository.StudentRepository;
 
-import retrofit2.Response;
+import java.util.List;
+
+
 
 public class SectionViewModel extends ViewModel implements SectionListener {
-    MutableLiveData<Response<SectionResponse>> MutableLiveData;
+    MutableLiveData<List<Section_LessonModel>> MutableLiveData;
     SectionRepository repository;
     String TAG = SectionViewModel.class.getSimpleName();
 
@@ -30,12 +33,14 @@ public class SectionViewModel extends ViewModel implements SectionListener {
         repository.setListener(this);
     }
 
-    public androidx.lifecycle.MutableLiveData<Response<SectionResponse>> getMutableLiveData() {
+    public androidx.lifecycle.MutableLiveData<List<Section_LessonModel>> getMutableLiveData() {
         return MutableLiveData;
     }
 
+
+
     @Override
-    public void onSuccess(Response<SectionResponse> response) {
-        MutableLiveData.setValue(response);
+    public void onSuccess(List<Section_LessonModel> list) {
+        MutableLiveData.setValue(list);
     }
 }

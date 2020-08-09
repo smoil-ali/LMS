@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.lms.Adapters.CategoryAdapter;
 import com.example.lms.Factories.CategoryFactory;
@@ -21,6 +22,7 @@ import com.example.lms.Factories.EnrollHistoryFactory;
 import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.CategoryData;
 import com.example.lms.Model.CategoryResponse;
+import com.example.lms.Model.Category_subCategoryModel;
 import com.example.lms.Model.Constants;
 import com.example.lms.Model.EnrollmentHistoryData;
 import com.example.lms.Model.InstructorResponse;
@@ -39,7 +41,7 @@ public class CategoriesFragment extends Fragment implements deleteListener {
 
     final String TAG = CategoriesFragment.class.getSimpleName();
     FragmentCategoryBinding binding;
-    List<CategoryData> dataList =new ArrayList<>();
+    List<Category_subCategoryModel> dataList =new ArrayList<>();
     CategoryViewModel viewModel;
     CategoryAdapter adapter;
     @Nullable
@@ -47,36 +49,21 @@ public class CategoriesFragment extends Fragment implements deleteListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentCategoryBinding.inflate(inflater,container,false);
         setUpRecyclerView();
+
         viewModel= new ViewModelProvider(getActivity(),new CategoryFactory(getContext(),binding.categoryProgressBar)).get(CategoryViewModel.class);
-
-        viewModel.getCategoryLiveData().observe(requireActivity(), new Observer<Response<CategoryResponse>>() {
-            @Override
-            public void onChanged(Response<CategoryResponse> response) {
-                if (response.isSuccessful()){
-                    CategoryResponse response1 = response.body();
-                    if (response1.getCode().equals("200") && response1.getStatus().equals(Constants.SUCCESS)){
-                        dataList.clear();
-                        dataList.addAll(response1.getData());
-                        adapter.notifyDataSetChanged();
-                        adapter.setDeleteListener(CategoriesFragment.this);
-                        binding.rvCategories.setVisibility(View.VISIBLE);
-                        binding.categoryProgressBar.setVisibility(View.GONE);
-                        binding.alertCategoryMessage.setVisibility(View.GONE);
-                    }else {
-                        binding.rvCategories.setVisibility(View.GONE);
-                        binding.categoryProgressBar.setVisibility(View.GONE);
-                        binding.alertCategoryMessage.setVisibility(View.VISIBLE);
-                        binding.alertCategoryMessage.setText(response1.getStatus()+" "+response1.getMessage());
-                    }
-                }else {
-                    binding.rvCategories.setVisibility(View.GONE);
-                    binding.categoryProgressBar.setVisibility(View.GONE);
-                    binding.alertCategoryMessage.setVisibility(View.VISIBLE);
-                    binding.alertCategoryMessage.setText(Constants.RESPONSE_FAILED+" "+response.message());
-                }
-
-            }
+        viewModel.getCategoryLiveData().observe(requireActivity(), list -> {
+            dataList.clear();
+            dataList.addAll(list);
+            adapter.notifyDataSetChanged();
+            adapter.setDeleteListener(CategoriesFragment.this);
+            binding.swipeRefresher.setRefreshing(false);
+            binding.categoryProgressBar.setVisibility(View.GONE);
+            binding.alertCategoryMessage.setVisibility(View.GONE);
         });
+
+        binding.swipeRefresher.setOnRefreshListener(() -> viewModel.update(getContext(),binding.categoryProgressBar));
+
+
 
 
         return binding.getRoot();

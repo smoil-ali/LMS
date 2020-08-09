@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.LessonData;
 import com.example.lms.Model.LessonResponse;
 import com.example.lms.Model.Utils;
@@ -32,8 +33,9 @@ import static com.example.lms.Model.Constants.EDIT;
 import static com.example.lms.Model.Constants.FAILED;
 import static com.example.lms.Model.Constants.RESPONSE_FAILED;
 import static com.example.lms.Model.Constants.SUCCESS;
+import static com.example.lms.Model.Constants.sectionData;
 
-public class LessonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class LessonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements deleteListener {
 
     private static final String TAG = LessonAdapter.class.getSimpleName();
     Context context;
@@ -41,11 +43,14 @@ public class LessonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     FragmentManager fragmentManager;
     AddLesson addLesson = new AddLesson();
     DeleteDialog deleteDialog = new DeleteDialog();
-    public LessonAdapter(Context context, List<LessonData> lessonData, FragmentManager fragmentManager) {
+    deleteListener deleteListener;
+    public LessonAdapter(Context context, List<LessonData> lessonData, FragmentManager fragmentManager,deleteListener deleteListener) {
         this.context = context;
         this.lessonData = lessonData;
         this.fragmentManager = fragmentManager;
+        this.deleteListener = deleteListener;
     }
+
 
     @NonNull
     @Override
@@ -63,6 +68,11 @@ public class LessonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public int getItemCount() {
         return lessonData.size();
+    }
+
+    @Override
+    public void OnDelete(String status, String message) {
+        deleteListener.OnDelete(status,message);
     }
 
     public class LessonViewHolder extends RecyclerView.ViewHolder {
@@ -84,13 +94,15 @@ public class LessonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 .setMessage("You want to delete?")
                                 .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
                                 .setPositiveButton("OK", (dialogInterface, i) -> {
-                                    DeleteLesson(lessonData.getId(),pos);
+                                    DeleteLesson(lessonData.getId());
                                 }).show();
                     }else {
                         addLesson.setAction(EDIT);
                         addLesson.setId(lessonData.getId());
                         addLesson.setSummary(lessonData.getSummary());
                         addLesson.setTitle(lessonData.getTitle());
+                        addLesson.setDeleteListener(LessonAdapter.this);
+                        addLesson.setSection(lessonData.getSection_id());
                         Utils.openDialog(fragmentManager,addLesson);
                     }
                     return true;
@@ -100,7 +112,7 @@ public class LessonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
 
-        public void DeleteLesson(String id,int pos)
+        public void DeleteLesson(String id)
         {
             Utils.openDialog(fragmentManager,deleteDialog);
             AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
@@ -112,9 +124,7 @@ public class LessonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     if (response.isSuccessful()){
                         if (response.body().getCode().equals("200") && response.body().getStatus().equals(SUCCESS)){
                             deleteDialog.dismiss();
-                            lessonData.remove(pos);
-                            notifyItemChanged(pos);
-                            Utils.showDialog(context,response.body().getStatus(),response.body().getMessage());
+                            deleteListener.OnDelete(response.body().getStatus(),response.body().getMessage());
                         }else {
                             deleteDialog.dismiss();
                             Utils.showDialog(context,response.body().getStatus(),response.body().getMessage());

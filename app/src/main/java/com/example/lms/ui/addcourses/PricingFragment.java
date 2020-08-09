@@ -86,7 +86,8 @@ public class PricingFragment extends Fragment {
             }
         });
 
-        setValues();
+        if (!getActivity().getClass().getSimpleName().equals(Constants.AddCourse))
+            setValues();
 
         return binding.getRoot();
     }

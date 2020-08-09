@@ -31,8 +31,5 @@ public class ProfileViewModel extends ViewModel implements ProfileListener {
         mutableLiveData.setValue(data);
     }
 
-    @Override
-    public void onError(String error) {
 
-    }
 }

@@ -10,8 +10,5 @@
         android:id="@+id/add_lesson"
         android:title="@string/add_lesson"/>
 
-    <item
-        android:id="@+id/add_quiz"
-        android:title="@string/add_quiz"/>
 
 </menu>

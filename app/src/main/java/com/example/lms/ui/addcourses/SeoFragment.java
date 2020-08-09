@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.lms.Model.Constants;
 import com.example.lms.Model.Container;
 import com.example.lms.Model.SeoModelClass;
 import com.example.lms.R;
@@ -70,8 +71,8 @@ public class SeoFragment extends Fragment {
                 model.setMetaDiscription(editable.toString());
             }
         });
-
-        setValues();
+        if (!getActivity().getClass().getSimpleName().equals(Constants.AddCourse))
+            setValues();
         return binding.getRoot();
     }
 

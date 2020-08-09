@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.lms.Model.Constants;
 import com.example.lms.Model.Container;
 import com.example.lms.R;
 import com.example.lms.databinding.FragmentOutcomesCourseBinding;
@@ -38,7 +39,8 @@ public class OutcomesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding=FragmentOutcomesCourseBinding.inflate(inflater,container,false);
-        setValues();
+        if (!getActivity().getClass().getSimpleName().equals(Constants.AddCourse))
+            setValues();
         binding.addbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -20,7 +20,6 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.example.lms.Adapters.SectionAdapter;
-import com.example.lms.Adapters.StudentAdapter;
 import com.example.lms.Factories.SectionFactory;
 import com.example.lms.Factories.StudentFactory;
 import com.example.lms.Listener.deleteListener;
@@ -28,6 +27,7 @@ import com.example.lms.Model.Constants;
 import com.example.lms.Model.Section;
 import com.example.lms.Model.SectionData;
 import com.example.lms.Model.SectionResponse;
+import com.example.lms.Model.Section_LessonModel;
 import com.example.lms.Model.StudentResponse;
 import com.example.lms.Model.Utils;
 import com.example.lms.R;
@@ -55,7 +55,7 @@ public class Curriculum extends Fragment implements deleteListener {
     private static final String TAG = Curriculum.class.getSimpleName();
     SectionAdapter adapter;
     FragmentCurriculumBinding binding;
-    List<SectionData> dataList = new ArrayList<>();
+    List<Section_LessonModel> dataList = new ArrayList<>();
     AddLesson addLesson = new AddLesson();
     AddQuiz addQuiz = new AddQuiz();
     AddSection addSection = new AddSection();
@@ -68,33 +68,16 @@ public class Curriculum extends Fragment implements deleteListener {
         binding = FragmentCurriculumBinding.inflate(inflater,container,false);
         setUpRecyclerView();
         viewModel= new ViewModelProvider(getActivity(),new SectionFactory(getContext(),binding.progressBar,UpdateCourse.courseData.getId())).get(SectionViewModel.class);
-        viewModel.getMutableLiveData().observe(requireActivity(), new Observer<Response<SectionResponse>>() {
-            @Override
-            public void onChanged(Response<SectionResponse> response) {
-                if (response.isSuccessful()){
-                    SectionResponse response1 = response.body();
-                    if (response1.getCode().equals("200") && response1.getStatus().equals(Constants.SUCCESS)){
-                        dataList.clear();
-                        dataList.addAll(response1.getData());
-                        Constants.sectionData = dataList;
-                        adapter.notifyDataSetChanged();
-                        adapter.setDeleteListener(Curriculum.this);
-                        binding.sectionRv.setVisibility(View.VISIBLE);
-                        binding.progressBar.setVisibility(View.GONE);
-                        binding.alertMessage.setVisibility(View.GONE);
-                    }else {
-                        binding.sectionRv.setVisibility(View.GONE);
-                        binding.progressBar.setVisibility(View.GONE);
-                        binding.alertMessage.setVisibility(View.VISIBLE);
-                        binding.alertMessage.setText(response1.getStatus()+" "+response1.getMessage());
-                    }
-                }else {
-                    binding.sectionRv.setVisibility(View.GONE);
-                    binding.progressBar.setVisibility(View.GONE);
-                    binding.alertMessage.setVisibility(View.VISIBLE);
-                    binding.alertMessage.setText(Constants.RESPONSE_FAILED+" "+response.message());
-                }
-            }
+
+        viewModel.getMutableLiveData().observe(requireActivity(), list -> {
+            dataList.clear();
+            dataList.addAll(list);
+            Constants.sectionData = dataList;
+            adapter.notifyDataSetChanged();
+            adapter.setDeleteListener(Curriculum.this);
+            binding.sectionRv.setVisibility(View.VISIBLE);
+            binding.progressBar.setVisibility(View.GONE);
+            binding.alertMessage.setVisibility(View.GONE);
         });
 
         binding.addbtn.setOnClickListener(view -> {
@@ -105,11 +88,10 @@ public class Curriculum extends Fragment implements deleteListener {
                     addSection.setAction(ADD);
                     addSection.setDeleteListener(this);
                     Utils.openDialog(getParentFragmentManager(),addSection);
-                }else if (R.id.add_lesson == menuItem.getItemId()){
-                    addLesson.setAction(ADD);
-                    Utils.openDialog(getParentFragmentManager(),addLesson);
                 }else {
-                    Utils.openDialog(getParentFragmentManager(),addQuiz);
+                    addLesson.setAction(ADD);
+                    addLesson.setDeleteListener(this);
+                    Utils.openDialog(getParentFragmentManager(),addLesson);
                 }
                 return true;
             });

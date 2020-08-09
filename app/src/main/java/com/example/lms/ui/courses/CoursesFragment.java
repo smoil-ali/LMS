@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.lms.Adapters.CourseAdapter;
 import com.example.lms.Factories.CourseFactory;
@@ -50,16 +51,21 @@ public class CoursesFragment extends Fragment implements deleteListener {
                         courseDataArrayList.addAll(response1.getData());
                         courseAdapter.notifyDataSetChanged();
                         courseAdapter.setDeleteListener(CoursesFragment.this);
+                        //binding.swipeRefresher.setRefreshing(false);
                         binding.courseProgressBar.setVisibility(View.GONE);
                     }else {
+                        //binding.swipeRefresher.setRefreshing(false);
                         Utils.showDialog(getContext(),response1.getStatus(),response1.getMessage());
                     }
                 }else {
+                    //binding.swipeRefresher.setRefreshing(false);
                     Utils.showDialog(getContext(),Constants.RESPONSE_FAILED,response.message());
                 }
 
             }
         });
+
+        //binding.swipeRefresher.setOnRefreshListener(() -> courseViewModel.update(getContext(),binding.courseProgressBar));
 
         courseViewModel.getCourseCountMutableLiveData().observe(requireActivity(), new Observer<Response<CourseCountResponse>>() {
             @Override

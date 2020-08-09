@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.lms.MainActivity;
+import com.example.lms.Model.Constants;
 import com.example.lms.Model.Container;
 import com.example.lms.R;
 import com.example.lms.activity.AddStudent;
@@ -47,8 +48,8 @@ public class RequirementsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding=FragmentRequirementsCourseBinding.inflate(inflater,container,false);
-        Bundle data =getArguments();
-        setValues();
+        if (!getActivity().getClass().getSimpleName().equals(Constants.AddCourse))
+            setValues();
         binding.addbtn.setOnClickListener(v -> generateField("null"));
 
         return binding.getRoot();

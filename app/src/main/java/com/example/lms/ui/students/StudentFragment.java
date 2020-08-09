@@ -4,14 +4,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.lms.Adapters.StudentAdapter;
 import com.example.lms.Factories.StudentFactory;
@@ -20,6 +23,8 @@ import com.example.lms.Model.Constants;
 import com.example.lms.Model.UserData;
 import com.example.lms.Model.StudentResponse;
 
+import com.example.lms.Model.UserData_EnrollmentHistoryModel;
+import com.example.lms.Student_finish;
 import com.example.lms.ViewModels.StudentViewModel;
 import com.example.lms.databinding.FragmentStudentsBinding;
 
@@ -30,41 +35,34 @@ public class StudentFragment extends Fragment implements deleteListener {
 
     StudentViewModel viewModel;
     FragmentStudentsBinding binding;
-    List<UserData> dataList = new ArrayList<>();
+    List<UserData_EnrollmentHistoryModel> dataList = new ArrayList<>();
     StudentAdapter adapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentStudentsBinding.inflate(inflater,container,false);
-
         setUpRecyclerView();
         viewModel= new ViewModelProvider(getActivity(),new StudentFactory(getContext(),binding.studentProgressbar)).get(StudentViewModel.class);
-        viewModel.getMutableLiveData().observe(requireActivity(), response -> {
-            if (response.isSuccessful()){
-                StudentResponse response1 = response.body();
-                if (response1.getCode().equals("200") && response1.getStatus().equals(Constants.SUCCESS)){
-                    dataList.clear();
-                    dataList.addAll(response1.getData());
-                    adapter.notifyDataSetChanged();
-                    adapter.setDeleteListener(StudentFragment.this);
-                    binding.rvStudent.setVisibility(View.VISIBLE);
-                    binding.studentProgressbar.setVisibility(View.GONE);
-                    binding.studentAlertMessage.setVisibility(View.GONE);
-                }else {
-                    binding.rvStudent.setVisibility(View.GONE);
-                    binding.studentProgressbar.setVisibility(View.GONE);
-                    binding.studentAlertMessage.setVisibility(View.VISIBLE);
-                    binding.studentAlertMessage.setText(response1.getStatus()+" "+response1.getMessage());
-                }
-            }else {
-                binding.rvStudent.setVisibility(View.GONE);
+        viewModel.getMutableLiveData().observe(requireActivity(), new Observer<List<UserData_EnrollmentHistoryModel>>() {
+            @Override
+            public void onChanged(List<UserData_EnrollmentHistoryModel> list) {
+                dataList.clear();
+                dataList.addAll(list);
+                adapter.notifyDataSetChanged();
+                adapter.setDeleteListener(StudentFragment.this);
+                binding.rvStudent.setVisibility(View.VISIBLE);
+                binding.swipeRefresher.setRefreshing(false);
                 binding.studentProgressbar.setVisibility(View.GONE);
-                binding.studentAlertMessage.setVisibility(View.VISIBLE);
-                binding.studentAlertMessage.setText(Constants.RESPONSE_FAILED+" "+response.message());
+                binding.studentAlertMessage.setVisibility(View.GONE);
             }
-
         });
 
+
+
+
+        binding.swipeRefresher.setOnRefreshListener(() -> {
+            viewModel.update(StudentFragment.this.getContext(), binding.studentProgressbar);
+        });
 
 
         

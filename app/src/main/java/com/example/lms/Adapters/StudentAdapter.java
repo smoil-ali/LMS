@@ -20,6 +20,7 @@ import com.example.lms.Model.StudentResponse;
 import com.example.lms.Model.EnrollmentHistoryResponse;
 import com.example.lms.Model.EnrollHistoryUserData;
 import com.example.lms.Model.UserData;
+import com.example.lms.Model.UserData_EnrollmentHistoryModel;
 import com.example.lms.Model.Utils;
 import com.example.lms.R;
 import com.example.lms.Retorfit.AcademyApis;
@@ -44,15 +45,14 @@ import static com.example.lms.Model.Constants.STUDENT;
 
 public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
-    List<UserData> dataList;
-    List<EnrollHistoryUserData> enrollHistoryUserDataList=new ArrayList<>();
+    List<UserData_EnrollmentHistoryModel> dataList;
     EnrollHistoryAdapter adapter;
     final String TAG = StudentAdapter.class.getSimpleName();
     deleteListener deleteListener;
     DeleteDialog deleteDialog  = new DeleteDialog();
     FragmentManager fragmentManager;
 
-    public StudentAdapter(Context context, List<UserData> dataList,FragmentManager fragmentManager) {
+    public StudentAdapter(Context context, List<UserData_EnrollmentHistoryModel> dataList,FragmentManager fragmentManager) {
         this.context = context;
         this.dataList = dataList;
         this.fragmentManager = fragmentManager;
@@ -88,10 +88,10 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             this.binding = binding;
         }
 
-        public void bindView(UserData userData){
-            binding.studentName.setText(userData.getFirst_name());
-            binding.studentEmail.setText(userData.getEmail());
-            binding.studentStatus.setText(userData.getStatus());
+        public void bindView(UserData_EnrollmentHistoryModel userData){
+            binding.studentName.setText(userData.getUserData().getFirst_name());
+            binding.studentEmail.setText(userData.getUserData().getEmail());
+            binding.studentStatus.setText(userData.getUserData().getStatus());
             binding.moreMenu.setOnClickListener(view -> {
                 PopupMenu menu=new PopupMenu(context,binding.moreMenu);
                 menu.getMenuInflater().inflate(R.menu.popup_menu,menu.getMenu());
@@ -103,7 +103,7 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
                                 .setPositiveButton("OK", (dialogInterface, i) -> {
                                     Utils.openDialog(fragmentManager,deleteDialog);
-                                    DeleteStudent(userData.getId());
+                                    DeleteStudent(userData.getUserData().getId());
                                 }).show();
                     }else {
                         Intent intent = new Intent(context, AddStudent.class);
@@ -117,10 +117,10 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 menu.show();
             });
 
-            getEnrollHistoryById(userData.getId());
+            setUpRecyclerView(userData.getList());
         }
 
-        private void setUpRecyclerView(){
+        private void setUpRecyclerView(List<EnrollHistoryUserData> enrollHistoryUserDataList){
             binding.coursesEnrol.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false));
             DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.coursesEnrol.getContext(),
                     DividerItemDecoration.HORIZONTAL);
@@ -129,41 +129,6 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             binding.coursesEnrol.setAdapter(adapter);
         }
 
-        private void getEnrollHistoryById(String id){
-            AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
-            Call<EnrollmentHistoryResponse> ResponseCall = academyApis.getEnrollmentHistoryById(id);
-            Log.i(TAG,ResponseCall.request().url()+"");
-            ResponseCall.enqueue(new Callback<EnrollmentHistoryResponse>() {
-                @Override
-                public void onResponse(Call<EnrollmentHistoryResponse> call, Response<EnrollmentHistoryResponse> response) {
-                    if (response.isSuccessful()){
-                        EnrollmentHistoryResponse EnrollmentHistoryResponse = response.body();
-                        if (EnrollmentHistoryResponse.getCode().equals("200")){
-                            Log.i(TAG,EnrollmentHistoryResponse.getStatus());
-                            enrollHistoryUserDataList.clear();
-                            enrollHistoryUserDataList.addAll(EnrollmentHistoryResponse.getData());
-                            Log.i(TAG,"list size "+enrollHistoryUserDataList.size());
-                            binding.studentItemProgressbar.setVisibility(View.GONE);
-                            setUpRecyclerView();
-                        }else {
-                            binding.studentItemProgressbar.setVisibility(View.GONE);
-                            Log.i(TAG,EnrollmentHistoryResponse.getStatus());
-                        }
-                    }else {
-                        binding.studentItemProgressbar.setVisibility(View.GONE);
-                        Log.i(TAG,response.message());
-                    }
-
-                }
-
-                @Override
-                public void onFailure(Call<EnrollmentHistoryResponse> call, Throwable t) {
-                    binding.studentItemProgressbar.setVisibility(View.GONE);
-                    Log.i(TAG,t.getMessage());
-                }
-            });
-
-        }
 
         private void DeleteStudent(String id){
             AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);

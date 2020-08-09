@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.AddBasicUserModel;
 import com.example.lms.Model.AddUserLogindata;
 import com.example.lms.Model.StudentResponse;
@@ -62,6 +63,8 @@ public class Student_finish extends Fragment {
         });
         return binding.getRoot();
     }
+
+
 
     public void updateValidate(){
         if (!addContainer.getModel().getFirstName().trim().matches("") &&

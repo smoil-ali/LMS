@@ -16,11 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lms.Listener.deleteListener;
+import com.example.lms.Model.Constants;
 import com.example.lms.Model.LessonData;
 import com.example.lms.Model.LessonResponse;
 import com.example.lms.Model.Section;
 import com.example.lms.Model.SectionData;
 import com.example.lms.Model.SectionResponse;
+import com.example.lms.Model.Section_LessonModel;
 import com.example.lms.Model.Utils;
 import com.example.lms.R;
 import com.example.lms.Retorfit.AcademyApis;
@@ -52,18 +54,19 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private static final String TAG = SectionAdapter.class.getSimpleName();
     Context context;
-    List<SectionData> dataList;
-    List<LessonData> lessonData = new ArrayList<>();
+    List<Section_LessonModel> dataList;
     FragmentManager fragmentManager;
     LessonAdapter adapter;
     deleteListener deleteListener;
     AddSection addSection = new AddSection();
 
+
     DeleteDialog deleteDialog = new DeleteDialog();
-    public SectionAdapter(Context context, List<SectionData> dataList, FragmentManager fragmentManager) {
+    public SectionAdapter(Context context, List<Section_LessonModel> dataList, FragmentManager fragmentManager) {
         this.context = context;
         this.dataList = dataList;
         this.fragmentManager = fragmentManager;
+
     }
 
     public void setDeleteListener(com.example.lms.Listener.deleteListener deleteListener) {
@@ -100,8 +103,8 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             this.binding = binding;
         }
 
-        public void bindView(SectionData sectionData){
-            binding.titleSection.setText(sectionData.getTitle());
+        public void bindView(Section_LessonModel sectionData){
+            binding.titleSection.setText(sectionData.getSectionData().getTitle());
             binding.moreMenu.setOnClickListener(view -> {
                 PopupMenu menu=new PopupMenu(context,binding.moreMenu);
                 menu.getMenuInflater().inflate(R.menu.popup_menu,menu.getMenu());
@@ -112,54 +115,32 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 .setMessage("You want to delete?")
                                 .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
                                 .setPositiveButton("OK", (dialogInterface, i) -> {
-                                    DeleteSection(sectionData.getId());
+                                    DeleteSection(sectionData.getSectionData().getId());
                                 }).show();
                     }else {
                         addSection.setTitle(binding.titleSection.getText().toString());
                         addSection.setAction(EDIT);
                         addSection.setDeleteListener(SectionAdapter.this);
-                        addSection.setId(sectionData.getId());
+                        addSection.setId(sectionData.getSectionData().getId());
                         Utils.openDialog(fragmentManager,addSection);
                     }
                     return true;
                 });
                 menu.show();
             });
-            getLesson(sectionData.getId());
+
+            setUpRecyclerView(sectionData.getLessonDataList());
         }
 
-        private void setUpRecyclerView(){
+        private void setUpRecyclerView(List<LessonData> lessonData){
             binding.lessonRv.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false));
             DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.lessonRv.getContext(),
                     DividerItemDecoration.HORIZONTAL);
             binding.lessonRv.addItemDecoration(dividerItemDecoration);
-            adapter=new LessonAdapter(context,lessonData,fragmentManager);
+            adapter=new LessonAdapter(context,lessonData,fragmentManager,deleteListener);
             binding.lessonRv.setAdapter(adapter);
         }
 
-        public void getLesson(String id){
-            AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
-            Call<LessonResponse> call = academyApis.getLessonById(id);
-            Log.i(TAG,call.request().url().toString());
-            call.enqueue(new Callback<LessonResponse>() {
-                @Override
-                public void onResponse(Call<LessonResponse> call, Response<LessonResponse> response) {
-                    if (response.isSuccessful()) {
-                        LessonResponse lessonResponse = response.body();
-                        if (lessonResponse.getCode().equals("200") && lessonResponse.getStatus().equals(SUCCESS)) {
-                            lessonData.clear();
-                            lessonData.addAll(lessonResponse.getData());
-                            setUpRecyclerView();
-                        }
-                    }
-                }
-                @Override
-                public void onFailure(Call<LessonResponse> call, Throwable t) {
-                    Utils.showDialog(context,FAILED,t.getMessage());
-                }
-            });
-
-        }
 
         public void DeleteSection(String id){
             Utils.openDialog(fragmentManager,deleteDialog);

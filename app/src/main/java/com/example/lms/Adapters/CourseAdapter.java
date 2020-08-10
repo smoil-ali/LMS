@@ -93,6 +93,7 @@ public class CourseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         @RequiresApi(api = Build.VERSION_CODES.N)
         public void bindView(CourseData courseData){
+            Log.i(TAG,courseData.getOutcomes()+" Outcomes");
             binding.courseCategory.setText(courseData.getCategory().getName());
             binding.totalSection.setText(String.valueOf(courseData.getSection().getCount()));
             binding.courseStatus.setText(courseData.getStatus());

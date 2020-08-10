@@ -9,8 +9,8 @@ import java.util.List;
 public class Container {
 
     public static  BasicFragmentModel model = new BasicFragmentModel();
-    public static List<String> listOfRequirements=new ArrayList<>();
-    public static List<String> listOfOutcomes=new ArrayList<>();
+    public static String listOfRequirements="[]";
+    public static String listOfOutcomes="[]";
     public static PriceFragmentModel priceFragmentModel = new PriceFragmentModel();
     public static MediaFragmentModel mediaFragmentModel = new MediaFragmentModel();
     public static SeoModelClass seoModelClass = new SeoModelClass();
@@ -31,11 +31,11 @@ public class Container {
         return model;
     }
 
-    public static List<String> getListOfRequirements() {
+    public static String getListOfRequirements() {
         return listOfRequirements;
     }
 
-    public static void setListOfRequirements(List<String> listOfRequirements) {
+    public static void setListOfRequirements(String listOfRequirements) {
         Container.listOfRequirements = listOfRequirements;
     }
 
@@ -55,11 +55,11 @@ public class Container {
         Container.mediaFragmentModel = mediaFragmentModel;
     }
 
-    public static List<String> getListOfOutcomes() {
+    public static String getListOfOutcomes() {
         return listOfOutcomes;
     }
 
-    public static void setListOfOutcomes(List<String> listOfOutcomes) {
+    public static void setListOfOutcomes(String listOfOutcomes) {
         Container.listOfOutcomes = listOfOutcomes;
     }
 }

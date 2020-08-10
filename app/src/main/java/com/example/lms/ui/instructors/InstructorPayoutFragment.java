@@ -15,6 +15,8 @@ import com.example.lms.MainActivity;
 import com.example.lms.R;
 import com.example.lms.databinding.ActivityMainBinding;
 import com.example.lms.databinding.ContentMainBinding;
+import com.example.lms.databinding.FragmentCoursesBinding;
+import com.example.lms.databinding.FragmentInstructorPayoutBinding;
 import com.example.lms.ui.dashboard.DashboardFragment;
 import com.google.android.material.tabs.TabLayout;
 
@@ -22,20 +24,19 @@ public class InstructorPayoutFragment extends Fragment {
 
     TabLayout tabLayout;
     Fragment fragment;
-
-
+    FragmentInstructorPayoutBinding binding;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root= inflater.inflate(R.layout.fragment_instructor_payout,container,false);
-        tabLayout=root.findViewById(R.id.tabs);
+        binding = FragmentInstructorPayoutBinding.inflate(inflater,container,false);
+
 
         setTabLayout();
-        return root;
+        return binding.getRoot();
     }
     private void setTabLayout(){
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        binding.tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tabLayout.getSelectedTabPosition()){

@@ -152,7 +152,9 @@ public class UpdateCourse extends AppCompatActivity {
         String json = courseData.getRequirements();
         if (!json.equals("null")){
             List<String> listOfRequirements = Arrays.asList(new Gson().fromJson(json,String[].class));
-            Container.setListOfRequirements(listOfRequirements);
+            String json1 = new Gson().toJson(listOfRequirements);
+            Log.i(TAG,json1);
+            Container.setListOfRequirements(json1);
         }
 
     }
@@ -160,10 +162,12 @@ public class UpdateCourse extends AppCompatActivity {
     public void setOutcomes(){
         Log.i(TAG,courseData.getOutcomes());
         String json = courseData.getOutcomes();
-        if (!json.equals("null")){
+        if (!json.equals("null") && !json.equals("\"[]\"")){
             List<String> listOfRequirements = Arrays.asList(new Gson().fromJson(json,String[].class));
             Log.i(TAG,listOfRequirements.size()+" outcomes");
-            Container.setListOfOutcomes(listOfRequirements);
+            String json1 = new Gson().toJson(listOfRequirements);
+            Log.i(TAG,json1);
+            Container.setListOfOutcomes(json1);
         }
 
     }
@@ -191,7 +195,9 @@ public class UpdateCourse extends AppCompatActivity {
         String json = courseData.getMeta_keywords();
         if (json.equals("null")){
             List<String> listOfRequirements = new Gson().fromJson(json,ArrayList.class);
-            model.setMeta_list(listOfRequirements);
+            String json1 = new Gson().toJson(listOfRequirements);
+            Log.i(TAG,json1);
+            model.setMeta_list(json1);
             Container.setSeoModelClass(model);
         }
 

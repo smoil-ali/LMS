@@ -100,7 +100,9 @@ public class SeoFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        model.setMeta_list(meta_keyWords);
+        String json = new Gson().toJson(meta_keyWords);
+        Log.i(TAG,json);
+        model.setMeta_list(json);
         Container.setSeoModelClass(model);
     }
 

@@ -10,14 +10,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.lms.R;
+import com.example.lms.databinding.FragmentPayoutCompletedBinding;
 
 public class CompletePayoutFragment extends Fragment {
 
+    FragmentPayoutCompletedBinding binding;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root=inflater.inflate(R.layout.fragment_payout_completed,container,false);
+        binding = FragmentPayoutCompletedBinding.inflate(inflater,container,false);
 
-        return root;
+        return binding.getRoot();
     }
 }

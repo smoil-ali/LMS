@@ -125,7 +125,9 @@ public class RequirementsFragment extends Fragment {
                 }
             }
         }
-        Container.setListOfRequirements(listOfRequirements);
+        String json = new Gson().toJson(listOfRequirements);
+        Log.i(TAG,json);
+        Container.setListOfRequirements(json);
     }
 
 

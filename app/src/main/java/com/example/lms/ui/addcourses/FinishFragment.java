@@ -69,6 +69,7 @@ public class FinishFragment extends Fragment {
         binding.submit.setVisibility(View.GONE);
         binding.progressBar.setVisibility(View.VISIBLE);
         AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
+        Toast.makeText(getContext(), ""+Container.getListOfOutcomes(), Toast.LENGTH_SHORT).show();
         Call<CourseUpdateResponse> CourseUpdateResponseCall = academyApis.addCourse(Container.getModel().getCourseTitle(),
                 Container.getModel().getShortDescription(),Container.getModel().getDescription(),
                 Container.getListOfOutcomes(),Container.getModel().getLanguage(),Container.getModel().getLevel(),
@@ -185,8 +186,8 @@ public class FinishFragment extends Fragment {
 
     public void makeEmpty(){
         Container.setModel(new BasicFragmentModel());
-        Container.setListOfRequirements(new ArrayList<>());
-        Container.setListOfOutcomes(new ArrayList<>());
+        Container.setListOfRequirements("");
+        Container.setListOfOutcomes("");
         Container.setSeoModelClass(new SeoModelClass());
         Container.setMediaFragmentModel(new MediaFragmentModel());
         Container.setPriceFragmentModel(new PriceFragmentModel());

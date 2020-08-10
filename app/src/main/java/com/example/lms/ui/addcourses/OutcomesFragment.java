@@ -121,8 +121,9 @@ public class OutcomesFragment extends Fragment {
 
             }
         }
-        Container.setListOfOutcomes(listOfOutcomes);
-        Container.setListOfOutcomes(listOfOutcomes);
+        String json = new Gson().toJson(listOfOutcomes);
+        Log.i(TAG,json);
+        Container.setListOfOutcomes(json);
     }
 
     public void setValues(){

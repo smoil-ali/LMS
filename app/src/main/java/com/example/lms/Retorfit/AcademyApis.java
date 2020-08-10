@@ -419,4 +419,34 @@ public interface AcademyApis {
     @GET("?action=lesson&type=delete")
     Call<LessonResponse> deleteLesson(@Query("id") String id);
 
+
+    //Update Course
+    //http://lms.amnaikhlaq.com/api/index.php?action=updateCourse&id=4&title=java&short_description=java&description=freee
+    // &outcomes=aa&language=english&level=beginner&is_top_course=0&category_id=1&requirements=sddd&is_free_course=null
+    // &discount_flag=1&price=100&discounted_price=11&course_overview_provider=name&video_url=url&meta_keywords=list&meta_description=sadkas
+    @GET("?action=updateCourse")
+    Call<CourseUpdateResponse>  updateCourse(@Query("id") String id,
+                                             @Query("title")String title,
+                                             @Query("short_description")String short_description,
+                                             @Query("description")String description,
+                                             @Query("outcomes")List<String> outcomes,
+                                             @Query("language")String language,
+                                             @Query("level")String level,
+                                             @Query("is_top_course")String is_top_course,
+                                             @Query("category_id")String category_id,
+                                             @Query("requirements")List<String> requirements,
+                                             @Query("is_free_course")String is_free_course,
+                                             @Query("discount_flag")String discount_flag,
+                                             @Query("price")String price,
+                                             @Query("discounted_price")String discounted_price,
+                                             @Query("course_overview_provider")String course_overview_provider,
+                                             @Query("video_url")String video_url,
+                                             @Query("meta_keywords")List<String> meta_keywords,
+                                             @Query("meta_description")String meta_description);
+
+    //Retrive Section DAta
+    //http://lms.amnaikhlaq.com/api/index.php?action=section&type=fetchAll&course_id=11
+    @GET("?action=section&type=fetchAll")
+    Call<SectionResponse> getSectionData(@Query("course_id") String course_id);
+
 }

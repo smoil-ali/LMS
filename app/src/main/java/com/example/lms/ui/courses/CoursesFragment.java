@@ -7,28 +7,32 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.lms.Adapters.CourserAdapter;
+import com.example.lms.Adapters.CourseAdapter;
 import com.example.lms.Factories.CourseFactory;
-import com.example.lms.Model.CourseCount;
+import com.example.lms.Listener.deleteListener;
+import com.example.lms.Model.Constants;
+import com.example.lms.Model.CourseCountResponse;
 import com.example.lms.Model.CourseData;
-import com.example.lms.R;
+import com.example.lms.Model.CourseResponse;
+import com.example.lms.Model.Utils;
 import com.example.lms.ViewModels.CourseViewModel;
-import com.example.lms.activity.Login;
 import com.example.lms.databinding.FragmentCoursesBinding;
 
 import java.util.ArrayList;
 
-public class CoursesFragment extends Fragment {
+import retrofit2.Response;
+
+public class CoursesFragment extends Fragment implements deleteListener {
 
     FragmentCoursesBinding binding;
-    CourserAdapter courserAdapter;
+    CourseAdapter courseAdapter;
     ArrayList<CourseData> courseDataArrayList=new ArrayList<>();
     CourseViewModel courseViewModel;
     @Nullable
@@ -37,27 +41,51 @@ public class CoursesFragment extends Fragment {
         binding = FragmentCoursesBinding.inflate(inflater,container,false);
         setUpRecyclerView();
         courseViewModel = new ViewModelProvider(getActivity(),new CourseFactory(getContext(),binding.courseProgressBar)).get(CourseViewModel.class);
-        courseViewModel.getArrayListMutableLiveData().observe(requireActivity(), courseData -> {
-            if (courseData.size() > 0 ){
-                courseDataArrayList.clear();
-                courseDataArrayList.addAll(courseData);
-                courserAdapter.notifyDataSetChanged();
-                binding.courseProgressBar.setVisibility(View.GONE);
-            }else {
-                new AlertDialog.Builder(getContext())
-                        .setTitle("Data Not Found")
-                        .setMessage("data not found")
-                        .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+        courseViewModel.getArrayListMutableLiveData().observe(requireActivity(), new Observer<Response<CourseResponse>>() {
+            @Override
+            public void onChanged(Response<CourseResponse> response) {
+                if (response.isSuccessful()){
+                    CourseResponse response1 = response.body();
+                    if (response1.getCode().equals("200") && response1.getStatus().equals(Constants.SUCCESS)){
+                        courseDataArrayList.clear();
+                        courseDataArrayList.addAll(response1.getData());
+                        courseAdapter.notifyDataSetChanged();
+                        courseAdapter.setDeleteListener(CoursesFragment.this);
+                        //binding.swipeRefresher.setRefreshing(false);
+                        binding.courseProgressBar.setVisibility(View.GONE);
+                    }else {
+                        //binding.swipeRefresher.setRefreshing(false);
+                        Utils.showDialog(getContext(),response1.getStatus(),response1.getMessage());
+                    }
+                }else {
+                    //binding.swipeRefresher.setRefreshing(false);
+                    Utils.showDialog(getContext(),Constants.RESPONSE_FAILED,response.message());
+                }
+
             }
-
         });
 
-        courseViewModel.getCourseCountMutableLiveData().observe(requireActivity(), courseCount -> {
-            binding.countActiveCourses.setText(courseCount.getActive());
-            binding.countFreeCourses.setText(courseCount.getFree());
-            binding.countPaidCourses.setText(courseCount.getPaid());
-            binding.countPendingCourses.setText(courseCount.getPending());
+        //binding.swipeRefresher.setOnRefreshListener(() -> courseViewModel.update(getContext(),binding.courseProgressBar));
+
+        courseViewModel.getCourseCountMutableLiveData().observe(requireActivity(), new Observer<Response<CourseCountResponse>>() {
+            @Override
+            public void onChanged(Response<CourseCountResponse> response) {
+                if (response.isSuccessful()){
+                    CourseCountResponse response1 = response.body();
+                    if (response1.getCode().equals("200") && response1.getStatus().equals(Constants.SUCCESS)){
+                        binding.countActiveCourses.setText(response1.getCourse_count().getActive());
+                        binding.countFreeCourses.setText(response1.getCourse_count().getFree());
+                        binding.countPaidCourses.setText(response1.getCourse_count().getPaid());
+                        binding.countPendingCourses.setText(response1.getCourse_count().getPending());
+                    }else {
+                        Utils.showDialog(getContext(),response1.getStatus(),response1.getMessage());
+                    }
+                }else {
+                    Utils.showDialog(getContext(),Constants.RESPONSE_FAILED,response.message());
+                }
+            }
         });
+
         return binding.getRoot();
     }
 
@@ -66,8 +94,14 @@ public class CoursesFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.rvCourses.getContext(),
                 DividerItemDecoration.HORIZONTAL);
         binding.rvCourses.addItemDecoration(dividerItemDecoration);
-        binding.rvCourses.setNestedScrollingEnabled(false);
-        courserAdapter=new CourserAdapter(getContext(),courseDataArrayList);
-        binding.rvCourses.setAdapter(courserAdapter);
+     //   binding.rvCourses.setNestedScrollingEnabled(false);
+        courseAdapter =new CourseAdapter(getContext(),courseDataArrayList,getParentFragmentManager());
+        binding.rvCourses.setAdapter(courseAdapter);
+    }
+
+    @Override
+    public void OnDelete(String status, String message) {
+        courseViewModel.update(getContext(),binding.courseProgressBar);
+        Utils.showDialog(getContext(),status,message);
     }
 }

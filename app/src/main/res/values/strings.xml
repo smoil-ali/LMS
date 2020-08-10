@@ -61,4 +61,73 @@
     <string name="dicount_price">Dicount Price</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="ProfileTitle">title</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_credentials">Login Credentials</string>
+    <string name="social_information">Social Information</string>
+    <string name="payment_info">Payment Info</string>
+    <string name="add_student">Add Student</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="biography">Biography</string>
+    <string name="select_picture">Select Picture</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="facebook_link">Facebook Link</string>
+    <string name="twitter_link">Twitter Link</string>
+    <string name="linkedin_link">Linkedin Link</string>
+    <string name="paypalclientid">PayPalClientId</string>
+    <string name="stripe_public_key">Stripe Public Key</string>
+    <string name="stripe_secret_key">Stripe Secret Key</string>
+    <string name="paypal_client_id">PayPal Client id</string>
+
+    <!--student email verification spinner items-->
+    <string-array name="email_verification">
+        <item>Disable</item>
+        <item>Enable</item>
+    </string-array>
+
+    <!--system settings languages-->
+    <string-array name="language">
+        <item>English</item>
+        <item>Urdu</item>
+        <item>Bengali</item>
+    </string-array>
+
+    <!--currency setting spinner items-->
+    <string-array name="currency_position">
+        <item>Left</item>
+        <item>Right</item>
+        <item>Left with space</item>
+        <item>Right with space</item>
+    </string-array>
+
+    <string-array name="active_paypal">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+
+    <string-array name="mode">
+        <item>Sandbox</item>
+        <item>Production</item>
+    </string-array>
+
+    <string-array name="testMode">
+        <item>On</item>
+        <item>Off</item>
+    </string-array>
+
+
+
+    <string name="from">From</string>
+    <string name="image">Image</string>
+    <string name="to">To</string>
+    <string name="filter">Filter</string>
+    <string name="deleting">Deleting...</string>
+    <string name="add_section">Add Section</string>
+    <string name="add_lesson">Add Lesson</string>
+    <string name="add_quiz">Add Quiz</string>
+    <string name="curriculum">Curriculum</string>
+    <string name="video_url_for_web_app">Video Url For Web App</string>
 </resources>

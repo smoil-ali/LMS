@@ -13,18 +13,22 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.CategoryData;
 import com.example.lms.Model.CategoryResponse;
+import com.example.lms.Model.Utils;
 import com.example.lms.R;
 import com.example.lms.Retorfit.AcademyApis;
 import com.example.lms.Retorfit.RetrofitService;
 import com.example.lms.activity.AddCategory;
 import com.example.lms.databinding.CategoriesItemBinding;
 import com.example.lms.databinding.SubcategoryItemBinding;
+import com.example.lms.dialogs.DeleteDialog;
 
 import java.io.Serializable;
 import java.util.List;
@@ -33,15 +37,23 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.lms.Model.Constants.SUCCESS;
+
 public class subCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = subCategoryAdapter.class.getSimpleName();
     Context context;
     List<CategoryData> dataList ;
+    DeleteDialog deleteDialog = new DeleteDialog();
+    com.example.lms.Listener.deleteListener deleteListener;
+    FragmentManager fragmentManager;
 
-    public subCategoryAdapter(Context context, List<CategoryData> dataList) {
+    public subCategoryAdapter(Context context, List<CategoryData> dataList,FragmentManager fragmentManager,deleteListener deleteListener) {
         this.context = context;
         this.dataList = dataList;
+        this.fragmentManager = fragmentManager;
+        this.deleteListener = deleteListener;
     }
+
 
     @NonNull
     @Override
@@ -54,7 +66,7 @@ public class subCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Log.i(TAG,dataList.size()+"");
-        ((SubCategoryViewHolder)holder).bindView(dataList.get(position),position);
+        ((SubCategoryViewHolder)holder).bindView(dataList.get(position));
     }
 
     @Override
@@ -69,41 +81,40 @@ public class subCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             this.binding = binding;
         }
 
-        public void bindView(CategoryData categoryData,int position){
+        public void bindView(CategoryData categoryData){
             Log.i(TAG,"cat Name "+categoryData.getName());
             binding.subcategory.setText(categoryData.getName());
             binding.subcategory.setOnLongClickListener((View.OnLongClickListener) view -> {
                 PopupMenu popupMenu  = new PopupMenu(context,binding.subcategory);
                 popupMenu.getMenuInflater().inflate(R.menu.popup_menu,popupMenu.getMenu());
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch (menuItem.getItemId()){
-                            case R.id.edit:
-                                Intent intent = new Intent(context, AddCategory.class);
-                                intent.putExtra("Data", (Serializable) categoryData);
-                                intent.putExtra("tag","Edit");
-                                context.startActivity(intent);
-                                ((Activity)context).finish();
-                                break;
-                            case R.id.delete:
-                                new AlertDialog.Builder(context)
-                                        .setTitle("Alert!!!")
-                                        .setMessage("Are You Sure?")
-                                        .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
-                                        .setPositiveButton("OK", (dialogInterface, i) -> DeleteCategory(categoryData.getId(),position)).show();
-                                break;
-                        }
-                        return false;
+                popupMenu.setOnMenuItemClickListener((PopupMenu.OnMenuItemClickListener) menuItem -> {
+                    switch (menuItem.getItemId()){
+                        case R.id.edit:
+                            Intent intent = new Intent(context, AddCategory.class);
+                            intent.putExtra("Data", (Serializable) categoryData);
+                            intent.putExtra("tag","Edit");
+                            context.startActivity(intent);
+                            ((Activity)context).finish();
+                            break;
+                        case R.id.delete:
+                            new AlertDialog.Builder(context)
+                                    .setTitle("Alert!!!")
+                                    .setMessage("Are You Sure?")
+                                    .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+                                    .setPositiveButton("OK", (dialogInterface, i) -> {
+                                        Utils.openDialog(fragmentManager,deleteDialog);
+                                        DeleteCategory(categoryData.getId());
+                                    }).show();
+                            break;
                     }
+                    return false;
                 });
                 popupMenu.show();
                 return true;
             });
         }
 
-        private void DeleteCategory(String id,int position){
-            binding.categoriesProgressBar.setVisibility(View.VISIBLE);
+        private void DeleteCategory(String id){
             AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
             Call<CategoryResponse> categoryResponseCall = academyApis.deleteCategory(id);
             Log.i(TAG,categoryResponseCall.request().url()+"");
@@ -112,16 +123,11 @@ public class subCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
                     if (response.isSuccessful()){
                         CategoryResponse categoryResponse = response.body();
-                        if (categoryResponse.getCode().equals("200")){
-                            binding.categoriesProgressBar.setVisibility(View.GONE);
-                            new AlertDialog.Builder(context)
-                                    .setTitle(categoryResponse.getStatus())
-                                    .setMessage(categoryResponse.getMessage())
-                                    .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
-                            dataList.remove(position);
-                            notifyItemChanged(position);
+                        if (categoryResponse.getCode().equals("200") && categoryResponse.getStatus().equals(SUCCESS)){
+                            deleteDialog.dismiss();
+                            deleteListener.OnDelete(categoryResponse.getStatus(),categoryResponse.getMessage());
                         }else {
-                            binding.categoriesProgressBar.setVisibility(View.GONE);
+                            deleteDialog.dismiss();
                             new AlertDialog.Builder(context)
                                     .setTitle(categoryResponse.getStatus())
                                     .setMessage(categoryResponse.getMessage())
@@ -129,7 +135,7 @@ public class subCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             Log.i(TAG,categoryResponse.getStatus()+" delete");
                         }
                     }else {
-                        binding.categoriesProgressBar.setVisibility(View.GONE);
+                        deleteDialog.dismiss();
                         new AlertDialog.Builder(context)
                                 .setTitle("Failed")
                                 .setMessage(response.message())
@@ -140,7 +146,7 @@ public class subCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 @Override
                 public void onFailure(Call<CategoryResponse> call, Throwable t) {
-                    binding.categoriesProgressBar.setVisibility(View.GONE);
+                    deleteDialog.dismiss();
                     new AlertDialog.Builder(context)
                             .setTitle("Failed")
                             .setMessage(t.getMessage())

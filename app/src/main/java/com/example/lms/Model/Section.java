@@ -1,15 +1,23 @@
 package com.example.lms.Model;
 
-import java.util.List;
+import android.os.Build;
 
-public class Section {
+import androidx.annotation.RequiresApi;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class Section implements Serializable {
 
     private List<SectionData> data;
 
     private int count;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public List<SectionData> getData() {
-        return data;
+        return Optional.ofNullable(data).orElse(new ArrayList<>());
     }
 
     public void setData(List<SectionData> data) {

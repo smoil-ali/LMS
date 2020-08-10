@@ -3,14 +3,11 @@ package com.example.lms;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
@@ -19,6 +16,7 @@ import com.example.lms.Model.SharedPref;
 import com.example.lms.Model.Utils;
 import com.example.lms.activity.AddCategory;
 import com.example.lms.activity.AddCourse;
+import com.example.lms.activity.AddStudent;
 import com.example.lms.activity.Login;
 import com.example.lms.databinding.ActivityMainBinding;
 import com.example.lms.databinding.AppBarBinding;
@@ -35,9 +33,9 @@ import com.example.lms.ui.instructors.InstructorListFragment;
 import com.example.lms.ui.instructors.InstructorPayoutFragment;
 import com.example.lms.ui.instructors.InstructorSettingsFragment;
 import com.example.lms.ui.message.MessageFragment;
+import com.example.lms.ui.profile.ManageProfileFragment;
 import com.example.lms.ui.report.AdminRevenueFragment;
 import com.example.lms.ui.report.InstructorRevenueFragment;
-import com.example.lms.ui.settings.AboutFragment;
 import com.example.lms.ui.settings.LanguageSettingsFragment;
 import com.example.lms.ui.settings.PaymentSettingsFragment;
 import com.example.lms.ui.settings.SmtpSettingsFragment;
@@ -46,7 +44,12 @@ import com.example.lms.ui.settings.ThemeSettingsFragment;
 import com.example.lms.ui.settings.WebsiteSettingFragment;
 import com.example.lms.ui.students.StudentFragment;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
+
+import static com.example.lms.Model.Constants.ACTION;
+import static com.example.lms.Model.Constants.ADD;
+import static com.example.lms.Model.Constants.FROM;
+import static com.example.lms.Model.Constants.INSTRUCTOR;
+import static com.example.lms.Model.Constants.STUDENT;
 
 public class MainActivity extends AppCompatActivity implements ResetListener {
 
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
     private AppBarBinding appBarBinding;
     int flag =0;
     Toolbar toolbar;
+    Fragment fragment;
     ResetDialog resetDialog = new ResetDialog();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +68,14 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
         getSupportActionBar().setTitle("LMS");
         View view=binding.getRoot();
         setContentView(view);
+        fragment=new Fragment();
         resetDialog.setResetListener(this);
+
+        if (savedInstanceState == null){
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.hostFragment,new HomeFragment()).commit();
+        }
+
         setBottomNavigation();
         sideNavigation();
 
@@ -73,8 +84,6 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
 
     private void sideNavigation(){
         binding.floatingNavigationView.setCheckedItem(R.id.nav_home);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.hostFragment,new HomeFragment()).commit();
         binding.floatingNavigationView.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
         binding.floatingNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                Fragment fragment=new Fragment();
+
                 switch (item.getItemId()){
                     case R.id.nav_home:
                         fragment=new HomeFragment();
@@ -106,6 +115,12 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     case R.id.nav_addCourses:
                             startActivity(new Intent(MainActivity.this, AddCourse.class));
                         break;
+                    case R.id.addInstructor:
+                        Intent intent1 = new Intent(MainActivity.this,AddStudent.class);
+                        intent1.putExtra(FROM,INSTRUCTOR);
+                        intent1.putExtra(ACTION,ADD);
+                        startActivity(intent1);
+                        break;
                     case R.id.nav_instructorList:
                         fragment=new InstructorListFragment();
                         break;
@@ -121,11 +136,17 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     case R.id.nav_student:
                         fragment=new StudentFragment();
                         break;
+                    case R.id.addStudent:
+                        Intent intent2 = new Intent(MainActivity.this,AddStudent.class);
+                        intent2.putExtra(FROM,STUDENT);
+                        intent2.putExtra(ACTION,ADD);
+                        startActivity(intent2);
+                        break;
                     case R.id.nav_enrolHistory:
                         fragment=new EnrolHistoryFragment();
                         break;
-                    case R.id.nav_enrolStudent:
-
+                    case R.id.enroll_Student:
+                        fragment = new Enroll_Student();
                         break;
                     case R.id.nav_adminRevenue:
                         fragment=new AdminRevenueFragment();
@@ -136,12 +157,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     case R.id.nav_message:
                         fragment=new MessageFragment();
                         break;
-                    case R.id.nav_addonManager:
-                        fragment=new AddonManagerFragment();
-                        break;
-                    case R.id.nav_availableAddons:
-                        fragment=new AvailableAddonsFragment();
-                        break;
+
                     case R.id.nav_systemSetting:
                         fragment=new SystemSettingsFragment();
                         break;
@@ -206,18 +222,20 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
             public void onClickItem(MeowBottomNavigation.Model item) {
                 switch (item.getId()){
                     case 1:
-
+                            fragment=new ManageProfileFragment();
                         break;
                     case 2:
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.hostFragment,new HomeFragment()).commit();
+                            fragment=new HomeFragment();
                         break;
                     case 3:
 
                         break;
                 }
-
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.hostFragment,fragment).commit();
             }
+
+
 
         });
 
@@ -231,7 +249,19 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
         binding.bottomNavigation.setOnReselectListener(new MeowBottomNavigation.ReselectListener() {
             @Override
             public void onReselectItem(MeowBottomNavigation.Model item) {
+                switch (item.getId()){
+                    case 1:
+                        fragment=new ManageProfileFragment();
+                        break;
+                    case 2:
+                        fragment=new HomeFragment();
+                        break;
+                    case 3:
 
+                        break;
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.hostFragment,fragment).commit();
             }
         });
     }

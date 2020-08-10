@@ -7,31 +7,33 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.lms.Adapters.InstructorAdapter;
-import com.example.lms.Adapters.StudentAdapter;
 import com.example.lms.Factories.InstructorFactory;
-import com.example.lms.Factories.StudentFactory;
-import com.example.lms.Model.InstructorData;
-import com.example.lms.Model.StudentData;
-import com.example.lms.R;
+import com.example.lms.Listener.deleteListener;
+import com.example.lms.Model.Constants;
+import com.example.lms.Model.InstructorResponse;
+import com.example.lms.Model.UserData;
 import com.example.lms.ViewModels.InstructorViewModel;
-import com.example.lms.ViewModels.StudentViewModel;
 import com.example.lms.databinding.FragmentInstructorListBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InstructorListFragment extends Fragment {
+import retrofit2.Response;
+
+public class InstructorListFragment extends Fragment implements deleteListener {
 
     FragmentInstructorListBinding binding;
     InstructorViewModel viewModel;
-    List<InstructorData> dataList = new ArrayList<>();
+    List<UserData> dataList = new ArrayList<>();
     InstructorAdapter adapter;
     @Nullable
     @Override
@@ -39,29 +41,39 @@ public class InstructorListFragment extends Fragment {
         binding = FragmentInstructorListBinding.inflate(inflater,container,false);
         setUpRecyclerView();
         viewModel= new ViewModelProvider(getActivity(),new InstructorFactory(getContext(),binding.instructorProgressbar)).get(InstructorViewModel.class);
-        viewModel.getMutableLiveData().observe(requireActivity(), instructorData -> {
-            if (instructorData.size() > 0 ){
-                dataList.clear();
-                dataList.addAll(instructorData);
-                adapter.notifyDataSetChanged();
-                binding.instructorProgressbar.setVisibility(View.GONE);
-                binding.instructorAlertMessage.setVisibility(View.GONE);
-            }else {
-                binding.instructorProgressbar.setVisibility(View.GONE);
-                binding.instructorAlertMessage.setVisibility(View.VISIBLE);
-            }
-        });
-
-
-        viewModel.getErrorMessage().observe(requireActivity(), new Observer<String>() {
+        viewModel.getMutableLiveData().observe(requireActivity(), new Observer<Response<InstructorResponse>>() {
             @Override
-            public void onChanged(String s) {
-                binding.instructorAlertMessage.setText(s);
-                binding.instructorAlertMessage.setVisibility(View.VISIBLE);
-                binding.instructorProgressbar.setVisibility(View.GONE);
+            public void onChanged(Response<InstructorResponse> response) {
+                if (response.isSuccessful()){
+                    InstructorResponse response1 = response.body();
+                    if (response1.getCode().equals("200") && response1.getStatus().equals(Constants.SUCCESS)){
+                        dataList.clear();
+                        dataList.addAll(response1.getData());
+                        adapter.notifyDataSetChanged();
+                        adapter.setDeleteListener(InstructorListFragment.this);
+                        binding.swipeRefresher.setRefreshing(false);
+                        binding.rvInstructor.setVisibility(View.VISIBLE);
+                        binding.instructorProgressbar.setVisibility(View.GONE);
+                        binding.instructorAlertMessage.setVisibility(View.GONE);
+                    }else {
+                        binding.swipeRefresher.setRefreshing(false);
+                        binding.rvInstructor.setVisibility(View.GONE);
+                        binding.instructorProgressbar.setVisibility(View.GONE);
+                        binding.instructorAlertMessage.setVisibility(View.VISIBLE);
+                        binding.instructorAlertMessage.setText(response1.getStatus()+" "+response1.getMessage());
+                    }
+                }else {
+                    binding.swipeRefresher.setRefreshing(false);
+                    binding.rvInstructor.setVisibility(View.GONE);
+                    binding.instructorProgressbar.setVisibility(View.GONE);
+                    binding.instructorAlertMessage.setVisibility(View.VISIBLE);
+                    binding.instructorAlertMessage.setText(Constants.RESPONSE_FAILED+" "+response.message());
+                }
+
             }
         });
 
+        binding.swipeRefresher.setOnRefreshListener(() -> viewModel.update(getContext(),binding.instructorProgressbar));
 
         return binding.getRoot();
     }
@@ -72,7 +84,16 @@ public class InstructorListFragment extends Fragment {
                 DividerItemDecoration.HORIZONTAL);
         binding.rvInstructor.addItemDecoration(dividerItemDecoration);
         binding.rvInstructor.setNestedScrollingEnabled(false);
-        adapter=new InstructorAdapter(getContext(),dataList);
+        adapter=new InstructorAdapter(getContext(),dataList,getParentFragmentManager());
         binding.rvInstructor.setAdapter(adapter);
+    }
+
+    @Override
+    public void OnDelete(String status, String message) {
+        viewModel.update(getContext(),binding.instructorProgressbar);
+        new AlertDialog.Builder(getContext())
+                .setTitle(status)
+                .setMessage(message)
+                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
     }
 }

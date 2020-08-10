@@ -1,8 +1,14 @@
 package com.example.lms.Model;
 
-public class CourseData {
+import android.graphics.Path;
+import android.os.Build;
 
+import androidx.annotation.RequiresApi;
 
+import java.io.Serializable;
+import java.util.Optional;
+
+public class CourseData implements Serializable {
     private String id;
 
     private String title;
@@ -66,6 +72,16 @@ public class CourseData {
     private Enrollment enrollment;
 
     private Instructor instructor;
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public Section getSection() {
+        return Optional.ofNullable(section).orElse(new Section());
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
+    }
+
 
     public String getId() {
         return id;
@@ -131,13 +147,7 @@ public class CourseData {
         this.sub_category_id = sub_category_id;
     }
 
-    public Section getSection() {
-        return section;
-    }
 
-    public void setSection(Section section) {
-        this.section = section;
-    }
 
     public String getRequirements() {
         return requirements;
@@ -243,8 +253,9 @@ public class CourseData {
         this.is_admin = is_admin;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public String getStatus() {
-        return status;
+        return Optional.ofNullable(status).orElse("CGIT");
     }
 
     public void setStatus(String status) {
@@ -283,40 +294,45 @@ public class CourseData {
         this.is_free_course = is_free_course;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public CategoryData getCategory() {
-        return category;
+        return Optional.ofNullable(category).orElse(new CategoryData());
     }
 
     public void setCategory(CategoryData category) {
         this.category = category;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public Sub_category getSub_category() {
-        return sub_category;
+        return Optional.ofNullable(sub_category).orElse(new Sub_category());
     }
 
     public void setSub_category(Sub_category sub_category) {
         this.sub_category = sub_category;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public Lesson getLesson() {
-        return lesson;
+        return Optional.ofNullable(lesson).orElse(new Lesson());
     }
 
     public void setLesson(Lesson lesson) {
         this.lesson = lesson;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public Enrollment getEnrollment() {
-        return enrollment;
+        return Optional.ofNullable(enrollment).orElse(new Enrollment());
     }
 
     public void setEnrollment(Enrollment enrollment) {
         this.enrollment = enrollment;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public Instructor getInstructor() {
-        return instructor;
+        return Optional.ofNullable(instructor).orElse(new Instructor());
     }
 
     public void setInstructor(Instructor instructor) {

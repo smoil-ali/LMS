@@ -25,7 +25,8 @@ public class InstructorApplicationFragment extends Fragment {
         return root;
     }
     private void setTabLayout(){
-
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.host,new PendingApplicationFragment()).commit();
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

@@ -43,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@+id/sd"
         >
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/course_description"
+            android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -60,6 +60,12 @@
         android:weightSum="2"
         android:gravity="center"
         >
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/Basic_progressBar"
+            android:visibility="gone"
+            />
         <TextView
             android:layout_weight="0.5"
             android:layout_width="0dp"
@@ -69,7 +75,7 @@
             android:paddingStart="5dp"
             />
         <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/course_category"
+            android:id="@+id/category_spinner"
             android:layout_weight="1.5"
             android:layout_width="0dp"
             android:layout_height="40dp"
@@ -95,7 +101,7 @@
             android:paddingStart="5dp"
             />
         <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/course_level"
+            android:id="@+id/level_spinner"
             android:layout_weight="1.5"
             android:layout_width="0dp"
             android:layout_height="40dp"
@@ -123,7 +129,7 @@
 
             />
         <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/language"
+            android:id="@+id/language_spinner"
             android:layout_weight="1.5"
             android:layout_width="0dp"
             android:layout_height="40dp"

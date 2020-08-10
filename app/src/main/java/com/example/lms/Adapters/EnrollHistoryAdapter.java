@@ -3,21 +3,39 @@ package com.example.lms.Adapters;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.CourseData;
 import com.example.lms.Model.EnrollHistoryUserData;
 import com.example.lms.Model.EnrollmentHistoryData;
+import com.example.lms.Model.EnrollmentHistoryResponse;
+import com.example.lms.Model.Utils;
+import com.example.lms.R;
+import com.example.lms.Retorfit.AcademyApis;
+import com.example.lms.Retorfit.RetrofitService;
 import com.example.lms.databinding.CoursesItemBinding;
 import com.example.lms.databinding.EnrolCourseBinding;
 import com.example.lms.databinding.EnrollHistoryBinding;
+import com.example.lms.dialogs.DeleteDialog;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
@@ -26,12 +44,25 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private static final int COURSE_TYPE = 0;
     private static final int LIST_TYPE = 1;
     int viewType;
+    SimpleDateFormat simpleDateFormat;
+    deleteListener deleteListener;
+    DeleteDialog deleteDialog = new DeleteDialog();
+    FragmentManager fragmentManager;
 
-    public EnrollHistoryAdapter(Context context, List<EnrollHistoryUserData> enrollmentHistoryData,int viewType) {
+    public EnrollHistoryAdapter(Context context, List<EnrollHistoryUserData> enrollmentHistoryData,int viewType,FragmentManager fragmentManager) {
+        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        long date = Long.parseLong("1594011600");
+        Log.i(TAG, String.valueOf(date));
+        Log.i(TAG,simpleDateFormat.format(new Date(date)));
         this.context = context;
         this.enrollmentHistoryData = enrollmentHistoryData;
         System.out.println(enrollmentHistoryData);
         this.viewType = viewType;
+        this.fragmentManager = fragmentManager;
+    }
+
+    public void setDeleteListener(deleteListener deleteListener){
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
@@ -80,12 +111,77 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
 
         public void bindView(EnrollHistoryUserData enrollmentHistoryData){
+            Log.i(TAG,enrollmentHistoryData.getDate_added());
             binding.setEnrollDate.setText(enrollmentHistoryData.getDate_added());
             binding.studentEmail.setText("Email here");
             binding.studentName.setText(enrollmentHistoryData.getUserName());
             binding.enrolCourse.setText(enrollmentHistoryData.getCourseName());
+            binding.moreMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PopupMenu menu=new PopupMenu(context,binding.moreMenu);
+                    menu.getMenuInflater().inflate(R.menu.del_menu,menu.getMenu());
+                    menu.setOnMenuItemClickListener(item -> {
+                        if (item.getItemId() == R.id.delete)
+                            new AlertDialog.Builder(context)
+                                    .setTitle("Alert!!!")
+                                    .setMessage("You want to delete?")
+                                    .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+                                    .setPositiveButton("OK", (dialogInterface, i) -> {
+                                        Utils.openDialog(fragmentManager,deleteDialog);
+                                        DeleteHistory(enrollmentHistoryData.getId());
+                                    }).show();
+                        return true;
+                    });
+                    menu.show();
+                }
+            });
         }
+
+        private void DeleteHistory(String id){
+            AcademyApis academyApis = RetrofitService.createService(AcademyApis.class);
+            Call<EnrollmentHistoryResponse> EnrollmentHistoryResponseCall = academyApis.deleteEnrollHistory(id);
+            Log.i(TAG,EnrollmentHistoryResponseCall.request().url()+"");
+            EnrollmentHistoryResponseCall.enqueue(new Callback<EnrollmentHistoryResponse>() {
+                @Override
+                public void onResponse(Call<EnrollmentHistoryResponse> call, Response<EnrollmentHistoryResponse> response) {
+                    if (response.isSuccessful()){
+                        EnrollmentHistoryResponse EnrollmentHistoryResponse = response.body();
+                        if (EnrollmentHistoryResponse.getCode().equals("200") && !EnrollmentHistoryResponse.getStatus().equals("FAILED")){
+                            deleteDialog.dismiss();
+                            deleteListener.OnDelete(EnrollmentHistoryResponse.getStatus(),EnrollmentHistoryResponse.getMessage());
+                        }else {
+                            deleteDialog.dismiss();
+                            new AlertDialog.Builder(context)
+                                    .setTitle(EnrollmentHistoryResponse.getStatus())
+                                    .setMessage(EnrollmentHistoryResponse.getMessage())
+                                    .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                            Log.i(TAG,EnrollmentHistoryResponse.getStatus()+" delete");
+                        }
+                    }else {
+                        deleteDialog.dismiss();
+                        new AlertDialog.Builder(context)
+                                .setTitle("Failed")
+                                .setMessage(response.message())
+                                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                        Log.i(TAG,response.message()+" delete");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<EnrollmentHistoryResponse> call, Throwable t) {
+                    deleteDialog.dismiss();
+                    new AlertDialog.Builder(context)
+                            .setTitle("Failed")
+                            .setMessage(t.getMessage())
+                            .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                    Log.i(TAG,t.getMessage()+" delete");
+                }
+            });
+        }
+
     }
+
 
     public class EnrollCourseViewholder extends RecyclerView.ViewHolder {
         EnrolCourseBinding binding;
@@ -98,4 +194,6 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             binding.textView2.setText(enrollHistoryUserData.getCourseName());
         }
     }
+
+
 }

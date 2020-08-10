@@ -11,13 +11,22 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.AddCourse"></activity>
+        <activity android:name=".activity.UpdateCourse"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".activity.AddStudent" />
+        <activity
+            android:name=".activity.AddCourse"
+            android:screenOrientation="portrait" />
         <activity android:name=".activity.AddCategory" />
         <activity android:name=".activity.Test" />
         <activity
             android:name=".activity.Login"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

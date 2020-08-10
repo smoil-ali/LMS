@@ -1,6 +1,8 @@
 package com.example.lms.Model;
 
-public class Instructor {
+import java.io.Serializable;
+
+public class Instructor implements Serializable {
           String  id;
           String  first_name;
           String  last_name;

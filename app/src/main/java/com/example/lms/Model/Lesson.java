@@ -1,8 +1,9 @@
 package com.example.lms.Model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Lesson {
+public class Lesson implements Serializable {
     private int count;
 
     private List<LessonData> data;

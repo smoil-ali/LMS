@@ -113,7 +113,6 @@ public class EnrollHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         public void bindView(EnrollHistoryUserData enrollmentHistoryData){
             Log.i(TAG,enrollmentHistoryData.getDate_added());
             binding.setEnrollDate.setText(enrollmentHistoryData.getDate_added());
-            binding.studentEmail.setText("Email here");
             binding.studentName.setText(enrollmentHistoryData.getUserName());
             binding.enrolCourse.setText(enrollmentHistoryData.getCourseName());
             binding.moreMenu.setOnClickListener(new View.OnClickListener() {

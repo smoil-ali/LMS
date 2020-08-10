@@ -2,7 +2,9 @@ package com.example.lms.Model;
 
 import android.accessibilityservice.GestureDescription;
 
-public class EnrollHistoryUserData {
+import java.io.Serializable;
+
+public class EnrollHistoryUserData implements Serializable {
     String id;
     String user_id;
     String course_id;

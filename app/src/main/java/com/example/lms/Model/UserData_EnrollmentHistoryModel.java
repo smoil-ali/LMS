@@ -1,8 +1,9 @@
 package com.example.lms.Model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class UserData_EnrollmentHistoryModel {
+public class UserData_EnrollmentHistoryModel implements Serializable {
     UserData userData;
     List<EnrollHistoryUserData> list;
 

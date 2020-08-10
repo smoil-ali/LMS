@@ -109,7 +109,7 @@ public class StudentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         Intent intent = new Intent(context, AddStudent.class);
                         intent.putExtra(FROM,STUDENT);
                         intent.putExtra(ACTION,EDIT);
-                        intent.putExtra(DATA,(Serializable) userData);
+                        intent.putExtra(DATA, userData.getUserData());
                         context.startActivity(intent);
                     }
                     return true;

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.AddBasicUserModel;
@@ -40,6 +41,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.example.lms.Model.Constants.ADD;
+import static com.example.lms.Model.Constants.AddCourse;
 import static com.example.lms.Model.Constants.FAILED;
 import static com.example.lms.Model.Constants.RESPONSE_FAILED;
 import static com.example.lms.Model.Constants.SUCCESS;
@@ -143,6 +145,7 @@ public class Student_finish extends Fragment {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYYMMddHHmmss");
         String date = simpleDateFormat.format(new Date());
         Log.i(TAG,date);
+        Toast.makeText(getContext(), ""+AddStudent.ROLE, Toast.LENGTH_SHORT).show();
         Observable<StudentResponse> observable = academyApis.AddUser(AddStudent.ROLE,addContainer.getModel().getFirstName(),
                 addContainer.getModel().getLastName(),addContainer.getModel().getBiography(),addContainer.getAddUserLogindata().getEmail(),
                 addContainer.getAddUserLogindata().getPassword(),addContainer.getAddUserPaymentData().getPaypalClientId(),

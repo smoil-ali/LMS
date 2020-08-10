@@ -87,19 +87,19 @@ public interface AcademyApis {
     Call<CourseUpdateResponse>  addCourse(@Query("title")String title,
                                           @Query("short_description")String short_description,
                                           @Query("description")String description,
-                                          @Query("outcomes")List<String> outcomes,
+                                          @Query("outcomes")String outcomes,
                                           @Query("language")String language,
                                           @Query("level")String level,
                                           @Query("is_top_course")String is_top_course,
                                           @Query("category_id")String category_id,
-                                          @Query("requirements")List<String> requirements,
+                                          @Query("requirements")String requirements,
                                           @Query("is_free_course")String is_free_course,
                                           @Query("discount_flag")String discount_flag,
                                           @Query("price")String price,
                                           @Query("discounted_price")String discounted_price,
                                           @Query("course_overview_provider")String course_overview_provider,
                                           @Query("video_url")String video_url,
-                                          @Query("meta_keywords")List<String> meta_keywords,
+                                          @Query("meta_keywords")String meta_keywords,
                                           @Query("meta_description")String meta_description);
 
     //Category List using RxJava
@@ -149,15 +149,15 @@ public interface AcademyApis {
     Call<CourseResponse> getCourseResponse();
 
     //Student List
-    //http://lms.amnaikhlaq.com/api/index.php?action=allUser&role=student
-    @GET("?action=allUser")
+    //http://lms.amnaikhlaq.com/api/index.php?action=userList&role=student
+    @GET("?action=userList")
     Call<StudentResponse> getStudentList(@Query("role") String role);
 
 
 
     //Instructor List
-    //http://lms.amnaikhlaq.com/api/index.php?action=allUser&role=instructor
-    @GET("?action=allUser")
+    //http://lms.amnaikhlaq.com/api/index.php?action=userList&role=instructor
+    @GET("?action=userList")
     Call<InstructorResponse> getInstructorList(@Query("role") String role);
 
 
@@ -463,4 +463,9 @@ public interface AcademyApis {
     @GET("?action=section&type=fetchAll")
     Call<SectionResponse> getSectionData(@Query("course_id") String course_id);
 
+    //Get complete payment list with date filter
+    //http://lms.amnaikhlaq.com/api/index.php?action=payout&type=fetchbydate&from=20200718&to=20200718
+    @GET("?action=payout&type=fetchbydate")
+    Call<PayoutResponse> getPaymentHistory(@Query("from") String from,
+                                           @Query("to") String to);
 }

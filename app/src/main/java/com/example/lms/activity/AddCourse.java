@@ -24,7 +24,7 @@ import com.google.android.material.tabs.TabLayout;
 public class AddCourse extends AppCompatActivity {
     ActivityAddCourseBinding binding;
     Fragment fragment;
-
+    int position = 0 ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +34,9 @@ public class AddCourse extends AppCompatActivity {
         if (savedInstanceState == null){
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.hostFragment,new BasicFragment()).commit();
+        }else {
+            position = savedInstanceState.getInt("pos");
+            binding.tabAddCourses.getTabAt(position).select();
         }
         binding.nextBtn.setOnClickListener(v -> {
             int position=binding.tabAddCourses.getSelectedTabPosition();
@@ -43,7 +46,10 @@ public class AddCourse extends AppCompatActivity {
         binding.backBtn.setOnClickListener(v -> {
             int position=binding.tabAddCourses.getSelectedTabPosition();
             Log.i("position",String.valueOf(position));
-            binding.tabAddCourses.getTabAt(--position).select();
+            if(position>0){
+                binding.tabAddCourses.getTabAt(--position).select();
+            }
+
         });
 
         setTabLayout();
@@ -97,5 +103,16 @@ public class AddCourse extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("pos",position);
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(AddCourse.this,MainActivity.class));
+        finishAffinity();
+    }
 }

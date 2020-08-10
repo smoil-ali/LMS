@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
         sideNavigation();
 
 
+
     }
 
     private void sideNavigation(){
@@ -167,14 +168,8 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     case R.id.nav_paymentSettings:
                         fragment=new PaymentSettingsFragment();
                         break;
-                    case R.id.nav_languageSettings:
-                        fragment=new LanguageSettingsFragment();
-                        break;
                     case R.id.nav_smtpSettings:
                         fragment=new SmtpSettingsFragment();
-                        break;
-                    case R.id.nav_themeSettings:
-                        fragment=new ThemeSettingsFragment();
                         break;
                     case R.id.nav_about:
                         Utils.openDialog(getSupportFragmentManager(),resetDialog);
@@ -192,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.hostFragment,fragment).commit();
                 }
-
+                binding.bottomNavigation.show(2,true);
                 binding.floatingNavigationView.close();
                 return true;
             }
@@ -228,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                             fragment=new HomeFragment();
                         break;
                     case 3:
-
+                            fragment=new SystemSettingsFragment();
                         break;
                 }
                 getSupportFragmentManager().beginTransaction()
@@ -274,4 +269,11 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                 .setMessage(msg)
                 .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
     }
+
+  /*  @Override
+    protected void onResume() {
+        super.onResume();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.hostFragment,new HomeFragment()).commit();
+    }*/
 }

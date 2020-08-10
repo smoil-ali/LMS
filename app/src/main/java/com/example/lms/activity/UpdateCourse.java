@@ -69,7 +69,10 @@ public class UpdateCourse extends AppCompatActivity {
         binding.backBtn.setOnClickListener(v -> {
             int position=binding.tabAddCourses.getSelectedTabPosition();
             Log.i("position",String.valueOf(position));
-            binding.tabAddCourses.getTabAt(--position).select();
+            if (position>0){
+                binding.tabAddCourses.getTabAt(--position).select();
+            }
+
         });
 
         setTabLayout();
@@ -115,7 +118,7 @@ public class UpdateCourse extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                binding.frwBckContainer.setVisibility(View.VISIBLE);
             }
 
             @Override

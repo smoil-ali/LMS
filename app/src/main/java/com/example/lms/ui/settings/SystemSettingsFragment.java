@@ -1,6 +1,7 @@
 package com.example.lms.ui.settings;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -37,6 +38,7 @@ public class SystemSettingsFragment extends Fragment{
     String text ;
     String key;
     SettingsViewModel settingsViewModel;
+    Context context;
 
     @Nullable
     @Override
@@ -210,15 +212,15 @@ public class SystemSettingsFragment extends Fragment{
                 SettingsResponse settingsResponse=response.body();
                 if (response.isSuccessful()){
                     settingsViewModel.udpateData(binding.progressBar);
-                    Toast.makeText(requireContext(),settingsResponse.getStatus(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,settingsResponse.getStatus(),Toast.LENGTH_SHORT).show();
                 }else {
-                    Toast.makeText(requireContext(),settingsResponse.getStatus(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,settingsResponse.getStatus(),Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<SettingsResponse> call, Throwable t) {
-                new AlertDialog.Builder(requireContext())
+                new AlertDialog.Builder(context)
                         .setTitle("Failed")
                         .setMessage(t.getMessage())
                         .setPositiveButton("Ok",(((dialog, which) -> dialog.dismiss()))).show();
@@ -226,4 +228,10 @@ public class SystemSettingsFragment extends Fragment{
         });
     }
 
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context=context;
+    }
 }

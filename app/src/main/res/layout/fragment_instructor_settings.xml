@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/_16sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/titleCard"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:cardUseCompatPadding="true"
-        app:contentPadding="@dimen/_16sdp"
         >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:text="@string/instructor_settings"
-            />
-    </androidx.cardview.widget.CardView>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="4dp"
+    />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/pb_inst_settings"
         android:layout_width="match_parent"
@@ -50,9 +48,11 @@
                 android:layout_marginTop="16dp"
                 />
             <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/allow_pb"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_marginTop="5dp"
+                android:entries="@array/active_paypal"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -75,23 +75,15 @@
                 app:boxStrokeWidth="2dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/note"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="5"
-                    android:inputType="text"
 
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
-            <Button
-                android:id="@+id/pb_inst_settings_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/update_settings"
-                android:textColor="@color/white"
-                android:layout_marginTop="5dp"
-                android:backgroundTint="@color/btnbg_inst_setting"
-                />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -137,6 +129,7 @@
                 app:boxStrokeWidth="2dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/revenue_percentage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
@@ -166,21 +159,13 @@
                 app:boxStrokeWidth="2dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/admin_percentage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
                     android:maxLines="5" />
             </com.google.android.material.textfield.TextInputLayout>
-
-            <Button
-                android:id="@+id/inst_comm_settings_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/update_settings"
-                android:textColor="@color/white"
-                android:layout_marginTop="5dp"
-                android:backgroundTint="@color/btnbg_inst_setting"
-                />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

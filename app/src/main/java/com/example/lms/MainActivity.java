@@ -157,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
                     case R.id.nav_message:
                         fragment=new MessageFragment();
                         break;
+
                     case R.id.nav_systemSetting:
                         fragment=new SystemSettingsFragment();
                         break;
@@ -248,7 +249,19 @@ public class MainActivity extends AppCompatActivity implements ResetListener {
         binding.bottomNavigation.setOnReselectListener(new MeowBottomNavigation.ReselectListener() {
             @Override
             public void onReselectItem(MeowBottomNavigation.Model item) {
+                switch (item.getId()){
+                    case 1:
+                        fragment=new ManageProfileFragment();
+                        break;
+                    case 2:
+                        fragment=new HomeFragment();
+                        break;
+                    case 3:
 
+                        break;
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.hostFragment,fragment).commit();
             }
         });
     }

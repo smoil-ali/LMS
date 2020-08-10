@@ -15,6 +15,7 @@
         app:layout_constraintBottom_toTopOf="@+id/loginText"
         app:layout_constraintEnd_toEndOf="parent" />
 
+
     <ImageView
         android:id="@+id/logo"
         android:layout_width="252dp"
@@ -118,9 +119,9 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="Forgot ?"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="Forgot Password?"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#bfbfbf"
         android:textStyle="bold"

@@ -1,8 +1,12 @@
 package com.example.lms.Retorfit;
 
+import android.app.Application;
 import android.os.ConditionVariable;
 import android.util.Log;
 
+import com.example.lms.Model.AllCurrencies;
+import com.example.lms.Model.ApplicationResponse;
+import com.example.lms.Model.ApprovedApplication;
 import com.example.lms.Model.CategoryResponse;
 import com.example.lms.Model.CourseCount;
 import com.example.lms.Model.CourseCountResponse;
@@ -15,7 +19,9 @@ import com.example.lms.Model.LessonResponse;
 import com.example.lms.Model.LoginResponse;
 import com.example.lms.Model.ResetPassword;
 import com.example.lms.Model.SectionResponse;
+import com.example.lms.Model.SettingsResponse;
 import com.example.lms.Model.StudentResponse;
+import com.example.lms.Model.WebsiteResponse;
 
 import java.util.List;
 
@@ -232,6 +238,95 @@ public interface AcademyApis {
                                         @Query("twitter")String twitter,
                                         @Query("linkedin")String linkedin);
 
+    //http://lms.amnaikhlaq.com/api/index.php?action=delete&id=5
+
+    @GET("?action=delete")
+    Call<InstructorResponse> deleteInstructor(@Query("id") String id);
+
+
+    //update system settings
+    //http://lms.amnaikhlaq.com/api/index.php?action=settings&type=update&key=system_email&value=email.com
+
+    @GET("?action=settings&type=update")
+    Call<SettingsResponse> updateSettings(@Query("key") String key,
+                                          @Query("value") String value);
+
+    //website settings
+    //http://lms.amnaikhlaq.com/api/index.php?action=websettings&type=update&key=banner_title&value=banner
+
+    @GET("?action=websettings&type=update")
+    Call<SettingsResponse> updateWebSettings(@Query("key") String key,
+                                          @Query("value") String value);
+
+    //window settings fetach
+    //http://lms.amnaikhlaq.com/api/index.php?action=websettings&type=fetch
+
+    @GET("?action=websettings&type=fetch")
+    Call<WebsiteResponse> getWebsiteData();
+
+    //Fetch settings data
+    //http://lms.amnaikhlaq.com/api/index.php?action=settings&type=fetch
+    @GET("?action=settings&type=fetch")
+    Call<SettingsResponse> getSettingsData();
+
+    //all currency
+    // http://lms.amnaikhlaq.com/api/index.php?action=settings&currency=all
+    @GET("?action=settings&currency=all")
+    Call<AllCurrencies> getAllCurrencies();
+
+    //paypal currency
+    //http://lms.amnaikhlaq.com/api/index.php?action=settings&currency=paypal
+    @GET("?action=settings&currency=paypal")
+    Call<AllCurrencies> getPaypalCurrencies();
+
+    //stripe Currency
+    //http://lms.amnaikhlaq.com/api/index.php?action=settings&currency=stripe
+    @GET("?action=settings&currency=stripe")
+    Call<AllCurrencies> getStripeCurrencies();
+
+    //update all currency
+    //http://lms.amnaikhlaq.com/api/index.php?action=settings&type=update&key=system_email&value=email.com
+
+
+
+    //update paypal currency
+    //http://lms.amnaikhlaq.com/api/index.php?action=settings&type=update&key=paypal&active=act&mode=1&sandbox_client_id=null&sandbox_secret_key=null&production_client_id=null&production_secret_key=null
+
+    @GET("?action=settings&type=update&key=paypal")
+    Call<AllCurrencies> updatePaypalSettings(@Query("active") String active,
+                                               @Query("mode") String mode,
+                                               @Query("sandbox_client_id") String sandbox_client_id,
+                                               @Query("sandbox_secret_key") String sandbox_secret_key,
+                                               @Query("production_client_id") String production_client_id,
+                                               @Query("production_secret_key") String production_secret_key
+                                               );
+
+    //update stripe keys
+    //http://lms.amnaikhlaq.com/api/index.php?action=settings&type=update&key=stripe_key&active=1&testmode=on&public_key=null&secret_key=null&public_live_key=null&secret_live_key=null
+
+    @GET("?action=settings&type=update&key=stripe_keys")
+    Call<AllCurrencies> updateStripeSettings(@Query("active") String active,
+                                             @Query("testmode") String testmode,
+                                             @Query("public_key") String public_key,
+                                             @Query("secret_key") String secret_key,
+                                             @Query("public_live_key") String public_live_key,
+                                             @Query("secret_live_key") String secret_live_key
+                                             );
+
+
+
+
+    //approved application instructor
+    //http://lms.amnaikhlaq.com/api/index.php?action=applications&type=fetch&fetch=approved
+
+    @GET("?action=applications&type=fetch&fetch=approved")
+    Call<ApplicationResponse> getApprovedApplication();
+
+    //pending application instructor
+    //http://lms.amnaikhlaq.com/api/index.php?action=applications&type=fetch&fetch=pending
+
+    @GET("?action=applications&type=fetch&fetch=pending")
+    Call<ApplicationResponse> getPendingApplication();
 
     //Enroll Student
     //http://lms.amnaikhlaq.com/api/index.php?action=enrolStudent&type=insert&userid=2&courseid=4
@@ -323,38 +418,5 @@ public interface AcademyApis {
     //http://lms.amnaikhlaq.com/api/index.php?action=lesson&type=delete&id=4
     @GET("?action=lesson&type=delete")
     Call<LessonResponse> deleteLesson(@Query("id") String id);
-
-
-    //Update Course
-    //http://lms.amnaikhlaq.com/api/index.php?action=updateCourse&id=4&title=java&short_description=java&description=freee
-    // &outcomes=aa&language=english&level=beginner&is_top_course=0&category_id=1&requirements=sddd&is_free_course=null
-    // &discount_flag=1&price=100&discounted_price=11&course_overview_provider=name&video_url=url&meta_keywords=list&meta_description=sadkas
-    @GET("?action=updateCourse")
-    Call<CourseUpdateResponse>  updateCourse(@Query("id") String id,
-                                          @Query("title")String title,
-                                          @Query("short_description")String short_description,
-                                          @Query("description")String description,
-                                          @Query("outcomes")List<String> outcomes,
-                                          @Query("language")String language,
-                                          @Query("level")String level,
-                                          @Query("is_top_course")String is_top_course,
-                                          @Query("category_id")String category_id,
-                                          @Query("requirements")List<String> requirements,
-                                          @Query("is_free_course")String is_free_course,
-                                          @Query("discount_flag")String discount_flag,
-                                          @Query("price")String price,
-                                          @Query("discounted_price")String discounted_price,
-                                          @Query("course_overview_provider")String course_overview_provider,
-                                          @Query("video_url")String video_url,
-                                          @Query("meta_keywords")List<String> meta_keywords,
-                                          @Query("meta_description")String meta_description);
-
-
-
-    //Retrive Section DAta
-    //http://lms.amnaikhlaq.com/api/index.php?action=section&type=fetchAll&course_id=11
-    @GET("?action=section&type=fetchAll")
-    Call<SectionResponse> getSectionData(@Query("course_id") String course_id);
-
 
 }

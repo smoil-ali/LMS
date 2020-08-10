@@ -81,6 +81,45 @@
     <string name="stripe_public_key">Stripe Public Key</string>
     <string name="stripe_secret_key">Stripe Secret Key</string>
     <string name="paypal_client_id">PayPal Client id</string>
+
+    <!--student email verification spinner items-->
+    <string-array name="email_verification">
+        <item>Disable</item>
+        <item>Enable</item>
+    </string-array>
+
+    <!--system settings languages-->
+    <string-array name="language">
+        <item>English</item>
+        <item>Urdu</item>
+        <item>Bengali</item>
+    </string-array>
+
+    <!--currency setting spinner items-->
+    <string-array name="currency_position">
+        <item>Left</item>
+        <item>Right</item>
+        <item>Left with space</item>
+        <item>Right with space</item>
+    </string-array>
+
+    <string-array name="active_paypal">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+
+    <string-array name="mode">
+        <item>Sandbox</item>
+        <item>Production</item>
+    </string-array>
+
+    <string-array name="testMode">
+        <item>On</item>
+        <item>Off</item>
+    </string-array>
+
+
+
     <string name="from">From</string>
     <string name="image">Image</string>
     <string name="to">To</string>

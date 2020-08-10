@@ -23,7 +23,7 @@
     <string name="addon_manager">Addon Manager</string>
     <string name="available_addons">Available addons</string>
     <string name="settings">Settings</string>
-    <string name="system_setting">System Setting</string>
+    <string name="system_setting">System Settings</string>
     <string name="payment_settings">Payment settings</string>
     <string name="website_settings">Website settings</string>
     <string name="language_settings">Language settings</string>
@@ -81,6 +81,17 @@
     <string name="stripe_public_key">Stripe Public Key</string>
     <string name="stripe_secret_key">Stripe Secret Key</string>
     <string name="paypal_client_id">PayPal Client id</string>
+<<<<<<<<< Temporary merge branch 1
+    <string name="from">From</string>
+    <string name="image">Image</string>
+    <string name="to">To</string>
+    <string name="filter">Filter</string>
+    <string name="deleting">Deleting...</string>
+    <string name="add_section">Add Section</string>
+    <string name="add_lesson">Add Lesson</string>
+    <string name="add_quiz">Add Quiz</string>
+    <string name="curriculum">Curriculum</string>
+=========
 
     <!--student email verification spinner items-->
     <string-array name="email_verification">

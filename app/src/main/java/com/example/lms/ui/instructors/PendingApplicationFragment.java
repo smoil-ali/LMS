@@ -38,16 +38,20 @@ public class PendingApplicationFragment extends Fragment {
         setUpRecyclerView();
         applicationViewModel=new ViewModelProvider(requireActivity(),new PendingApplicationFactory(binding.progressBar,0)).get(PendingApplicationViewModel.class);
         applicationViewModel.getApplicationMutableLiveData().observe(requireActivity(),approvedApplications -> {
-            if (approvedApplications.size()>0){
-                pendingList.clear();
-                pendingList.addAll(approvedApplications);
-                adapter.notifyDataSetChanged();
-                binding.progressBar.setVisibility(View.GONE);
-            }else {
+            if (approvedApplications != null){
+                if (approvedApplications.size() > 0) {
+                    pendingList.clear();
+                    pendingList.addAll(approvedApplications);
+                    adapter.notifyDataSetChanged();
+                    binding.progressBar.setVisibility(View.GONE);
+                }
+
+        }else {
                 new AlertDialog.Builder(getContext())
                         .setTitle("Data Not Found")
                         .setMessage("data not found")
                         .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                binding.progressBar.setVisibility(View.GONE);
             }
         });
 

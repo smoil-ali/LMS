@@ -1,7 +1,6 @@
 package com.example.lms.Retorfit;
 
 import android.app.Application;
-import android.os.ConditionVariable;
 import android.util.Log;
 
 import com.example.lms.Model.AllCurrencies;
@@ -17,6 +16,7 @@ import com.example.lms.Model.DashboardResponse;
 import com.example.lms.Model.InstructorResponse;
 import com.example.lms.Model.LessonResponse;
 import com.example.lms.Model.LoginResponse;
+import com.example.lms.Model.PayoutResponse;
 import com.example.lms.Model.ResetPassword;
 import com.example.lms.Model.SectionResponse;
 import com.example.lms.Model.SettingsResponse;
@@ -87,19 +87,19 @@ public interface AcademyApis {
     Call<CourseUpdateResponse>  addCourse(@Query("title")String title,
                                           @Query("short_description")String short_description,
                                           @Query("description")String description,
-                                          @Query("outcomes")String outcomes,
+                                          @Query("outcomes")List<String> outcomes,
                                           @Query("language")String language,
                                           @Query("level")String level,
                                           @Query("is_top_course")String is_top_course,
                                           @Query("category_id")String category_id,
-                                          @Query("requirements")String requirements,
+                                          @Query("requirements")List<String> requirements,
                                           @Query("is_free_course")String is_free_course,
                                           @Query("discount_flag")String discount_flag,
                                           @Query("price")String price,
                                           @Query("discounted_price")String discounted_price,
                                           @Query("course_overview_provider")String course_overview_provider,
                                           @Query("video_url")String video_url,
-                                          @Query("meta_keywords")String meta_keywords,
+                                          @Query("meta_keywords")List<String> meta_keywords,
                                           @Query("meta_description")String meta_description);
 
     //Category List using RxJava
@@ -150,14 +150,14 @@ public interface AcademyApis {
 
     //Student List
     //http://lms.amnaikhlaq.com/api/index.php?action=allUser&role=student
-    @GET("?action=userList")
+    @GET("?action=allUser")
     Call<StudentResponse> getStudentList(@Query("role") String role);
 
 
 
     //Instructor List
     //http://lms.amnaikhlaq.com/api/index.php?action=allUser&role=instructor
-    @GET("?action=userList")
+    @GET("?action=allUser")
     Call<InstructorResponse> getInstructorList(@Query("role") String role);
 
 
@@ -365,6 +365,20 @@ public interface AcademyApis {
                                      @Query("twitter")String twitter,
                                      @Query("linkedin")String linkedin);
 
+    //delete application
+    //http://lms.amnaikhlaq.com/api/index.php?action=applications&type=delete&id=4
+    @GET("?action=applications&type=delete")
+    Call<ApplicationResponse> deleteApplication(@Query("id") String id);
+
+    //update status application
+    //http://lms.amnaikhlaq.com/api/index.php?action=applications&type=update&id=4
+
+    @GET("?action=application&type=update")
+    Call<ApplicationResponse> updateApplication(@Query("id") String id);
+
+    //http://lms.amnaikhlaq.com/api/index.php?action=payout&type=fetch&status=0
+    @GET("?action=payout&type=fetch")
+    Call<PayoutResponse> getPayout(@Query("status") String status);
     //Add Lesson
     //http://lms.amnaikhlaq.com/api/index.php?action=lesson&type=insert&title=testing&duration=03:03:02&course_id=2&
     // section_id=3&video_url=www.da.com&lesson_type=video&attachment_type=url&summary=summary&

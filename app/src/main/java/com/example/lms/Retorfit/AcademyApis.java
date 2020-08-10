@@ -375,6 +375,6 @@ public interface AcademyApis {
     Call<ApplicationResponse> updateApplication(@Query("id") String id);
 
     //http://lms.amnaikhlaq.com/api/index.php?action=payout&type=fetch&status=0
-    @GET("?action=application&type=fetch")
+    @GET("?action=payout&type=fetch")
     Call<PayoutResponse> getPayout(@Query("status") String status);
 }

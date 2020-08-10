@@ -1,113 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/parent"
-    android:padding="@dimen/_10sdp"
-    >
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/imgbtn_from"
-        app:layout_constraintBottom_toBottomOf="@id/imgbtn_from"
-        android:text="@string/from"
-        android:id="@+id/From"
-        app:layout_constraintStart_toStartOf="parent"/>
-    <ImageButton
-        android:layout_width="@dimen/_25sdp"
-        android:layout_height="@dimen/_25sdp"
-        android:src="@drawable/ic_date_range"
-        android:background="@null"
-        android:scaleType="fitXY"
-        app:layout_constraintTop_toTopOf="@id/btn_filterResult"
-        app:layout_constraintBottom_toBottomOf="@id/btn_filterResult"
-        app:layout_constraintStart_toEndOf="@id/From"
-        android:layout_marginStart="@dimen/_5sdp"
-        android:tint="@color/colorAccent"
-        android:id="@+id/imgbtn_from"
-        android:contentDescription="@string/image"/>
-    <TextView
-        android:layout_width="@dimen/_50sdp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/imgbtn_from"
-        app:layout_constraintBottom_toBottomOf="@id/imgbtn_from"
-        app:layout_constraintStart_toEndOf="@id/imgbtn_from"
-        android:id="@+id/txt_from"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/imgbtn_to"
-        app:layout_constraintBottom_toBottomOf="@id/imgbtn_to"
-        android:text="@string/to"
-        android:id="@+id/To"
-        app:layout_constraintStart_toEndOf="@id/txt_from"
-        android:layout_marginStart="@dimen/_5sdp"/>
 
-    <ImageButton
-        android:layout_width="@dimen/_25sdp"
-        android:layout_height="@dimen/_25sdp"
-        android:src="@drawable/ic_date_range"
-        android:background="@null"
-        android:scaleType="fitXY"
-        app:layout_constraintTop_toTopOf="@id/btn_filterResult"
-        app:layout_constraintBottom_toBottomOf="@id/btn_filterResult"
-        app:layout_constraintStart_toEndOf="@id/To"
-        android:layout_marginStart="@dimen/_5sdp"
-        android:tint="@color/colorAccent"
-        android:id="@+id/imgbtn_to"
-        android:contentDescription="@string/image"/>
-    <TextView
-        android:layout_width="@dimen/_50sdp"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/imgbtn_to"
-        app:layout_constraintBottom_toBottomOf="@id/imgbtn_to"
-        app:layout_constraintStart_toEndOf="@id/imgbtn_to"
-        android:id="@+id/txt_to"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/filter"
-        android:layout_marginEnd="@dimen/_5sdp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/btn_filterResult"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="@dimen/_5sdp"
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Completed payouts" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pending payouts" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <FrameLayout
+        android:id="@+id/host"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/completePayments"
-        app:layout_constraintTop_toBottomOf="@id/btn_filterResult"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
-
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/enrollHistoryProgressbar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:visibility="gone"
-        />
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/enrollHistoryAlertMessage"
-        android:text="No Data Found"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:visibility="gone"
-        android:gravity="center"
-        android:maxLines="5"
-        android:ellipsize="end"
-        />
-
+        app:layout_constraintTop_toBottomOf="@+id/tabs" />
 </androidx.constraintlayout.widget.ConstraintLayout>

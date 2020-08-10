@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +13,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.lms.Adapters.CourseAdapter;
 import com.example.lms.Factories.CourseFactory;
@@ -34,10 +36,12 @@ public class CoursesFragment extends Fragment implements deleteListener {
     CourseAdapter courseAdapter;
     ArrayList<CourseData> courseDataArrayList=new ArrayList<>();
     CourseViewModel courseViewModel;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentCoursesBinding.inflate(inflater,container,false);
+
         setUpRecyclerView();
         courseViewModel = new ViewModelProvider(getActivity(),new CourseFactory(getContext(),binding.courseProgressBar)).get(CourseViewModel.class);
         courseViewModel.getArrayListMutableLiveData().observe(requireActivity(), new Observer<Response<CourseResponse>>() {
@@ -77,6 +81,14 @@ public class CoursesFragment extends Fragment implements deleteListener {
                 }else {
                     Utils.showDialog(getContext(),Constants.RESPONSE_FAILED,response.message());
                 }
+            }
+        });
+
+        binding.swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                courseViewModel.update(getContext(),binding.courseProgressBar);
+                binding.swipeToRefresh.setRefreshing(false);
             }
         });
 

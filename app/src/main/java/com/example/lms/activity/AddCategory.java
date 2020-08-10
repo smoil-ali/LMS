@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.example.lms.MainActivity;
 import com.example.lms.Model.CategoryData;
 import com.example.lms.Model.CategoryResponse;
 import com.example.lms.Model.InstructorResponse;
@@ -367,5 +369,12 @@ public class AddCategory extends AppCompatActivity implements AdapterView.OnItem
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(AddCategory.this, MainActivity.class));
+        finishAffinity();
     }
 }

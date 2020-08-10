@@ -127,14 +127,9 @@
             <item android:id="@+id/nav_paymentSettings"
                 android:title="@string/payment_settings"
                 />
-            <item android:id="@+id/nav_languageSettings"
-                android:title="@string/language_settings"
-                />
             <item android:id="@+id/nav_smtpSettings"
                 android:title="@string/smtp_settings"/>
-            <item android:id="@+id/nav_themeSettings"
-                android:title="@string/theme_settings"
-                />
+
             <item android:id="@+id/nav_about"
                 android:title="Reset Password"/>
 

@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.example.lms.MainActivity;
 import com.example.lms.Model.Constants;
 import com.example.lms.Model.UserData;
 import com.example.lms.R;
@@ -114,5 +116,12 @@ public class AddStudent extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("pos",position);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(AddStudent.this, MainActivity.class));
+        finishAffinity();
     }
 }

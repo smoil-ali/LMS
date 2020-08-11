@@ -1,6 +1,7 @@
 package com.example.lms.ui.students;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import java.util.List;
 
 public class StudentFragment extends Fragment implements deleteListener {
 
+    private static final String TAG = StudentFragment.class.getSimpleName();
     StudentViewModel viewModel;
     FragmentStudentsBinding binding;
     List<UserData_EnrollmentHistoryModel> dataList = new ArrayList<>();
@@ -46,6 +48,7 @@ public class StudentFragment extends Fragment implements deleteListener {
         viewModel.getMutableLiveData().observe(requireActivity(), new Observer<List<UserData_EnrollmentHistoryModel>>() {
             @Override
             public void onChanged(List<UserData_EnrollmentHistoryModel> list) {
+                Log.i(TAG, "student Fragment");
                 dataList.clear();
                 dataList.addAll(list);
                 adapter.notifyDataSetChanged();

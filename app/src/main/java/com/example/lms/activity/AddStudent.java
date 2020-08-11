@@ -4,12 +4,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.example.lms.MainActivity;
+import com.example.lms.Model.AddBasicUserModel;
+import com.example.lms.Model.AddUserLogindata;
 import com.example.lms.Model.Constants;
+import com.example.lms.Model.SocialLinks;
 import com.example.lms.Model.UserData;
+import com.example.lms.Model.addContainer;
+import com.example.lms.Model.addUserPaymentData;
+import com.example.lms.Model.addUserSocialData;
 import com.example.lms.R;
 import com.example.lms.StudentLoginCredentials;
 import com.example.lms.StudentSocialInformation;
@@ -18,6 +26,11 @@ import com.example.lms.Student_Payment_info;
 import com.example.lms.Student_finish;
 import com.example.lms.databinding.ActivityAddStudentBinding;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static com.example.lms.Model.Constants.DATA;
 import static com.example.lms.Model.Constants.EDIT;

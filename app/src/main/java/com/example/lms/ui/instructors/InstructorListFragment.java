@@ -1,6 +1,7 @@
 package com.example.lms.ui.instructors;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +32,12 @@ import retrofit2.Response;
 
 public class InstructorListFragment extends Fragment implements deleteListener {
 
+    private static final String TAG = InstructorListFragment.class.getSimpleName();
     FragmentInstructorListBinding binding;
     InstructorViewModel viewModel;
     List<UserData> dataList = new ArrayList<>();
     InstructorAdapter adapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -44,6 +47,7 @@ public class InstructorListFragment extends Fragment implements deleteListener {
         viewModel.getMutableLiveData().observe(requireActivity(), new Observer<Response<InstructorResponse>>() {
             @Override
             public void onChanged(Response<InstructorResponse> response) {
+                Log.i(TAG, "instructor");
                 if (response.isSuccessful()){
                     InstructorResponse response1 = response.body();
                     if (response1.getCode().equals("200") && response1.getStatus().equals(Constants.SUCCESS)){

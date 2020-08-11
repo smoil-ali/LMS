@@ -4,11 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TableLayout;
 
+import com.example.lms.MainActivity;
 import com.example.lms.R;
 import com.example.lms.databinding.ActivityAddCourseBinding;
 import com.example.lms.ui.HomeFragment;
@@ -112,7 +114,7 @@ public class AddCourse extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(AddCourse.this,MainActivity.class));
+        startActivity(new Intent(AddCourse.this, MainActivity.class));
         finishAffinity();
     }
 }

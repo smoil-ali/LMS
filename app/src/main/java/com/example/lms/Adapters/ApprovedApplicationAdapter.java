@@ -26,10 +26,20 @@ import com.example.lms.dialogs.DeleteDialog;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.lms.Model.Constants.FAILED;
+import static com.example.lms.Model.Constants.RESPONSE_FAILED;
 import static com.example.lms.Model.Constants.SUCCESS;
 
 public class ApprovedApplicationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -42,9 +52,15 @@ public class ApprovedApplicationAdapter extends RecyclerView.Adapter<RecyclerVie
     com.example.lms.Listener.deleteListener deleteListener;
     String TAG=ApprovedApplicationAdapter.class.getSimpleName();
     FragmentManager manager;
+    Observable<Response<ApplicationResponse>> observable;
 
 
-    public ApprovedApplicationAdapter(Context context, List<ApprovedApplication> approvedApplicationsList, int viewType) {
+    public void setDeleteListener(com.example.lms.Listener.deleteListener deleteListener) {
+        this.deleteListener = deleteListener;
+    }
+
+    public ApprovedApplicationAdapter(Context context, List<ApprovedApplication> approvedApplicationsList, int viewType,FragmentManager fragmentManager) {
+        manager = fragmentManager;
         this.context = context;
         this.approvedApplicationsList = approvedApplicationsList;
         this.viewType = viewType;
@@ -103,11 +119,67 @@ public class ApprovedApplicationAdapter extends RecyclerView.Adapter<RecyclerVie
                                     .setMessage("You want to delete?")
                                     .setNegativeButton("cancel", (dialogInterface, i) -> dialogInterface.dismiss())
                                     .setPositiveButton("OK", (dialogInterface, i) -> {
+                                        deleteDialog.setText("Deleting...");
+                                        Utils.openDialog(manager,deleteDialog);
                                         deleteApplication(approvedApplication.getId());
 
                                     }).show();
-                        }else if (item.getItemId()==R.id.approved){
+                        }else {
+                            deleteDialog.setText("Approving...");
+                            Utils.openDialog(manager,deleteDialog);
+                            observable = Observable.create(emitter -> {
+                                AcademyApis apis= RetrofitService.createService(AcademyApis.class);
+                                Call<ApplicationResponse> call = apis.approvedApp(approvedApplication.getId());
+                                Log.i(TAG,call.request().url().toString());
+                                call.enqueue(new Callback<ApplicationResponse>() {
+                                    @Override
+                                    public void onResponse(Call<ApplicationResponse> call, Response<ApplicationResponse> response) {
+                                        emitter.onNext(response);
+                                    }
 
+                                    @Override
+                                    public void onFailure(Call<ApplicationResponse> call, Throwable t) {
+                                        emitter.onError(t);
+                                    }
+                                });
+
+
+                            });
+                            observable.subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Observer<Response<ApplicationResponse>>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
+
+                                        }
+                                        @Override
+                                        public void onNext(Response<ApplicationResponse> applicationResponseResponse) {
+                                            if (applicationResponseResponse.isSuccessful()){
+                                                if (applicationResponseResponse.body().getCode().equals("200") &&
+                                                applicationResponseResponse.body().getStatus().equals(SUCCESS)){
+                                                    deleteListener.OnDelete(applicationResponseResponse.body().getStatus(),
+                                                            applicationResponseResponse.body().getMessage());
+                                                }else {
+                                                    Utils.showDialog(context,applicationResponseResponse.body().getStatus(),
+                                                            applicationResponseResponse.body().getMessage());
+                                                }
+                                            }else {
+                                                Utils.showDialog(context,RESPONSE_FAILED,applicationResponseResponse.message());
+                                            }
+                                            deleteDialog.dismiss();
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            deleteDialog.dismiss();
+                                            Utils.showDialog(context,FAILED,e.getMessage());
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+
+                                        }
+                                    });
                         }
 
                         return true;
@@ -127,10 +199,7 @@ public class ApprovedApplicationAdapter extends RecyclerView.Adapter<RecyclerVie
                 if (response.isSuccessful()){
                     ApplicationResponse applicationResponse=response.body();
                     if (applicationResponse.getCode().equals("200") && applicationResponse.getStatus().equals(SUCCESS)){
-                        new androidx.appcompat.app.AlertDialog.Builder(context)
-                                .setTitle("Deleted")
-                                .setMessage(response.message())
-                                .setPositiveButton("OK",((dialog, which) -> dialog.dismiss())).show();
+                        deleteListener.OnDelete(applicationResponse.getStatus(),applicationResponse.getMessage());
                     }else{
                         deleteDialog.dismiss();
                         new androidx.appcompat.app.AlertDialog.Builder(context)

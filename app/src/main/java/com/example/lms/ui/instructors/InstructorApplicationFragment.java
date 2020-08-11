@@ -32,11 +32,9 @@ public class InstructorApplicationFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tabLayout.getSelectedTabPosition()){
                     case 0:
-                        Toast.makeText(getContext(), "first", Toast.LENGTH_SHORT).show();
                         fragment = new PendingApplicationFragment();
                         break;
                     case 1:
-                        Toast.makeText(getContext(),"second",Toast.LENGTH_LONG).show();
                         fragment=new ApprovedApplicationFragment();
                         break;
                 }

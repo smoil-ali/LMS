@@ -12,14 +12,20 @@ import com.example.lms.Repository.ApprovedApplicationRepository;
 import java.util.List;
 
 public class PendingApplicationViewModel extends ViewModel implements ApplicationListener {
-    public MutableLiveData<List<ApprovedApplication>> applicationMutableLiveData;
-    public MutableLiveData<String> errorMessage;
+    MutableLiveData<List<ApprovedApplication>> applicationMutableLiveData;
+    MutableLiveData<String> errorMessage;
     ApprovedApplicationRepository approvedApplicationRepository;
     String Tag = PendingApplicationViewModel.class.getSimpleName();
 
     public PendingApplicationViewModel(ProgressBar progressBar, int status) {
         applicationMutableLiveData=new MutableLiveData<>();
         errorMessage=new MutableLiveData<>();
+        approvedApplicationRepository=new ApprovedApplicationRepository(progressBar,status);
+        approvedApplicationRepository.setApplicationListener(this);
+    }
+
+
+    public void update(ProgressBar progressBar,int status){
         approvedApplicationRepository=new ApprovedApplicationRepository(progressBar,status);
         approvedApplicationRepository.setApplicationListener(this);
     }

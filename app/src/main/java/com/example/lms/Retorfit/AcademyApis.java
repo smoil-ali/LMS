@@ -468,4 +468,9 @@ public interface AcademyApis {
     @GET("?action=payout&type=fetchbydate")
     Call<PayoutResponse> getPaymentHistory(@Query("from") String from,
                                            @Query("to") String to);
+
+    //Application Approved
+    //http://lms.amnaikhlaq.com/api/index.php?action=applications&type=update&id=4
+    @GET("?action=applications&type=update")
+    Call<ApplicationResponse> approvedApp(@Query("id") String id);
 }

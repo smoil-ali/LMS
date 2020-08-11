@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.lms.Adapters.ApprovedApplicationAdapter;
 import com.example.lms.Factories.PendingApplicationFactory;
+import com.example.lms.Listener.deleteListener;
 import com.example.lms.Model.ApprovedApplication;
+import com.example.lms.Model.Utils;
 import com.example.lms.R;
 import com.example.lms.ViewModels.PendingApplicationViewModel;
 import com.example.lms.databinding.FragmentPendingApplicationBinding;
@@ -24,7 +26,7 @@ import com.example.lms.databinding.FragmentPendingApplicationBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PendingApplicationFragment extends Fragment {
+public class PendingApplicationFragment extends Fragment implements deleteListener {
 
     FragmentPendingApplicationBinding binding;
     ApprovedApplicationAdapter adapter;
@@ -43,10 +45,10 @@ public class PendingApplicationFragment extends Fragment {
                     pendingList.clear();
                     pendingList.addAll(approvedApplications);
                     adapter.notifyDataSetChanged();
+                    adapter.setDeleteListener(this::OnDelete);
                     binding.progressBar.setVisibility(View.GONE);
                 }
-
-        }else {
+            }else {
                 new AlertDialog.Builder(getContext())
                         .setTitle("Data Not Found")
                         .setMessage("data not found")
@@ -55,7 +57,7 @@ public class PendingApplicationFragment extends Fragment {
             }
         });
 
-        applicationViewModel.errorMessage.observe(requireActivity(), new Observer<String>() {
+        applicationViewModel.getErrorMessage().observe(requireActivity(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 binding.progressBar.setVisibility(View.GONE);
@@ -71,7 +73,13 @@ public class PendingApplicationFragment extends Fragment {
 
     private void setUpRecyclerView() {
         binding.rvPending.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter=new ApprovedApplicationAdapter(getContext(),pendingList,0);
+        adapter=new ApprovedApplicationAdapter(getContext(),pendingList,0,getParentFragmentManager());
         binding.rvPending.setAdapter(adapter);
+    }
+
+    @Override
+    public void OnDelete(String status, String message) {
+        applicationViewModel.update(binding.progressBar,0);
+        Utils.showDialog(getContext(),status,message);
     }
 }

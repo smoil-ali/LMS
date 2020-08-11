@@ -145,7 +145,6 @@ public class Student_finish extends Fragment {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYYMMddHHmmss");
         String date = simpleDateFormat.format(new Date());
         Log.i(TAG,date);
-        Toast.makeText(getContext(), ""+AddStudent.ROLE, Toast.LENGTH_SHORT).show();
         Observable<StudentResponse> observable = academyApis.AddUser(AddStudent.ROLE,addContainer.getModel().getFirstName(),
                 addContainer.getModel().getLastName(),addContainer.getModel().getBiography(),addContainer.getAddUserLogindata().getEmail(),
                 addContainer.getAddUserLogindata().getPassword(),addContainer.getAddUserPaymentData().getPaypalClientId(),

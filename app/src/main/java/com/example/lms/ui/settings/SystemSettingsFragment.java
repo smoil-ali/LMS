@@ -212,7 +212,6 @@ public class SystemSettingsFragment extends Fragment{
                 SettingsResponse settingsResponse=response.body();
                 if (response.isSuccessful()){
                     settingsViewModel.udpateData(binding.progressBar);
-                    Toast.makeText(context,settingsResponse.getStatus(),Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(context,settingsResponse.getStatus(),Toast.LENGTH_SHORT).show();
                 }
